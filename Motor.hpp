@@ -1,0 +1,47 @@
+//
+// Created by discord on 26/09/16.
+//
+
+#ifndef MOTORDAEMON_MOTOR_HPP
+#define MOTORDAEMON_MOTOR_HPP
+
+#include <cstdint>
+#include "safe_enum.hpp"
+#include <BlackPWM.h>
+
+#define MIN(x,y) (((x)<(y))?(x):(y))
+
+#define PWM_TIME_PERIOD 100000  // nanosecondes
+
+
+    struct direction_def {
+        enum type {
+            BACKWARD, FORWARD
+        };
+    };
+
+    struct side_def {
+        enum type {
+            LEFT, RIGHT
+        };
+    };
+
+    typedef safe_enum<direction_def> Direction;
+    typedef safe_enum<side_def> Side;
+
+    class Motor {
+    private:
+        Side side;
+        BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
+        BlackLib::pwmName PWMpin;
+        Direction actualDirection = Direction.FORWARD;
+        void setDirection(Direction);
+
+    public:
+        Motor(Side);
+        void initPWM();
+        void run(int16_t);
+    };
+
+
+#endif //MOTORDAEMON_MOTOR_HPP
