@@ -34,7 +34,7 @@
         Side side;
         BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
         BlackLib::pwmName PWMpin;
-        Direction actualDirection = Direction.FORWARD;
+        Direction actualDirection = Direction::FORWARD;
         void setDirection(Direction);
 
     public:

@@ -14,8 +14,8 @@ class Odometry {
 
 private:
 
-    static long leftTicks = 0;
-    static long rightTicks = 0;
+    static long leftTicks;
+    static long rightTicks;
 
     static gboolean onTickLeft(GIOChannel *channel,
                                GIOCondition condition,
@@ -29,5 +29,8 @@ public:
     long getLeftValue();
     long getRightValue();
 };
+
+long Odometry::leftTicks;
+long Odometry::rightTicks;
 
 #endif //MOTORDAEMON_ODOMETRY_HPP

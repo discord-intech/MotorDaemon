@@ -18,21 +18,23 @@ Odometry::Odometry()
     GIOChannel* channelR = g_io_channel_unix_new( fdL );
     guint idR = g_io_add_watch( channelL, cond, onTickRight, 0 );
 
+    Odometry::leftTicks = 0;
+    Odometry::rightTicks = 0;
+
 }
 
 long Odometry::getLeftValue() {
-    return leftTicks;
+    return Odometry::leftTicks;
 }
 
 long Odometry::getRightValue() {
-    return rightTicks;
+    return Odometry::rightTicks;
 }
 
 gboolean Odometry::onTickLeft(GIOChannel *channel,
                               GIOCondition condition,
                               gpointer user_data)
 {
-    int direction = (int)user_data;
     GError *error = 0;
     char buf;
     unsigned long buf_sz = 1;
@@ -53,7 +55,6 @@ gboolean Odometry::onTickRight(GIOChannel *channel,
                                GIOCondition condition,
                                gpointer user_data)
 {
-    int direction = (int)user_data;
     GError *error = 0;
     char buf;
     unsigned long buf_sz = 1;

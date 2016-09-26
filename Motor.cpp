@@ -10,10 +10,10 @@ void Motor::setDirection(Direction way)
     if(actualDirection == way)
         return;
 
-    if(way == Direction.FORWARD)
+    if(way == Direction::FORWARD)
     {
         //TODO
-        if(side == Side.LEFT)
+        if(side == Side::LEFT)
         {
 
         }
@@ -25,7 +25,7 @@ void Motor::setDirection(Direction way)
     else
     {
         //TODO
-        if(side == Side.LEFT)
+        if(side == Side::LEFT)
         {
 
         }
@@ -59,11 +59,11 @@ void Motor::run(int16_t duty) //duty € [-255;255]
 
     if(duty >= 0)
     {
-        setDirection(Direction.FORWARD);
+        setDirection(Direction::FORWARD);
     }
     else
     {
-        setDirection(Direction.BACKWARD);
+        setDirection(Direction::BACKWARD);
     }
 
     pwm.setDutyPercent(percent);
