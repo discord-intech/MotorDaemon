@@ -17,15 +17,21 @@ private:
     static long leftTicks;
     static long rightTicks;
 
-    static gboolean onTickLeft(GIOChannel *channel,
-                               GIOCondition condition,
-                               gpointer user_data);
-    static gboolean onTickRight(GIOChannel *channel,
-                                GIOCondition condition,
-                                gpointer user_data);
+    static gboolean onTickChanALeft(GIOChannel *channel,
+                                    GIOCondition condition,
+                                    gpointer user_data);
+    static gboolean onTickChanBLeft(GIOChannel *channel,
+                                    GIOCondition condition,
+                                    gpointer user_data);
+    static gboolean onTickChanARight(GIOChannel *channel,
+                                    GIOCondition condition,
+                                    gpointer user_data);
+    static gboolean onTickChanBRight(GIOChannel *channel,
+                                    GIOCondition condition,
+                                    gpointer user_data);
 
 public:
-    Odometry();
+    Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR);
     long getLeftValue();
     long getRightValue();
 };
