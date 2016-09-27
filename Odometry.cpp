@@ -35,12 +35,6 @@ Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanB
     system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/edge")).c_str());
     system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/edge")).c_str());
 
-    //TODO change pins
-    int fdAL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    int fdBL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    int fdAR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    int fdBR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-
     Odometry::leftTicks = 0;
     Odometry::rightTicks = 0;
     Odometry::firstChanL = 0;
