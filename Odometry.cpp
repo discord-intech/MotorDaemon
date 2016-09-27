@@ -3,7 +3,10 @@
 //
 
 #include <fcntl.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <poll.h>
+#include <stdio.h>
 #include <string>
 #include <stdlib.h>
 #include "Odometry.hpp"
@@ -75,15 +78,19 @@ void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_
 
         if (pfd[AL].revents != 0) {
             onTickChanALeft();
+            get_lead(fdAL);
         }
         if (pfd[BL].revents != 0) {
             onTickChanBLeft();
+            get_lead(fdBL);
         }
         if (pfd[AR].revents != 0) {
             onTickChanARight();
+            get_lead(fdAR);
         }
         if (pfd[BR].revents != 0) {
             onTickChanBRight();
+            get_lead(fdBR);
         }
 
         usleep(2);
@@ -147,6 +154,16 @@ void Odometry::onTickChanBRight(void)
     {
         firstChanR = 0;
         rightTicks++;
+    }
+}
+
+void Odometry::get_lead(int fd) {
+    lseek(fd, 0, 0);
+
+    char buffer[1024];
+    int size = read(fd, buffer, sizeof(buffer));
+    if (size != -1) {
+        buffer[size] = NULL;
     }
 }
 

@@ -29,11 +29,13 @@ private:
     static void onTickChanBLeft(void);
     static void onTickChanARight(void);
     static void onTickChanBRight(void);
+    static void get_lead(int fd);
 
 public:
     Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR);
     long getLeftValue();
     long getRightValue();
+
 };
 
 
