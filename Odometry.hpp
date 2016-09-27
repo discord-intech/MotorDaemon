@@ -16,6 +16,8 @@ private:
 
     static long leftTicks;
     static long rightTicks;
+    static uint8_t firstChanL;
+    static uint8_t firstChanR;
 
     static gboolean onTickChanALeft(GIOChannel *channel,
                                     GIOCondition condition,
@@ -38,5 +40,8 @@ public:
 
 long Odometry::leftTicks;
 long Odometry::rightTicks;
+uint8_t Odometry::firstChanL; //1 : chanA ; 2 : chanB
+uint8_t Odometry::firstChanR; //1 : chanA ; 2 : chanB
+
 
 #endif //MOTORDAEMON_ODOMETRY_HPP
