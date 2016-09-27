@@ -3,7 +3,7 @@
 
 int main() {
 
-    Odometry odo(7,8,9,10);
+    Odometry odo(67,68,44,26);
 
     while(true)
     {
