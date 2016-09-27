@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string>
 #include <stdlib.h>
+#include <BlackGPIO.h>
 #include "Odometry.hpp"
 
 #define AL 0
@@ -18,8 +19,12 @@
 
 long Odometry::leftTicks;
 long Odometry::rightTicks;
-uint8_t Odometry::firstChanL; //1 : chanA ; 2 : chanB
-uint8_t Odometry::firstChanR; //1 : chanA ; 2 : chanB
+//uint8_t Odometry::firstChanL; //1 : chanA ; 2 : chanB
+//uint8_t Odometry::firstChanR; //1 : chanA ; 2 : chanB
+int Odometry::valueAL;
+int Odometry::valueBL;
+int Odometry::valueAR;
+int Odometry::valueBR;
 
 Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR)
 {
@@ -40,8 +45,12 @@ Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanB
 
     Odometry::leftTicks = 0;
     Odometry::rightTicks = 0;
-    Odometry::firstChanL = 0;
-    Odometry::firstChanR = 0;
+ //   Odometry::firstChanL = 0;
+ //   Odometry::firstChanR = 0;
+    Odometry::valueAL = 0;
+    Odometry::valueBL = 0;
+    Odometry::valueAR = 0;
+    Odometry::valueBR = 0;
 
     t = std::thread(std::bind(mainWorker, chanAL, chanBL, chanAR, chanBR), "Counter Thread");
     t.detach();
@@ -53,6 +62,11 @@ void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_
     int fdBL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/value")).c_str(), O_RDONLY );
     int fdAR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/value")).c_str(), O_RDONLY );
     int fdBR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/value")).c_str(), O_RDONLY );
+
+    BlackLib::BlackGPIO   al((BlackLib::gpioName) chanAL, BlackLib::input, BlackLib::FastMode);
+    BlackLib::BlackGPIO   bl((BlackLib::gpioName) chanBL, BlackLib::input, BlackLib::FastMode);
+    BlackLib::BlackGPIO   ar((BlackLib::gpioName) chanAR, BlackLib::input, BlackLib::FastMode);
+    BlackLib::BlackGPIO   br((BlackLib::gpioName) chanBR, BlackLib::input, BlackLib::FastMode);
 
     struct pollfd pfd[4];
 
@@ -77,20 +91,20 @@ void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_
         poll(pfd, 4, -1);
 
         if (pfd[AL].revents != 0) {
+            get_lead(fdAL, AL);
             onTickChanALeft();
-            get_lead(fdAL);
         }
         if (pfd[BL].revents != 0) {
+            get_lead(fdBL, BL);
             onTickChanBLeft();
-            get_lead(fdBL);
         }
         if (pfd[AR].revents != 0) {
+            get_lead(fdAR, AR);
             onTickChanARight();
-            get_lead(fdAR);
         }
         if (pfd[BR].revents != 0) {
+            get_lead(fdBR, BR);
             onTickChanBRight();
-            get_lead(fdBR);
         }
 
         usleep(1);
@@ -107,7 +121,7 @@ long Odometry::getRightValue() {
 
 void Odometry::onTickChanALeft(void)
 {
-    if(firstChanL == 0)
+  /*  if(firstChanL == 0)
     {
         firstChanL = 1;
     }
@@ -115,12 +129,17 @@ void Odometry::onTickChanALeft(void)
     {
         firstChanL = 0;
         leftTicks--;
+    }*/
+
+    if(valueAL == valueBL)
+    {
+        leftTicks--;
     }
 }
 
 void Odometry::onTickChanBLeft(void)
 {
-    if(firstChanL == 0)
+  /*  if(firstChanL == 0)
     {
         firstChanL = 2;
     }
@@ -128,12 +147,17 @@ void Odometry::onTickChanBLeft(void)
     {
         firstChanL = 0;
         leftTicks++;
+    }*/
+
+    if(valueAL == valueBL)
+    {
+        leftTicks++;
     }
 }
 
 void Odometry::onTickChanARight(void)
 {
-    if(firstChanR == 0)
+  /*  if(firstChanR == 0)
     {
         firstChanR = 1;
     }
@@ -141,12 +165,17 @@ void Odometry::onTickChanARight(void)
     {
         firstChanR = 0;
         rightTicks--;
+    }*/
+
+    if(valueAR == valueBR)
+    {
+        rightTicks--;
     }
 }
 
 void Odometry::onTickChanBRight(void)
 {
-    if(firstChanR == 0)
+   /* if(firstChanR == 0)
     {
         firstChanR = 2;
     }
@@ -154,14 +183,55 @@ void Odometry::onTickChanBRight(void)
     {
         firstChanR = 0;
         rightTicks++;
+    }*/
+
+    if(valueAR == valueBR)
+    {
+        rightTicks++;
     }
 }
 
-void Odometry::get_lead(int fd) {
+void Odometry::get_lead(int fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
+{
     lseek(fd, 0, 0);
 
-    char buffer[1024];
-    read(fd, buffer, sizeof(buffer));
+    char buffer[24];
+    int size = read(fd, buffer, sizeof(buffer));
+
+    if(chan == AL)
+    {
+        if (size != -1) {
+            buffer[size] = NULL;
+            valueAL = atoi(buffer);
+        }
+        else {
+            valueAL = -1;
+        }
+    } else if(chan == BL) {
+        if (size != -1) {
+            buffer[size] = NULL;
+            valueBL = atoi(buffer);
+        }
+        else {
+            valueBL = -1;
+        }
+    } else if(chan == AR) {
+        if (size != -1) {
+            buffer[size] = NULL;
+            valueAR = atoi(buffer);
+        }
+        else {
+            valueAR = -1;
+        }
+    } else if(chan == BR) {
+        if (size != -1) {
+            buffer[size] = NULL;
+            valueBR = atoi(buffer);
+        }
+        else {
+            valueBR = -1;
+        }
+    }
 
 }
 
