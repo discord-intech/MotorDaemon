@@ -9,7 +9,7 @@ int main() {
     {
         std::cout << odo.getLeftValue() << " ; " << odo.getRightValue();
 
-        g_usleep(1000*500);
+        usleep(1000*500);
     }
 
     return 0;

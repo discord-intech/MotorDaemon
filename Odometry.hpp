@@ -7,30 +7,28 @@
 
 
 #include <cstdint>
-#include <glib.h>
+#include <unistd.h>
+#include <thread>
+
+
 
 class Odometry {
 
 
 private:
 
+    std::thread t;
     static long leftTicks;
     static long rightTicks;
     static uint8_t firstChanL;
     static uint8_t firstChanR;
 
-    static gboolean onTickChanALeft(GIOChannel *channel,
-                                    GIOCondition condition,
-                                    gpointer user_data);
-    static gboolean onTickChanBLeft(GIOChannel *channel,
-                                    GIOCondition condition,
-                                    gpointer user_data);
-    static gboolean onTickChanARight(GIOChannel *channel,
-                                    GIOCondition condition,
-                                    gpointer user_data);
-    static gboolean onTickChanBRight(GIOChannel *channel,
-                                    GIOCondition condition,
-                                    gpointer user_data);
+    static void mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR);
+
+    static void onTickChanALeft(void);
+    static void onTickChanBLeft(void);
+    static void onTickChanARight(void);
+    static void onTickChanBRight(void);
 
 public:
     Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR);

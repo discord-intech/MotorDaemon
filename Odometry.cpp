@@ -3,9 +3,15 @@
 //
 
 #include <fcntl.h>
+#include <poll.h>
 #include <string>
 #include <stdlib.h>
 #include "Odometry.hpp"
+
+#define AL 0
+#define BL 1
+#define AR 2
+#define BR 3
 
 long Odometry::leftTicks;
 long Odometry::rightTicks;
@@ -14,6 +20,16 @@ uint8_t Odometry::firstChanR; //1 : chanA ; 2 : chanB
 
 Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR)
 {
+    system((std::string("echo ")+std::to_string(chanAL)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo ")+std::to_string(chanBL)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo ")+std::to_string(chanAR)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo ")+std::to_string(chanBR)+std::string(" > /sys/class/gpio/export")).c_str());
+
+    system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/direction")).c_str());
+    system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/direction")).c_str());
+    system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/direction")).c_str());
+    system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/direction")).c_str());
+
     system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/edge")).c_str());
     system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/edge")).c_str());
     system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/edge")).c_str());
@@ -21,27 +37,63 @@ Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanB
 
     //TODO change pins
     int fdAL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    GIOChannel* channelAL = g_io_channel_unix_new( fdAL );
-    GIOCondition cond = GIOCondition( G_IO_PRI );
-    guint idAL = g_io_add_watch(channelAL, cond, onTickChanALeft, 0);
-
     int fdBL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    GIOChannel* channelBL = g_io_channel_unix_new( fdBL );
-    guint idBL = g_io_add_watch(channelBL, cond, onTickChanBLeft, 0);
-
     int fdAR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    GIOChannel* channelAR = g_io_channel_unix_new( fdAR );
-    guint idAR = g_io_add_watch(channelAR, cond, onTickChanARight, 0);
-
     int fdBR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
-    GIOChannel* channelBR = g_io_channel_unix_new( fdBR );
-    guint idBR = g_io_add_watch(channelBR, cond, onTickChanBRight, 0);
 
     Odometry::leftTicks = 0;
     Odometry::rightTicks = 0;
     Odometry::firstChanL = 0;
     Odometry::firstChanR = 0;
 
+    t = std::thread(std::bind(mainWorker, chanAL, chanBL, chanAR, chanBR), "Counter Thread");
+    t.detach();
+}
+
+void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR)
+{
+    int fdAL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
+    int fdBL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
+    int fdAR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
+    int fdBR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
+
+    struct pollfd pfd[4];
+
+    pfd[AL].fd = fdAL;
+    pfd[AL].events = POLLPRI;
+    pfd[AL].revents = 0;
+
+    pfd[BL].fd = fdBL;
+    pfd[BL].events = POLLPRI;
+    pfd[BL].revents = 0;
+
+    pfd[AR].fd = fdAR;
+    pfd[AR].events = POLLPRI;
+    pfd[AR].revents = 0;
+
+    pfd[BR].fd = fdBR;
+    pfd[BR].events = POLLPRI;
+    pfd[BR].revents = 0;
+
+    while (true)
+    {
+        poll(pfd, 4, -1);
+
+        if (pfd[AL].revents != 0) {
+            onTickChanALeft();
+        }
+        if (pfd[BL].revents != 0) {
+            onTickChanBLeft();
+        }
+        if (pfd[AR].revents != 0) {
+            onTickChanARight();
+        }
+        if (pfd[BR].revents != 0) {
+            onTickChanBRight();
+        }
+
+        usleep(2);
+    }
 }
 
 long Odometry::getLeftValue() {
@@ -52,9 +104,7 @@ long Odometry::getRightValue() {
     return Odometry::rightTicks;
 }
 
-gboolean Odometry::onTickChanALeft(GIOChannel *channel,
-                                   GIOCondition condition,
-                                   gpointer user_data)
+void Odometry::onTickChanALeft(void)
 {
     if(firstChanL == 0)
     {
@@ -65,27 +115,10 @@ gboolean Odometry::onTickChanALeft(GIOChannel *channel,
         firstChanL = 0;
         leftTicks--;
     }
-
-    GError *error = 0;
-    char buf;
-    unsigned long buf_sz = 1;
-    unsigned long bytes_read = 0;
-
-    g_io_channel_seek_position( channel, 0, G_SEEK_SET, 0 );
-    GIOStatus rc = g_io_channel_read_chars( channel,
-                                            &buf, buf_sz,
-                                            &bytes_read,
-                                            &error );
-
-
-    return 1;
 }
 
-gboolean Odometry::onTickChanBLeft(GIOChannel *channel,
-                                   GIOCondition condition,
-                                   gpointer user_data)
+void Odometry::onTickChanBLeft(void)
 {
-
     if(firstChanL == 0)
     {
         firstChanL = 2;
@@ -95,27 +128,10 @@ gboolean Odometry::onTickChanBLeft(GIOChannel *channel,
         firstChanL = 0;
         leftTicks++;
     }
-
-    GError *error = 0;
-    char buf;
-    unsigned long buf_sz = 1;
-    unsigned long bytes_read = 0;
-
-    g_io_channel_seek_position( channel, 0, G_SEEK_SET, 0 );
-    GIOStatus rc = g_io_channel_read_chars( channel,
-                                            &buf, buf_sz,
-                                            &bytes_read,
-                                            &error );
-
-
-    return 1;
 }
 
-gboolean Odometry::onTickChanARight(GIOChannel *channel,
-                                   GIOCondition condition,
-                                   gpointer user_data)
+void Odometry::onTickChanARight(void)
 {
-
     if(firstChanR == 0)
     {
         firstChanR = 1;
@@ -125,26 +141,10 @@ gboolean Odometry::onTickChanARight(GIOChannel *channel,
         firstChanR = 0;
         rightTicks--;
     }
-
-    GError *error = 0;
-    char buf;
-    unsigned long buf_sz = 1;
-    unsigned long bytes_read = 0;
-
-    g_io_channel_seek_position( channel, 0, G_SEEK_SET, 0 );
-    GIOStatus rc = g_io_channel_read_chars( channel,
-                                            &buf, buf_sz,
-                                            &bytes_read,
-                                            &error );
-
-    return 1;
 }
 
-gboolean Odometry::onTickChanBRight(GIOChannel *channel,
-                                   GIOCondition condition,
-                                   gpointer user_data)
+void Odometry::onTickChanBRight(void)
 {
-
     if(firstChanR == 0)
     {
         firstChanR = 2;
@@ -154,19 +154,5 @@ gboolean Odometry::onTickChanBRight(GIOChannel *channel,
         firstChanR = 0;
         rightTicks++;
     }
-
-    GError *error = 0;
-    char buf;
-    unsigned long buf_sz = 1;
-    unsigned long bytes_read = 0;
-
-    g_io_channel_seek_position( channel, 0, G_SEEK_SET, 0 );
-    GIOStatus rc = g_io_channel_read_chars( channel,
-                                            &buf, buf_sz,
-                                            &bytes_read,
-                                            &error );
-
-    return 1;
 }
-
 
