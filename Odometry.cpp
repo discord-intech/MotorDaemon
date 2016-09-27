@@ -3,13 +3,9 @@
 //
 
 #include <fcntl.h>
-#include <errno.h>
-#include <fcntl.h>
 #include <poll.h>
-#include <stdio.h>
 #include <string>
 #include <stdlib.h>
-#include <BlackGPIO.h>
 #include "Odometry.hpp"
 
 #define AL 0
@@ -19,8 +15,6 @@
 
 long Odometry::leftTicks;
 long Odometry::rightTicks;
-//uint8_t Odometry::firstChanL; //1 : chanA ; 2 : chanB
-//uint8_t Odometry::firstChanR; //1 : chanA ; 2 : chanB
 int Odometry::valueAL;
 int Odometry::valueBL;
 int Odometry::valueAR;
@@ -45,8 +39,6 @@ Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanB
 
     Odometry::leftTicks = 0;
     Odometry::rightTicks = 0;
- //   Odometry::firstChanL = 0;
- //   Odometry::firstChanR = 0;
     Odometry::valueAL = 0;
     Odometry::valueBL = 0;
     Odometry::valueAR = 0;
@@ -62,11 +54,6 @@ void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_
     int fdBL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/value")).c_str(), O_RDONLY );
     int fdAR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/value")).c_str(), O_RDONLY );
     int fdBR = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/value")).c_str(), O_RDONLY );
-
-    BlackLib::BlackGPIO   al((BlackLib::gpioName) chanAL, BlackLib::input, BlackLib::FastMode);
-    BlackLib::BlackGPIO   bl((BlackLib::gpioName) chanBL, BlackLib::input, BlackLib::FastMode);
-    BlackLib::BlackGPIO   ar((BlackLib::gpioName) chanAR, BlackLib::input, BlackLib::FastMode);
-    BlackLib::BlackGPIO   br((BlackLib::gpioName) chanBR, BlackLib::input, BlackLib::FastMode);
 
     struct pollfd pfd[4];
 
@@ -121,16 +108,6 @@ long Odometry::getRightValue() {
 
 void Odometry::onTickChanALeft(void)
 {
-  /*  if(firstChanL == 0)
-    {
-        firstChanL = 1;
-    }
-    else if(firstChanL == 2)
-    {
-        firstChanL = 0;
-        leftTicks--;
-    }*/
-
     if(valueAL == valueBL)
     {
         leftTicks--;
@@ -139,16 +116,6 @@ void Odometry::onTickChanALeft(void)
 
 void Odometry::onTickChanBLeft(void)
 {
-  /*  if(firstChanL == 0)
-    {
-        firstChanL = 2;
-    }
-    else if(firstChanL == 1)
-    {
-        firstChanL = 0;
-        leftTicks++;
-    }*/
-
     if(valueAL == valueBL)
     {
         leftTicks++;
@@ -157,16 +124,6 @@ void Odometry::onTickChanBLeft(void)
 
 void Odometry::onTickChanARight(void)
 {
-  /*  if(firstChanR == 0)
-    {
-        firstChanR = 1;
-    }
-    else if(firstChanR == 2)
-    {
-        firstChanR = 0;
-        rightTicks--;
-    }*/
-
     if(valueAR == valueBR)
     {
         rightTicks--;
@@ -175,27 +132,17 @@ void Odometry::onTickChanARight(void)
 
 void Odometry::onTickChanBRight(void)
 {
-   /* if(firstChanR == 0)
-    {
-        firstChanR = 2;
-    }
-    else if(firstChanR == 1)
-    {
-        firstChanR = 0;
-        rightTicks++;
-    }*/
-
     if(valueAR == valueBR)
     {
         rightTicks++;
     }
 }
 
-void Odometry::get_lead(int fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
+void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
 {
     lseek(fd, 0, 0);
 
-    char buffer[24];
+    char buffer[8];
     int size = read(fd, buffer, sizeof(buffer));
 
     if(chan == AL)

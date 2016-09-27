@@ -20,9 +20,6 @@ private:
     std::thread t;
     static long leftTicks;
     static long rightTicks;
-   // static uint8_t firstChanL;
-   // static uint8_t firstChanR;
-
     static int valueAL;
     static int valueBL;
     static int valueAR;
@@ -35,7 +32,7 @@ private:
     static void onTickChanBLeft(void);
     static void onTickChanARight(void);
     static void onTickChanBRight(void);
-    static void get_lead(int, uint8_t);
+    static void get_lead(int&, uint8_t);
 
 public:
     Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR);

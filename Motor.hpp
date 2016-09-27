@@ -10,6 +10,8 @@
 #include <BlackPWM.h>
 
 #define MIN(x,y) (((x)<(y))?(x):(y))
+#define MAX(x,y) (((x)>(y))?(x):(y))
+#define ABS(x) (((x) > 0) ? (x) : -(x))
 
 #define PWM_TIME_PERIOD 100000  // nanosecondes
 
