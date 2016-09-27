@@ -4,11 +4,21 @@
 
 #include <fcntl.h>
 #include <string>
+#include <stdlib.h>
 #include "Odometry.hpp"
 
+long Odometry::leftTicks;
+long Odometry::rightTicks;
+uint8_t Odometry::firstChanL; //1 : chanA ; 2 : chanB
+uint8_t Odometry::firstChanR; //1 : chanA ; 2 : chanB
 
 Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR)
 {
+    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/edge")).c_str());
+    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/edge")).c_str());
+    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/edge")).c_str());
+    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/edge")).c_str());
+
     //TODO change pins
     int fdAL = open( (std::string("/sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/value")).c_str(), O_RDONLY | O_NONBLOCK );
     GIOChannel* channelAL = g_io_channel_unix_new( fdAL );
@@ -158,3 +168,5 @@ gboolean Odometry::onTickChanBRight(GIOChannel *channel,
 
     return 1;
 }
+
+
