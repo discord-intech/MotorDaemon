@@ -2,7 +2,7 @@
 // Created by discord on 26/09/16.
 //
 
-#include "Motor.hpp"
+#include "../include/Motor.hpp"
 
 
 Motor::Motor(Side s) : side(s)

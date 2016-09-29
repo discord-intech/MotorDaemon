@@ -2,7 +2,7 @@
 // Created by discord on 30/09/16.
 //
 
-#include "Servo.hpp"
+#include "../include/Servo.hpp"
 
 
 Servo::Servo(float lowB, float upB) : lowerBound(lowB), upperBound(upB)

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "Odometry.hpp"
-#include "MotionController.hpp"
+#include "../include/Odometry.hpp"
+#include "../include/MotionController.hpp"
 
 void getArgs(const std::string&, char, std::vector<std::string>&);
 

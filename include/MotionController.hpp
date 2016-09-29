@@ -10,6 +10,7 @@
 #include "pid.hpp"
 #include "average.hpp"
 #include "Odometry.hpp"
+#include "Servo.hpp"
 
 #define AVERAGE_SPEED_SIZE	25
 
@@ -29,6 +30,7 @@ private:
     Motor leftMotor;
     Motor rightMotor;
     Odometry odo;
+    Servo direction;
 
     //	Asservissement en vitesse du moteur droit
     PID rightSpeedPID;
@@ -47,6 +49,11 @@ private:
     volatile long translationSetpoint;	// ticks
     volatile long currentDistance;		// ticks
     volatile long translationSpeed;		// ticks/seconde
+
+    PID curvePID;
+    volatile long curveSetpoint;
+    volatile long currentRadius;
+    volatile long angleToSet;
 
     //	Limitation de vitesses
     volatile long maxSpeed; 				// definit la vitesse maximal des moteurs du robot

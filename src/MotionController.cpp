@@ -2,14 +2,15 @@
 // Created by discord on 26/09/16.
 //
 
-#include "MotionController.hpp"
+#include "../include/MotionController.hpp"
 
 bool MotionController::started;
 
-MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::RIGHT),
+MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::RIGHT), direction(0, 100), //FIXME bounds
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
 translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
+curvePID(&currentRadius, &angleToSet, &curveSetpoint),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
 {
     translationSetpoint = 0;
@@ -18,6 +19,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
 
     leftSpeedPID.setOutputLimits(-255,255);
     rightSpeedPID.setOutputLimits(-255,255);
+    curvePID.setOutputLimits(-255, 255);
 
     maxSpeed = 4000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 2000; // Consigne max envoy�e au PID
