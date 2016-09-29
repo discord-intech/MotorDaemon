@@ -17,10 +17,10 @@
 
 #define PI 3.14159265
 
-#define RAYON_COD_GAUCHE 140
-#define RAYON_COD_DROITE 144
+#define RAYON_COD_GAUCHE 16
+#define RAYON_COD_DROITE 16
 
-#define TICK_TO_MM 0.2088
+#define TICK_TO_MM 0.09817
 
 class MotionController
 {
