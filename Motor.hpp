@@ -8,6 +8,7 @@
 #include <cstdint>
 #include "safe_enum.hpp"
 #include <BlackPWM.h>
+#include <BlackGPIO.h>
 
 #define MIN(x,y) (((x)<(y))?(x):(y))
 #define MAX(x,y) (((x)>(y))?(x):(y))
@@ -36,7 +37,11 @@
         Side side;
         BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
         BlackLib::pwmName PWMpin;
-        Direction actualDirection = Direction::FORWARD;
+
+        BlackLib::BlackGPIO directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input); //placeholder
+        BlackLib::BlackGPIO directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input); //placeholder
+
+        Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
         void setDirection(Direction);
 
     public:

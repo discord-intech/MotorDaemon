@@ -13,6 +13,8 @@
 
 #define AVERAGE_SPEED_SIZE	25
 
+#define FREQ_ASSERV 2000
+
 #define PI 3.14159265
 
 #define RAYON_COD_GAUCHE 140
@@ -59,6 +61,8 @@ private:
     volatile float leftCurveRatio;
     volatile float rightCurveRatio;
 
+    static bool started;
+
     Average<int32_t, AVERAGE_SPEED_SIZE> averageLeftSpeed;
     Average<int32_t, AVERAGE_SPEED_SIZE> averageRightSpeed;
 
@@ -75,12 +79,16 @@ private:
 
     int32_t distanceTest;
 
+    std::thread t;
+
 
 public:
     void control();
 
     MotionController();
     void init();
+
+    static void mainWorker(MotionController*);
 
     void stop();
 

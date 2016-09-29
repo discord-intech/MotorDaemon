@@ -4,11 +4,13 @@
 
 #include "MotionController.hpp"
 
+bool MotionController::started;
+
 MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::RIGHT),
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
 translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
-averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS
+averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
 {
     translationSetpoint = 0;
     leftSpeedSetpoint = 0;
@@ -46,7 +48,20 @@ void MotionController::init()
     leftMotor.initPWM();
     rightMotor.initPWM();
 
-    //TODO init thread asserv
+    started = true;
+
+    t = std::thread(std::bind(mainWorker, this), "Feedback Thread");
+    t.detach();
+}
+
+void MotionController::mainWorker(MotionController *asser)
+{
+    while(started)
+    {
+        asser->control();
+
+        usleep((__useconds_t) (1000000. / FREQ_ASSERV));
+    }
 }
 
 void MotionController::control()
@@ -65,36 +80,13 @@ void MotionController::control()
     static int32_t previousRightAcceleration = 0;
     */
 
+    long rightTicks = odo.getRightValue();
 
-    /*
-     * Comptage des ticks de la roue droite
-     * Cette codeuse est connect�e � un timer 16bit
-     * on subit donc un overflow/underflow de la valeur des ticks tous les 7 m�tres environ
-     * ceci est corrig� de mani�re � pouvoir parcourir des distances grandes sans devenir fou en chemin (^_^)
-     */
-    static long lastRawRightTicks = 0;	//On garde en m�moire le nombre de ticks obtenu au pr�c�dent appel
-    static int rightOverflow = 0;			//On garde en m�moire le nombre de fois que l'on a overflow (n�gatif pour les underflow)
-
-    long rawRightTicks = odo.getRightValue();	//Nombre de ticks avant tout traitement
-
-    if (lastRawRightTicks - rawRightTicks > 32768)		//D�tection d'un overflow
-        rightOverflow++;
-    else if(lastRawRightTicks - rawRightTicks < -32768)	//D�tection d'un underflow
-        rightOverflow--;
-
-    lastRawRightTicks = rawRightTicks;
-
-    long rightTicks = rawRightTicks + rightOverflow*65535;	//On calcule le nombre r�el de ticks
-
-    /*
-     * Comptage des ticks de la roue gauche
-     * ici on est sur un timer 32bit, pas de probl�me d'overflow sauf si on tente de parcourir plus de 446km...
-     */
     long leftTicks = odo.getLeftValue();
 
 
-    currentLeftSpeed = (leftTicks - previousLeftTicks)*2000; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
-    currentRightSpeed = (rightTicks - previousRightTicks)*2000;
+    currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+    currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
 
     previousLeftTicks = leftTicks;
     previousRightTicks = rightTicks;
@@ -105,6 +97,7 @@ void MotionController::control()
     currentLeftSpeed = averageLeftSpeed.value(); // On utilise pour l'asserv la valeur moyenne des dernieres current Speed
     currentRightSpeed = averageRightSpeed.value(); // sinon le robot il fait nawak.
 
+    //TODO approx circulaire
 
     currentDistance = (leftTicks + rightTicks) / 2;
     currentAngle = ((rightTicks - currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - currentDistance)) / 2;
