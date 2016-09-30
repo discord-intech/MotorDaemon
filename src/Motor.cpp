@@ -14,8 +14,8 @@ Motor::Motor(Side s) : side(s)
         directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::SecureMode);
     } else {
         PWMpin = BlackLib::EHRPWM1B;
-        directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::SecureMode);
-        directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::SecureMode);
+        directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::SecureMode);
+        directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::SecureMode);
     }
 }
 
@@ -43,11 +43,11 @@ void Motor::initPWM()
 
     setDirection(Direction::FORWARD);
 
-    pwm.setDutyPercent(0.0);
     pwm.setPeriodTime(PWM_TIME_PERIOD);
+    pwm.setDutyPercent(0.0);
 }
 
-void Motor::run(int16_t duty) //duty € [-255;255]
+void Motor::run(long duty) //duty € [-255;255]
 {
     float percent = (float) ((MIN(ABS(duty), 255.) / 255.) * 100);
 

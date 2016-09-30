@@ -13,6 +13,8 @@
 #define MIN(x,y) (((x)<(y))?(x):(y))
 #define MAX(x,y) (((x)>(y))?(x):(y))
 #define ABS(x) (((x) > 0) ? (x) : -(x))
+#define SIN(x) (1-(((x)*(x)*(x))/6))
+#define COS(x) (1-(((x)*(x))/4))
 
 #define PWM_TIME_PERIOD 100000  // nanosecondes
 
@@ -46,8 +48,8 @@
 
     public:
         Motor(Side);
-        void initPWM();
-        void run(int16_t);
+        void initPWM(void);
+        void run(long);
     };
 
 

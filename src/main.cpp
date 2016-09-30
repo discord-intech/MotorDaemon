@@ -15,14 +15,14 @@ int main(int argc, char *argv[])
     std::string order = "";
     std::vector<std::string> args = std::vector<std::string>();
 
-    while(order.compare("exit"))
+    while(true)
     {
         std::cout << std::endl << "MotorDaemon Console : ";
         std::cin.getline(orderC, sizeof(orderC));
         order = std::string(orderC);
         std::cout << std::endl;
 
-        if(!order.compare("exit")) continue;
+        if(!order.compare("exit")) break;
 
         args.clear();
         getArgs(order, ' ', args);
@@ -132,6 +132,14 @@ int main(int argc, char *argv[])
             }
 
             motion.orderTranslation(dist);
+            continue;
+        }
+
+        else if(!args[0].compare("c"))
+        {
+
+            std::cout << motion.getOdometry().getLeftValue() << " ; " << motion.getOdometry().getRightValue() << std::endl;
+            std::cout << motion.getCurveRadius() << std::endl << std::endl;
             continue;
         }
 

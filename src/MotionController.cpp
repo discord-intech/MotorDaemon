@@ -86,9 +86,12 @@ void MotionController::control()
 
     long leftTicks = odo.getLeftValue();
 
-
     currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
     currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
+
+    currentRadius = (currentLeftSpeed*RAYON_COD_DROITE + currentRightSpeed*RAYON_COD_GAUCHE) / (currentRightSpeed-currentLeftSpeed);
+
+
 
     previousLeftTicks = leftTicks;
     previousRightTicks = rightTicks;
@@ -206,4 +209,14 @@ void MotionController::testPosition()
 void MotionController::orderTranslation(long mmDistance)
 {
     translationSetpoint += (int32_t) mmDistance / TICK_TO_MM;
+}
+
+Odometry& MotionController::getOdometry(void)
+{
+    return odo;
+}
+
+long MotionController::getCurveRadius()
+{
+    return currentRadius;
 }

@@ -18,8 +18,8 @@
 
 #define PI 3.14159265
 
-#define RAYON_COD_GAUCHE 16
-#define RAYON_COD_DROITE 16
+#define RAYON_COD_GAUCHE 35
+#define RAYON_COD_DROITE 35
 
 #define TICK_TO_MM 0.09817
 
@@ -70,8 +70,8 @@ private:
 
     static bool started;
 
-    Average<int32_t, AVERAGE_SPEED_SIZE> averageLeftSpeed;
-    Average<int32_t, AVERAGE_SPEED_SIZE> averageRightSpeed;
+    Average<long, AVERAGE_SPEED_SIZE> averageLeftSpeed;
+    Average<long, AVERAGE_SPEED_SIZE> averageRightSpeed;
 
     //Nombre de ticks de tol�rance pour consid�rer qu'on est arriv� � destination
     int toleranceTranslation;
@@ -90,14 +90,14 @@ private:
 
 
 public:
-    void control();
+    void control(void);
 
-    MotionController();
-    void init();
+    MotionController(void);
+    void init(void);
 
     static void mainWorker(MotionController*);
 
-    void stop();
+    void stop(void);
 
     void orderTranslation(long);
 
@@ -105,7 +105,10 @@ public:
     void setLeftSpeedTunings(float, float, float);
     void setRightSpeedTunings(float, float, float);
 
-    void testPosition();
+    void testPosition(void);
+
+    Odometry& getOdometry(void);
+    long getCurveRadius(void);
 
 };
 
