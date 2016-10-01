@@ -114,6 +114,20 @@ int main(int argc, char *argv[])
             continue;
         }
 
+        else if(!args[0].compare("sweep"))
+        {
+            Servo s = Servo(-255, -PI, 255, PI);
+
+            for(float i= (float) -PI; i < PI ; i+=(PI/8))
+            {
+                std::cout << "angle : " << i << std::endl;
+                s.setAngle(i);
+                usleep(1000*1000);
+            }
+
+            continue;
+        }
+
         else if(!args[0].compare("d"))
         {
 
