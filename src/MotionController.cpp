@@ -6,7 +6,7 @@
 
 bool MotionController::started;
 
-MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::RIGHT), direction(0, 100), //FIXME bounds
+MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::RIGHT), direction(0, LOW_ANGLE, 100, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
 translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
@@ -19,7 +19,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
 
     leftSpeedPID.setOutputLimits(-255,255);
     rightSpeedPID.setOutputLimits(-255,255);
-    curvePID.setOutputLimits(-255, 255);
+    curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
 
     maxSpeed = 4000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 2000; // Consigne max envoy�e au PID
@@ -38,9 +38,10 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(13, 0, 0);
+    translationPID.setTunings(1, 0, 0);
     leftSpeedPID.setTunings(0.01, 0.000025, 0.0001); // ki 0.00001
     rightSpeedPID.setTunings(0.01, 0.000025, 0.0001);
+    curvePID.setTunings(1, 0, 0);
 
     distanceTest = 200;
 }
@@ -233,9 +234,9 @@ void MotionController::orderTranslation(long mmDistance)
     translationSetpoint += (int32_t) mmDistance / TICK_TO_MM;
 }
 
-Odometry& MotionController::getOdometry(void)
+Odometry* MotionController::getOdometry(void)
 {
-    return odo;
+    return &odo;
 }
 
 long MotionController::getCurveRadius()

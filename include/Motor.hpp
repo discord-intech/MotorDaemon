@@ -16,6 +16,7 @@
 #define SIN(x) (1-(((x)*(x)*(x))/6))
 #define COS(x) (1-(((x)*(x))/4))
 #define ARCTAN(x) (1-(((x)*(x)*(x))/3))
+#define TAN(x) ((x)+(((x)*(x)*(x))/3))
 
 #define PWM_TIME_PERIOD 100000  // nanosecondes
 

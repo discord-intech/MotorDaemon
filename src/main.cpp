@@ -20,12 +20,15 @@ int main(int argc, char *argv[])
         std::cout << std::endl << "MotorDaemon Console : ";
         std::cin.getline(orderC, sizeof(orderC));
         order = std::string(orderC);
+        if(order.length() == 0) continue;
         std::cout << std::endl;
 
         if(!order.compare("exit")) break;
 
         args.clear();
         getArgs(order, ' ', args);
+
+        if(args.size() == 0) continue;
 
         if(!args[0].compare("stop"))
         {
@@ -138,7 +141,7 @@ int main(int argc, char *argv[])
         else if(!args[0].compare("c"))
         {
 
-            std::cout << motion.getOdometry().getLeftValue() << " ; " << motion.getOdometry().getRightValue() << std::endl;
+            std::cout << motion.getOdometry()->getLeftValue() << " ; " << motion.getOdometry()->getRightValue() << std::endl;
             std::cout << motion.getCurveRadius() << std::endl << std::endl;
             continue;
         }

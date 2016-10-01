@@ -11,7 +11,7 @@ class Servo
 {
 
 public:
-    Servo(float, float);
+    Servo(float, float, float, float);
     void initPWM();
 
     void setAngle(float);
@@ -21,7 +21,9 @@ private:
     BlackLib::pwmName PWMpin;
 
     float lowerBound;
+    float lowerAngle;
     float upperBound;
+    float upperAngle;
 };
 
 

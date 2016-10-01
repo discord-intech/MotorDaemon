@@ -23,6 +23,9 @@
 
 #define DIST_MOTOR_DIRECTION 160
 
+#define LOW_ANGLE -0.58
+#define HIGH_ANGLE 0.58  //TODO Bounds
+
 #define TICK_TO_MM 0.09817
 
 class MotionController
@@ -109,7 +112,7 @@ public:
 
     void testPosition(void);
 
-    Odometry& getOdometry(void);
+    Odometry* getOdometry(void);
     long getCurveRadius(void);
 
 };
