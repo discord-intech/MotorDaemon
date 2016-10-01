@@ -10,7 +10,7 @@ MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::R
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
 translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
-curvePID(&currentRadius, &angleToSet, &curveSetpoint),
+curvePID(&currentRadius, &radiusToSet, &curveSetpoint),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
 {
     translationSetpoint = 0;
@@ -89,9 +89,6 @@ void MotionController::control()
     currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
     currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
 
-    currentRadius = (currentLeftSpeed*RAYON_COD_DROITE + currentRightSpeed*RAYON_COD_GAUCHE) / (currentRightSpeed-currentLeftSpeed);
-
-
 
     previousLeftTicks = leftTicks;
     previousRightTicks = rightTicks;
@@ -102,6 +99,16 @@ void MotionController::control()
     currentLeftSpeed = averageLeftSpeed.value(); // On utilise pour l'asserv la valeur moyenne des dernieres current Speed
     currentRightSpeed = averageRightSpeed.value(); // sinon le robot il fait nawak.
 
+    if(ABS(currentRightSpeed - currentLeftSpeed) > 0)
+    {
+        currentRadius = (volatile long) ((currentLeftSpeed * RAYON_COD_DROITE + currentRightSpeed * RAYON_COD_GAUCHE)
+                                         / (TICK_TO_MM * (currentRightSpeed - currentLeftSpeed)));
+    }
+    else
+    {
+        currentRadius = INT64_MAX;
+    }
+
     //TODO approx circulaire
 
     currentDistance = (leftTicks + rightTicks) / 2;
@@ -109,7 +116,23 @@ void MotionController::control()
 
 
     translationPID.compute();	// Actualise la valeur de 'translationSpeed'
+/*    curvePID.compute();
 
+    leftCurveRatio = (ABS(radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1:1)))/(ABS(radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+    rightCurveRatio = (ABS(radiusToSet)+(RAYON_COD_DROITE*(radiusToSet<0?-1:1)))/(ABS(radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+
+    if(MAX(leftCurveRatio, rightCurveRatio) > 1.0)
+    {
+        float offset = (float) (1.0 - MAX(leftCurveRatio, rightCurveRatio));
+        leftCurveRatio = MAX(leftCurveRatio+offset,0);
+        rightCurveRatio = MAX(rightCurveRatio+offset,0);
+    }
+
+    if(leftCurveRatio<0)
+        leftCurveRatio=0;
+    if(rightCurveRatio<0)
+        rightCurveRatio=0;
+*/
 
     // Limitation de la consigne de vitesse en translation
     if(translationSpeed > maxSpeedTranslation)
@@ -120,9 +143,6 @@ void MotionController::control()
 
     leftSpeedSetpoint = (long) (translationSpeed * leftCurveRatio);
     rightSpeedSetpoint = (long) (translationSpeed * rightCurveRatio);
-
-
-
 
     // Limitation de la vitesse
     if(leftSpeedSetpoint > maxSpeed)
@@ -167,6 +187,8 @@ void MotionController::control()
 
     leftMotor.run(leftPWM);
     rightMotor.run(rightPWM);
+
+    //direction.setAngle(ARCTAN(DIST_MOTOR_DIRECTION/radiusToSet));
 }
 
 void MotionController::stop()

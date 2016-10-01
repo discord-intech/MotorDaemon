@@ -21,6 +21,8 @@
 #define RAYON_COD_GAUCHE 35
 #define RAYON_COD_DROITE 35
 
+#define DIST_MOTOR_DIRECTION 160
+
 #define TICK_TO_MM 0.09817
 
 class MotionController
@@ -53,7 +55,7 @@ private:
     PID curvePID;
     volatile long curveSetpoint;
     volatile long currentRadius;
-    volatile long angleToSet;
+    volatile long radiusToSet;
 
     //	Limitation de vitesses
     volatile long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
