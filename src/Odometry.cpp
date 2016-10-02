@@ -32,10 +32,10 @@ Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanB
     system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/direction")).c_str());
     system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/direction")).c_str());
 
-    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/edge")).c_str());
-    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/edge")).c_str());
-    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/edge")).c_str());
-    system((std::string("echo rising > /sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/edge")).c_str());
+    system((std::string("echo both > /sys/class/gpio/gpio")+std::to_string(chanAL)+std::string("/edge")).c_str());
+    system((std::string("echo both > /sys/class/gpio/gpio")+std::to_string(chanBL)+std::string("/edge")).c_str());
+    system((std::string("echo both > /sys/class/gpio/gpio")+std::to_string(chanAR)+std::string("/edge")).c_str());
+    system((std::string("echo both > /sys/class/gpio/gpio")+std::to_string(chanBR)+std::string("/edge")).c_str());
 
     Odometry::leftTicks = 0;
     Odometry::rightTicks = 0;
