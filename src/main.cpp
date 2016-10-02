@@ -118,6 +118,8 @@ int main(int argc, char *argv[])
         {
             Servo s = Servo(-255, -PI, 255, PI);
 
+            s.initPWM();
+
             for(float i= (float) -PI; i < PI ; i+=(PI/8))
             {
                 std::cout << "angle : " << i << std::endl;

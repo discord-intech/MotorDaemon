@@ -5,6 +5,8 @@
 #ifndef MOTORDAEMON_SERVO_HPP
 #define MOTORDAEMON_SERVO_HPP
 
+#define SERVO_PWM_TIME_PERIOD 1000*1000*20  // nanosecondes
+
 #include "Motor.hpp"
 
 class Servo
