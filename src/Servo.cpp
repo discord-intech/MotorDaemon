@@ -17,13 +17,14 @@ Servo::Servo(float lowB, float lowA, float upB, float upA) : lowerBound(lowB), u
 void Servo::initPWM(void)
 {
     pwm = BlackLib::BlackPWM(PWMpin);
-    pwm.setPeriodTime(SERVO_PWM_TIME_PERIOD);
+    pwm.toggleRunState();
+    pwm.setPeriodTime(SERVO_PWM_TIME_PERIOD, BlackLib::milisecond);
     pwm.setDutyPercent((float) ((upperBound - lowerBound) * 0.5 + lowerBound));
 }
 
 void Servo::setAngle(float angle)
 {
-    if(angle < lowerAngle || angle > upperAngle)
+   /* if(angle < lowerAngle || angle > upperAngle)
     {
         std::cout << "Servo.cpp : Bad angle received : " << angle << std::endl;
         return;
@@ -31,5 +32,11 @@ void Servo::setAngle(float angle)
 
     float duty = (angle-lowerAngle) / (upperAngle-lowerAngle);
 
-    pwm.setDutyPercent(duty/10);
+    pwm.setDutyPercent(duty);*/
+    if(angle < 0) angle = 0;
+    if(angle > 180) angle = 180;
+    float max_ms(2.4), min_ms(0.5), pwmFreq(50), period(1000.0 / pwmFreq);
+    int64_t value = ((max_ms - min_ms) / 180.0 * angle + min_ms) * 1000;
+    pwm.setPeriodTime(period, BlackLib::milisecond);
+    pwm.setLoadRatioTime(value, BlackLib::microsecond);
 }
