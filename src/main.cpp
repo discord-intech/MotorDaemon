@@ -116,11 +116,11 @@ int main(int argc, char *argv[])
 
         else if(!args[0].compare("sweep"))
         {
-            Servo s = Servo(-255, -PI, 255, PI);
+            Servo s = Servo(-255, 0, 255, 180);
 
             s.initPWM();
 
-            for(float i= (float) -PI; i < PI ; i+=(PI/8))
+            for(int i= 0; i < 180 ; i+=10)
             {
                 std::cout << "angle : " << i << std::endl;
                 s.setAngle(i);
