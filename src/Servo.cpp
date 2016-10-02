@@ -17,9 +17,9 @@ Servo::Servo(float lowB, float lowA, float upB, float upA) : lowerBound(lowB), u
 void Servo::initPWM(void)
 {
     pwm = BlackLib::BlackPWM(PWMpin);
-    pwm.toggleRunState();
     pwm.setPeriodTime(SERVO_PWM_TIME_PERIOD, BlackLib::milisecond);
     pwm.setDutyPercent((float) ((upperBound - lowerBound) * 0.5 + lowerBound));
+    pwm.setRunState(BlackLib::run);
 }
 
 void Servo::setAngle(float angle)
