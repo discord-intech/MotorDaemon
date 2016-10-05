@@ -45,6 +45,7 @@ void Motor::initPWM()
 
     pwm.setPeriodTime(PWM_TIME_PERIOD);
     pwm.setDutyPercent(0.0);
+    pwm.setRunState(BlackLib::run);
 }
 
 void Motor::run(long duty) //duty € [-255;255]
