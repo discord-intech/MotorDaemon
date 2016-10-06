@@ -5,7 +5,7 @@
 #ifndef MOTORDAEMON_MOTIONCONTROLLER_HPP
 #define MOTORDAEMON_MOTIONCONTROLLER_HPP
 
-
+#include <chrono>
 #include "Motor.hpp"
 #include "pid.hpp"
 #include "average.hpp"
@@ -27,6 +27,8 @@
 #define HIGH_ANGLE 0.58  //TODO Bounds
 
 #define TICK_TO_MM 0.09817
+
+#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
 class MotionController
 {
@@ -91,7 +93,11 @@ private:
 
     int32_t distanceTest;
 
+    bool moving = false;
+
     std::thread t;
+
+    unsigned int delayToStop;  //En ms
 
 
 public:
@@ -104,6 +110,9 @@ public:
 
     void stop(void);
 
+    void updatePosition(void);
+    void manageStop(void);
+
     void orderTranslation(long);
 
     void setTranslationTunings(float, float, float);
@@ -111,6 +120,8 @@ public:
     void setRightSpeedTunings(float, float, float);
 
     void testPosition(void);
+
+    bool isPhysicallyStopped(void);
 
     Odometry* getOdometry(void);
     long getCurveRadius(void);

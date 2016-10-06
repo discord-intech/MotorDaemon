@@ -44,6 +44,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
     curvePID.setTunings(1, 0, 0);
 
     distanceTest = 200;
+
+    delayToStop = 100;
 }
 
 void MotionController::init()
@@ -63,6 +65,8 @@ void MotionController::mainWorker(MotionController *asser)
     while(started)
     {
         asser->control();
+        asser->manageStop();
+        asser->updatePosition();
 
         usleep((__useconds_t) (1000000. / FREQ_ASSERV));
     }
@@ -111,7 +115,6 @@ void MotionController::control()
         currentRadius = INT64_MAX;
     }
 
-    //TODO approx circulaire
 
     currentDistance = (leftTicks + rightTicks) / 2;
     currentAngle = ((rightTicks - currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - currentDistance)) / 2;
@@ -210,6 +213,118 @@ void MotionController::stop()
 
 }
 
+void MotionController::manageStop()
+{
+    static uint32_t time = 0;
+  //  static uint32_t time2 = 0;
+  //  static uint32_t time3 = 0;
+  //  static uint32_t timeToEstablish = 0;
+  //  static uint32_t timeNotEstablished = 0;
+  //  static bool isSpeedEstablished = false;
+
+    if (isPhysicallyStopped() && moving) // Pour un blocage classique
+    {
+
+        if (time == 0)
+        { //D�but du timer
+            time = MILLIS();
+        }
+        else
+        {
+            if ((MILLIS() - time) >= delayToStop)
+            { //Si arr�t� plus de 'delayToStop' ms
+                if (ABS(translationPID.getError()) <= toleranceTranslation)
+                { //Stop� pour cause de fin de mouvement
+                    stop();
+                   // moveAbnormal = false;
+                }
+                else
+                { //Stopp� pour blocage
+                    stop();
+                  //  moveAbnormal = true;
+                }
+            }
+        }
+    }
+
+    /*else if(moving && !isSpeedEstablished && !forcedMovement && curveMovement){ // V�rifie que le ratio reste bon pdt les traj courbes
+
+        if (leftCurveRatio<rightCurveRatio && averageRightSpeed.value() !=0 && rightCurveRatio!=0){ // si on tourne a gauche
+            if (ABS((averageLeftSpeed.value()/averageRightSpeed.value())-(leftCurveRatio/rightCurveRatio))>toleranceCurveRatio){
+                stop();
+                moveAbnormal = true;
+            }
+        }
+        else if(rightCurveRatio<leftCurveRatio && averageLeftSpeed.value()!=0 && leftCurveRatio!=0){ //si on tourne � droite
+            if (ABS((averageRightSpeed.value()/averageLeftSpeed.value())-(rightCurveRatio/leftCurveRatio))>toleranceCurveRatio){
+                stop();
+                moveAbnormal = true;
+            }
+        }
+    }*/ //SOULD NOT BE USEFUL
+
+
+ /*   else if ((isLeftWheelSpeedAbnormal() || isRightWheelSpeedAbnormal()) && curveMovement && !forcedMovement) // Sert a v�rifier que les consignes de vitesse sont bien respect�es (blocage pour les trajectoires courbes)
+    {
+        if (time2 == 0)
+        { //D�but du timer
+            time2 = Millis();
+        }
+        else
+        {
+            if (ABS(translationPID.getError()) <= toleranceTranslation && ABS(rotationPID.getError()) <= toleranceRotation)
+            { //Stopp� pour cause de fin de mouvement
+                stop();
+                isSpeedEstablished = false;
+                moveAbnormal = false;
+            }
+            else if (((Millis() - time2) >= delayToStopCurve) && isSpeedEstablished){
+
+                stop();
+                isSpeedEstablished = false;
+                moveAbnormal = true;
+
+            }
+        }
+    }*/
+
+  /*  else if (forcedMovement && moving){
+
+        if (time3 == 0)
+        {
+            time3 = Millis();
+        }
+        else
+        {
+            if ((Millis() - time3) >= delayToStop){
+                if (ABS(translationPID.getError()) <= toleranceTranslation && ABS(rotationPID.getError()) <= toleranceRotation)
+                { //Stopp� pour cause de fin de mouvement
+                    stop();
+                    moveAbnormal = false;
+
+                }
+            }
+        }
+    }*/
+
+
+
+    else
+    {
+        time = 0;
+    //    time2 =0;
+     //   time3 = 0; // Test
+    }
+}
+
+void MotionController::updatePosition() {
+    //TODO approx circulaire
+}
+
+bool MotionController::isPhysicallyStopped() {
+    return (translationPID.getDerivativeError() == 0) || (ABS(ABS(leftSpeedPID.getError())-ABS(rightSpeedPID.getError()))>toleranceDifferentielle);
+}
+
 void MotionController::setTranslationTunings(float kp, float ki, float kd)
 {
     translationPID.setTunings(kp, ki, kd);
@@ -232,6 +347,11 @@ void MotionController::testPosition()
 
 void MotionController::orderTranslation(long mmDistance)
 {
+    if(!moving)
+    {
+        translationPID.resetErrors();
+        moving = true;
+    }
     translationSetpoint += (int32_t) mmDistance / TICK_TO_MM;
 }
 
