@@ -26,7 +26,7 @@
 #define LOW_ANGLE -0.58
 #define HIGH_ANGLE 0.58  //TODO Bounds
 
-#define TICK_TO_MM 0.09817
+#define TICK_TO_MM 0.04908
 
 #define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
