@@ -10,7 +10,7 @@ Motor::Motor(Side s) : side(s)
     if(side == Side::LEFT)
     {
         PWMpin = BlackLib::EHRPWM1A;
-        directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_48, BlackLib::output, BlackLib::SecureMode);
+        directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_60, BlackLib::output, BlackLib::SecureMode);
         directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::SecureMode);
     } else {
         PWMpin = BlackLib::EHRPWM1B;
