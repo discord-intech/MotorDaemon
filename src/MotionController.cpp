@@ -240,7 +240,7 @@ void MotionController::manageStop()
                 }
                 else
                 { //Stopp� pour blocage
-                    stop();
+                  //  stop();
                   //  moveAbnormal = true;
                 }
             }
