@@ -50,8 +50,6 @@ void Motor::initPWM()
 
 void Motor::run(long duty) //duty € [-255;255]
 {
-    float percent = (float) ((MIN(ABS(duty), 255.) / 255.) * 100);
-
     if(duty >= 0)
     {
         setDirection(Direction::FORWARD);
@@ -61,5 +59,5 @@ void Motor::run(long duty) //duty € [-255;255]
         setDirection(Direction::BACKWARD);
     }
 
-    pwm.setDutyPercent(percent);
+    pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
 }
