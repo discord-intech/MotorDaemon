@@ -17,8 +17,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
     leftSpeedSetpoint = 0;
     rightSpeedSetpoint = 0;
 
-    leftSpeedPID.setOutputLimits(-220,220);
-    rightSpeedPID.setOutputLimits(-220,220);
+    leftSpeedPID.setOutputLimits(-255,255);
+    rightSpeedPID.setOutputLimits(-255,255);
     curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
 
     maxSpeed = 4000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
