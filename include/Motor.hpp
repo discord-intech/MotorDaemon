@@ -47,6 +47,7 @@
 
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
         void setDirection(Direction);
+        void setDirectionPins(void);
 
     public:
         Motor(Side);

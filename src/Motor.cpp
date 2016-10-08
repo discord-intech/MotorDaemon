@@ -7,15 +7,20 @@
 
 Motor::Motor(Side s) : side(s)
 {
-    if(side == Side::LEFT)
+    this->setDirectionPins();
+}
+
+void Motor::setDirectionPins(void)
+{
+    if(this->side == Side::LEFT)
     {
-        PWMpin = BlackLib::EHRPWM1A;
-        directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::FastMode);
-        directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_60, BlackLib::output, BlackLib::FastMode);
+        this->PWMpin = BlackLib::EHRPWM1A;
+        this->directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::FastMode);
+        this->directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_60, BlackLib::output, BlackLib::FastMode);
     } else {
-        PWMpin = BlackLib::EHRPWM1B;
-        directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::FastMode);
-        directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::FastMode);
+        this->PWMpin = BlackLib::EHRPWM1B;
+        this->directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::FastMode);
+        this->directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::FastMode);
     }
 }
 
