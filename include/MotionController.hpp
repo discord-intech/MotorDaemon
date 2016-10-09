@@ -5,6 +5,7 @@
 #ifndef MOTORDAEMON_MOTIONCONTROLLER_HPP
 #define MOTORDAEMON_MOTIONCONTROLLER_HPP
 
+#include <sys/time.h>
 #include <chrono>
 #include "Motor.hpp"
 #include "pid.hpp"
@@ -28,7 +29,7 @@
 
 #define TICK_TO_MM 0.04908
 
-#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
+//#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
 class MotionController
 {

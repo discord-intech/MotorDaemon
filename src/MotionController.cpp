@@ -6,6 +6,13 @@
 
 bool MotionController::started;
 
+unsigned long Millis()
+{
+    struct timeval tv;
+    if(gettimeofday(&tv, NULL) != 0) return 0;
+    return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
+}
+
 MotionController::MotionController() : leftMotor(), rightMotor(), direction(0, LOW_ANGLE, 100, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
@@ -63,7 +70,7 @@ void MotionController::init()
 void MotionController::mainWorker(MotionController *asser)
 {
     int count=0;
-    long lastTime = MILLIS();
+    long lastTime = Millis();
     while(started)
     {
 
@@ -76,8 +83,8 @@ void MotionController::mainWorker(MotionController *asser)
         if(count == 10000)
         {
             count = 0;
-            std::cout << "Time for 10.000 : " << MILLIS() - lastTime << std::endl;
-            lastTime = MILLIS();
+            std::cout << "Time for 10.000 : " << Millis() - lastTime << std::endl;
+            lastTime = Millis();
         }
 
         usleep((__useconds_t) (1000000 / FREQ_ASSERV));
@@ -239,11 +246,11 @@ void MotionController::manageStop()
 
         if (time == 0)
         { //D�but du timer
-            time = MILLIS();
+            time = Millis();
         }
         else
         {
-            if ((MILLIS() - time) >= delayToStop)
+            if ((Millis() - time) >= delayToStop)
             { //Si arr�t� plus de 'delayToStop' ms
                 if (ABS(translationPID.getError()) <= toleranceTranslation)
                 { //Stop� pour cause de fin de mouvement
