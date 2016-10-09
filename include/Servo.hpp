@@ -8,6 +8,7 @@
 #define SERVO_PWM_TIME_PERIOD 20  // millisecondes
 
 #include "Motor.hpp"
+#include <BlackPWM.h>
 
 class Servo
 {

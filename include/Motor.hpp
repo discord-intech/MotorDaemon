@@ -6,8 +6,9 @@
 #define MOTORDAEMON_MOTOR_HPP
 
 #include <cstdint>
+#include <string>
 #include "safe_enum.hpp"
-#include <BlackPWM.h>
+//#include <BlackPWM.h>
 
 #define MIN(x,y) (((x)<(y))?(x):(y))
 #define MAX(x,y) (((x)>(y))?(x):(y))
@@ -18,6 +19,8 @@
 #define TAN(x) ((x)+(((x)*(x)*(x))/3))
 
 #define PWM_TIME_PERIOD 1000*1000  // nanosecondes
+
+#define ECHO std::string("echo ")
 
 
     struct direction_def {
@@ -30,20 +33,23 @@
 
     class Motor {
     private:
-        BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
-        BlackLib::pwmName PWMpin;
+       // BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
+        uint8_t PWMpin;
 
         int directionPin1;
         int directionPin2;
 
+        std::string PWMduty;
+
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
+        int actualDuty = 0;
         void setDirection(Direction);
         void setDirectionPins(void);
 
     public:
-        Motor(BlackLib::pwmName, int, int);
+        Motor(uint8_t, int, int);
         void initPWM(void);
-        void run(long);
+        void run(int);
     };
 
 

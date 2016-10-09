@@ -6,9 +6,9 @@
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(BlackLib::pwmName pwm, int dir1, int dir2) : PWMpin(pwm),
-                                                          directionPin1(dir1),
-                                                          directionPin2(dir2)
+Motor::Motor(uint8_t pwm, int dir1, int dir2) : PWMpin(pwm),
+                                                directionPin1(dir1),
+                                                directionPin2(dir2)
 {
     system((std::string("echo ")+std::to_string(dir1)+std::string(" > /sys/class/gpio/export")).c_str());
     system((std::string("echo ")+std::to_string(dir2)+std::string(" > /sys/class/gpio/export")).c_str());
@@ -16,15 +16,12 @@ Motor::Motor(BlackLib::pwmName pwm, int dir1, int dir2) : PWMpin(pwm),
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir1)+std::string("/direction")).c_str());
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
 
+    PWMduty = std::string(" > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
-LeftMotor::LeftMotor() : Motor(BlackLib::EHRPWM1A,
-                               49,
-                               60) {}
+LeftMotor::LeftMotor() : Motor(0, 49, 60) {}
 
-RightMotor::RightMotor() : Motor(BlackLib::EHRPWM1B,
-                               117,
-                               125) {}
+RightMotor::RightMotor() : Motor(1, 117, 125) {}
 
 void Motor::setDirection(Direction way)
 {
@@ -45,17 +42,27 @@ void Motor::setDirection(Direction way)
 
 void Motor::initPWM()
 {
-    pwm = BlackLib::BlackPWM(PWMpin);
+    //pwm = BlackLib::BlackPWM(PWMpin);
 
     setDirection(Direction::FORWARD);
 
-    pwm.setPeriodTime(PWM_TIME_PERIOD);
+    system((std::string("echo ")+std::to_string(PWMpin)+std::string(" > /sys/class/pwm/pwmchip0/export")).c_str());
+    system((std::string("echo ")+std::to_string(PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/period")).c_str());
+    system((std::string("echo 0 > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str());
+    system((std::string("echo 1 > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/enable")).c_str());
+
+  /*  pwm.setPeriodTime(PWM_TIME_PERIOD);
     pwm.setDutyPercent(0.0);
-    pwm.setRunState(BlackLib::run);
+    pwm.setRunState(BlackLib::run);*/
 }
 
-void Motor::run(long duty) //duty € [-255;255]
+void Motor::run(int duty) //duty € [-255;255]
 {
+    if(duty == actualDuty)
+    {
+        return;
+    }
+
     if(duty >= 0)
     {
         setDirection(Direction::FORWARD);
@@ -64,6 +71,7 @@ void Motor::run(long duty) //duty € [-255;255]
     {
         setDirection(Direction::BACKWARD);
     }
-
-    pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
+    system((ECHO+std::to_string((ABS(duty) / 255) * PWM_TIME_PERIOD)+PWMduty).c_str());
+    actualDuty = duty;
+    //pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
 }
