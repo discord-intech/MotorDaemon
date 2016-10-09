@@ -62,11 +62,23 @@ void MotionController::init()
 
 void MotionController::mainWorker(MotionController *asser)
 {
+    int count=0;
+    long lastTime = MILLIS();
     while(started)
     {
+
         asser->control();
         asser->manageStop();
         asser->updatePosition();
+
+        count++;
+
+        if(count == 10000)
+        {
+            count = 0;
+            std::cout << "Freq : " << 10000/(MILLIS() - lastTime) << std::endl;
+            lastTime = MILLIS();
+        }
 
         usleep((__useconds_t) (1000000 / FREQ_ASSERV));
     }
