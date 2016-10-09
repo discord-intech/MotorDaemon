@@ -27,33 +27,38 @@
         };
     };
 
-    struct side_def {
-        enum type {
-            LEFT, RIGHT
-        };
-    };
-
     typedef safe_enum<direction_def> Direction;
-    typedef safe_enum<side_def> Side;
 
     class Motor {
     private:
-        Side side;
         BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
         BlackLib::pwmName PWMpin;
 
-        BlackLib::BlackGPIO directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input); //placeholder
-        BlackLib::BlackGPIO directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input); //placeholder
+        BlackLib::BlackGPIO directionPin1; //placeholder
+        BlackLib::BlackGPIO directionPin2; //placeholder
 
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
         void setDirection(Direction);
         void setDirectionPins(void);
 
     public:
-        Motor(Side);
+        Motor(BlackLib::pwmName, BlackLib::BlackGPIO, BlackLib::BlackGPIO);
         void initPWM(void);
         void run(long);
     };
+
+
+    class LeftMotor : public Motor {
+    public:
+        LeftMotor();
+    };
+
+    class RightMotor : public Motor {
+    public:
+        RightMotor();
+    };
+
+
 
 
 #endif //MOTORDAEMON_MOTOR_HPP

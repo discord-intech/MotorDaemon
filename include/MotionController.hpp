@@ -34,8 +34,8 @@ class MotionController
 {
 private:
 
-    Motor leftMotor;
-    Motor rightMotor;
+    LeftMotor leftMotor;
+    RightMotor rightMotor;
     Odometry odo;
     Servo direction;
 

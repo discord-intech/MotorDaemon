@@ -5,24 +5,17 @@
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(Side s) : side(s)
-{
-    this->setDirectionPins();
-}
+Motor::Motor(BlackLib::pwmName pwm, BlackLib::BlackGPIO dir1, BlackLib::BlackGPIO dir2) : PWMpin(pwm),
+                                                                                          directionPin1(dir1),
+                                                                                          directionPin2(dir2) {}
 
-void Motor::setDirectionPins(void)
-{
-    if(this->side == Side::LEFT)
-    {
-        this->PWMpin = BlackLib::EHRPWM1A;
-        this->directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::FastMode);
-        this->directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_60, BlackLib::output, BlackLib::FastMode);
-    } else {
-        this->PWMpin = BlackLib::EHRPWM1B;
-        this->directionPin1 = BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::FastMode);
-        this->directionPin2 = BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::FastMode);
-    }
-}
+LeftMotor::LeftMotor() : Motor(BlackLib::EHRPWM1A,
+                               BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::FastMode),
+                               BlackLib::BlackGPIO(BlackLib::GPIO_60, BlackLib::output, BlackLib::FastMode)) {}
+
+RightMotor::RightMotor() : Motor(BlackLib::EHRPWM1B,
+                               BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::FastMode),
+                               BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::FastMode)) {}
 
 void Motor::setDirection(Direction way)
 {

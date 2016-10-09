@@ -6,12 +6,12 @@
 
 bool MotionController::started;
 
-MotionController::MotionController() : leftMotor(Side::LEFT), rightMotor(Side::RIGHT), direction(0, LOW_ANGLE, 100, HIGH_ANGLE), //FIXME bounds
+MotionController::MotionController() : leftMotor(), rightMotor(), direction(0, LOW_ANGLE, 100, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
 translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
 curvePID(&currentRadius, &radiusToSet, &curveSetpoint),
-averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26) //TODO PINS odo
+averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 {
     translationSetpoint = 0;
     leftSpeedSetpoint = 0;
