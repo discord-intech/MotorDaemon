@@ -93,6 +93,8 @@ void MotionController::mainWorker(MotionController *asser)
 
 void MotionController::control()
 {
+    long time = Millis();
+
     // Pour le calcul de la vitesse instantan�e :
     static long previousLeftTicks = 0;
     static long previousRightTicks = 0;
@@ -209,8 +211,13 @@ void MotionController::control()
     leftSpeedPID.compute();		// Actualise la valeur de 'leftPWM'
     rightSpeedPID.compute();	// Actualise la valeur de 'rightPWM'
 
+    std::cout << "calculation time : " << Millis() - time << std::endl;
+    time = Millis();
+
     leftMotor.run(leftPWM);
     rightMotor.run(rightPWM);
+
+    std::cout << "PWM time : " << Millis() - time << std::endl;
 
     //direction.setAngle(ARCTAN(DIST_MOTOR_DIRECTION/radiusToSet));
 }
