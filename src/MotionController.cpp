@@ -76,7 +76,7 @@ void MotionController::mainWorker(MotionController *asser)
         if(count == 10000)
         {
             count = 0;
-            std::cout << "Freq : " << 10000/(MILLIS() - lastTime) << std::endl;
+            std::cout << "Freq : " << (10000*1000)/(MILLIS() - lastTime) << std::endl;
             lastTime = MILLIS();
         }
 
