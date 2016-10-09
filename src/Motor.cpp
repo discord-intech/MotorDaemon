@@ -2,20 +2,29 @@
 // Created by discord on 26/09/16.
 //
 
+#include <stdlib.h>
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(BlackLib::pwmName pwm, BlackLib::BlackGPIO dir1, BlackLib::BlackGPIO dir2) : PWMpin(pwm),
-                                                                                          directionPin1(dir1),
-                                                                                          directionPin2(dir2) {}
+Motor::Motor(BlackLib::pwmName pwm, int dir1, int dir2) : PWMpin(pwm),
+                                                          directionPin1(dir1),
+                                                          directionPin2(dir2)
+{
+    system((std::string("echo ")+std::to_string(dir1)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo ")+std::to_string(dir2)+std::string(" > /sys/class/gpio/export")).c_str());
+
+    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir1)+std::string("/direction")).c_str());
+    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
+
+}
 
 LeftMotor::LeftMotor() : Motor(BlackLib::EHRPWM1A,
-                               BlackLib::BlackGPIO(BlackLib::GPIO_49, BlackLib::output, BlackLib::FastMode),
-                               BlackLib::BlackGPIO(BlackLib::GPIO_60, BlackLib::output, BlackLib::FastMode)) {}
+                               49,
+                               60) {}
 
 RightMotor::RightMotor() : Motor(BlackLib::EHRPWM1B,
-                               BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output, BlackLib::FastMode),
-                               BlackLib::BlackGPIO(BlackLib::GPIO_125, BlackLib::output, BlackLib::FastMode)) {}
+                               117,
+                               125) {}
 
 void Motor::setDirection(Direction way)
 {
@@ -24,12 +33,11 @@ void Motor::setDirection(Direction way)
 
     //TODO Check side
     if (way == Direction::FORWARD) {
-        directionPin1.setValue(BlackLib::high);
-        directionPin2.setValue(BlackLib::low);
-
+        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
+        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
     } else {
-        directionPin1.setValue(BlackLib::low);
-        directionPin2.setValue(BlackLib::high);
+        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
+        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
     }
 
     actualDirection = way;
