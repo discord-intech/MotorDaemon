@@ -33,11 +33,11 @@ void Motor::setDirection(Direction way)
 
     //TODO Check side
     if (way == Direction::FORWARD) {
-        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
-        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
-    } else {
         system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
         system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
+    } else {
+        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
+        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
     }
 
     actualDirection = way;
