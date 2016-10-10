@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <iostream>
 #include "../include/Motor.hpp"
 
 
@@ -51,6 +52,14 @@ void Motor::initPWM()
     system((std::string("echo 0 > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str());
     system((std::string("echo 1 > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/enable")).c_str());
 
+
+    dutyFile = fopen((std::string("/sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str(), "w");
+
+    if(dutyFile == NULL)
+    {
+        std::cout << "Can't open duty file for PWM" << PWMpin << " !" << std::endl;
+    }
+
   /*  pwm.setPeriodTime(PWM_TIME_PERIOD);
     pwm.setDutyPercent(0.0);
     pwm.setRunState(BlackLib::run);*/
@@ -71,7 +80,12 @@ void Motor::run(int duty) //duty € [-255;255]
     {
         setDirection(Direction::BACKWARD);
     }
-    system((ECHO+std::to_string((ABS(duty) / 255) * PWM_TIME_PERIOD)+PWMduty).c_str());
+    //system((ECHO+std::to_string((ABS(duty) / 255) * PWM_TIME_PERIOD)+PWMduty).c_str());
+
+    const char *a = std::to_string((long)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str();
+
+    fwrite(a, 1, sizeof(a), dutyFile);
+    fflush(dutyFile);
     actualDuty = duty;
     //pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
 }
