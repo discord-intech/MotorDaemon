@@ -6,6 +6,8 @@
 #define MOTORDAEMON_MOTOR_HPP
 
 #include <cstdint>
+#include <iostream>
+#include <fstream>
 #include <string>
 #include "safe_enum.hpp"
 //#include <BlackPWM.h>
@@ -41,7 +43,7 @@
 
         std::string PWMduty;
 
-       // FILE* dutyFile = NULL;
+        std::ofstream dutyFile;
 
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
         int actualDuty = 0;
