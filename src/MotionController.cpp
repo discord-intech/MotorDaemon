@@ -59,7 +59,7 @@ void MotionController::init()
 {
     leftMotor.initPWM();
     rightMotor.initPWM();
-    direction.initPWM();
+ //   direction.initPWM();
 
     started = true;
 
