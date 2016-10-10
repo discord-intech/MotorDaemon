@@ -28,9 +28,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     rightSpeedPID.setOutputLimits(-255,255);
     curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
 
-    maxSpeed = 4000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
-    maxSpeedTranslation = 2000; // Consigne max envoy�e au PID
-    maxAcceleration = 15;
+    maxSpeed = 40000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
+    maxSpeedTranslation = 20000; // Consigne max envoy�e au PID
+    maxAcceleration = 15000;
     leftCurveRatio = 1;
     rightCurveRatio = 1;
 
@@ -45,9 +45,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(13, 0, 0);
-    leftSpeedPID.setTunings(0.7, 0, 0); // ki 0.00001
-    rightSpeedPID.setTunings(0.7, 0, 0);
+    translationPID.setTunings(20, 0, 0);
+    leftSpeedPID.setTunings(1, 0, 0); // ki 0.00001
+    rightSpeedPID.setTunings(1, 0, 0);
     curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
