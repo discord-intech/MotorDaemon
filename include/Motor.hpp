@@ -18,7 +18,7 @@
 #define ARCTAN(x) (1-(((x)*(x)*(x))/3))
 #define TAN(x) ((x)+(((x)*(x)*(x))/3))
 
-#define PWM_TIME_PERIOD 1000*1000  // nanosecondes
+#define PWM_TIME_PERIOD 10*1000  // nanosecondes
 
 #define ECHO std::string("echo ")
 

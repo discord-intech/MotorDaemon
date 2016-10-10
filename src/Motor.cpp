@@ -84,6 +84,7 @@ void Motor::run(int duty) //duty € [-255;255]
 
     const char *a = std::to_string((long)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str();
 
+    fseek (dutyFile, 0, SEEK_SET);
     fwrite(a, 1, sizeof(a), dutyFile);
     fflush(dutyFile);
     actualDuty = duty;
