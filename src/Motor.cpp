@@ -18,6 +18,7 @@ Motor::Motor(uint8_t pwm, int dir1, int dir2) : PWMpin(pwm),
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
 
     PWMduty = std::string(" > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
+    dutyPath = (std::string("/sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str();
 }
 
 LeftMotor::LeftMotor() : Motor(0, 49, 60) {}
@@ -55,7 +56,6 @@ void Motor::initPWM()
 
  //   dutyFile = fopen((std::string("/sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str(), "w");
 
-    dutyPath = (std::string("/sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str();
 
    /* if(dutyFile == NULL)
     {
@@ -86,7 +86,13 @@ void Motor::run(int duty) //duty € [-255;255]
 
     const char *a = std::to_string((int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str();
 
-    dutyFile = fopen(dutyPath, "w");
+    FILE* dutyFile = fopen(dutyPath, "w");
+
+    if(dutyFile == NULL)
+    {
+        std::cout << "Can't open duty file for PWM" << PWMpin << " !" << std::endl;
+        return;
+    }
 
     // fseek (dutyFile, 0, SEEK_SET);
     fwrite(a, 1, sizeof(a), dutyFile);
