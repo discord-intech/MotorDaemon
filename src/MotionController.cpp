@@ -3,6 +3,8 @@
 //
 
 #include "../include/MotionController.hpp"
+#include <sched.h>
+#include <sys/resource.h>
 
 bool MotionController::started;
 
@@ -71,6 +73,11 @@ void MotionController::mainWorker(MotionController *asser)
 {
     int count=0;
     long lastTime = Millis();
+
+    sched_param par;
+    par.__sched_priority=sched_get_priority_max(SCHED_RR);
+    sched_setscheduler(0, SCHED_RR, &par);
+
     while(started)
     {
 
@@ -87,7 +94,11 @@ void MotionController::mainWorker(MotionController *asser)
             lastTime = Millis();
         }
 
-        usleep((__useconds_t) (1000000 / FREQ_ASSERV));
+        //usleep((__useconds_t) (1000000 / FREQ_ASSERV));
+        timespec t, r;
+        t.tv_sec=0;
+        t.tv_nsec = 1000000000 / FREQ_ASSERV;
+        nanosleep(&t, &r);
     }
 }
 

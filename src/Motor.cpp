@@ -86,24 +86,24 @@ void Motor::run(int duty) //duty € [-255;255]
     }
     //system((ECHO+std::to_string((ABS(duty) / 255) * PWM_TIME_PERIOD)+PWMduty).c_str());
 
-   // const char *a = std::to_string((int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str();
+    const char *a = std::to_string((int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str();
 
- /*   FILE* dutyFile = fopen(dutyPath, "w");
+    FILE* dutyFile = fopen(dutyPath, "w");
 
     if(dutyFile == NULL)
     {
         std::cout << "Can't open duty file for PWM" << PWMpin << " !" << std::endl;
         return;
-    }*/
+    }
 
-    dutyFile.seekp(std::ios::beg);
-    dutyFile << (int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD);
-    dutyFile.flush();
+    //dutyFile.seekp(std::ios::beg);
+    //dutyFile << (int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD);
+    //dutyFile.flush();
 
     // fseek (dutyFile, 0, SEEK_SET);
-   // fwrite(a, 1, sizeof(a), dutyFile);
-   // fflush(dutyFile);
-   // fclose(dutyFile);
+    fwrite(a, 1, sizeof(a), dutyFile);
+    fflush(dutyFile);
+    fclose(dutyFile);
     actualDuty = duty;
     //pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
 }
