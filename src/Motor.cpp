@@ -97,7 +97,7 @@ void Motor::run(int duty) //duty € [-255;255]
     }*/
 
     dutyFile.seekp(std::ios::beg);
-    dutyFile << (int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD);
+    dutyFile << (int)((((float)ABS(duty) / 255.) * (PWM_TIME_PERIOD/2)) + (PWM_TIME_PERIOD/2));
     dutyFile.flush();
 
     // fseek (dutyFile, 0, SEEK_SET);
