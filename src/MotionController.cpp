@@ -45,9 +45,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(100, 0, 0);
-    leftSpeedPID.setTunings(10, 0, 0); // ki 0.00001
-    rightSpeedPID.setTunings(10, 0, 0);
+    translationPID.setTunings(20, 0, 0);
+    leftSpeedPID.setTunings(1, 0, 0); // ki 0.00001
+    rightSpeedPID.setTunings(1, 0, 0);
     curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
@@ -161,28 +161,28 @@ void MotionController::control()
 */
 
     // Limitation de la consigne de vitesse en translation
-    if(translationSpeed > maxSpeedTranslation)
+   /* if(translationSpeed > maxSpeedTranslation)
         translationSpeed = maxSpeedTranslation;
     else if(translationSpeed < -maxSpeedTranslation)
-        translationSpeed = -maxSpeedTranslation;
+        translationSpeed = -maxSpeedTranslation;*/
 
 
     leftSpeedSetpoint = (long) (translationSpeed * leftCurveRatio);
     rightSpeedSetpoint = (long) (translationSpeed * rightCurveRatio);
 
     // Limitation de la vitesse
-    if(leftSpeedSetpoint > maxSpeed)
+  /*  if(leftSpeedSetpoint > maxSpeed)
         leftSpeedSetpoint = maxSpeed;
     else if(leftSpeedSetpoint < -maxSpeed)
         leftSpeedSetpoint = -maxSpeed;
     if(rightSpeedSetpoint > maxSpeed)
         rightSpeedSetpoint = maxSpeed;
     else if(rightSpeedSetpoint < -maxSpeed)
-        rightSpeedSetpoint = -maxSpeed;
-    ;
+        rightSpeedSetpoint = -maxSpeed;*/
+
 
     // Limitation de l'accélération du moteur gauche (permet de règler la pente du trapèze de vitesse)
-    if(leftSpeedSetpoint - previousLeftSpeedSetpoint > maxAcceleration)
+ /*   if(leftSpeedSetpoint - previousLeftSpeedSetpoint > maxAcceleration)
     {
         leftSpeedSetpoint = previousLeftSpeedSetpoint + maxAcceleration*leftCurveRatio;
     }
@@ -199,7 +199,7 @@ void MotionController::control()
     else if(rightSpeedSetpoint - previousRightSpeedSetpoint < -maxAcceleration)
     {
         rightSpeedSetpoint = previousRightSpeedSetpoint - maxAcceleration*rightCurveRatio;
-    }
+    }*/
 
 
 
@@ -214,8 +214,8 @@ void MotionController::control()
     //std::cout << "calculation time : " << Millis() - time << std::endl;
    // time = Millis();
 
-    leftMotor.run(leftPWM);
-    rightMotor.run(rightPWM);
+    leftMotor.run((int) leftPWM);
+    rightMotor.run((int) rightPWM);
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
@@ -236,6 +236,8 @@ void MotionController::stop()
     translationPID.resetErrors();
     leftSpeedPID.resetErrors();
     rightSpeedPID.resetErrors();
+
+    moving = false;
 
 }
 
