@@ -71,10 +71,10 @@ void Motor::initPWM()
 
 void Motor::run(int duty) //duty € [-255;255]
 {
-   /* if(duty == actualDuty)
+    if(duty == actualDuty)
     {
         return;
-    }*/
+    }
 
     if(duty >= 0)
     {
@@ -104,6 +104,6 @@ void Motor::run(int duty) //duty € [-255;255]
    // fwrite(a, 1, sizeof(a), dutyFile);
    // fflush(dutyFile);
    // fclose(dutyFile);
-   // actualDuty = duty;
+    actualDuty = duty;
     //pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
 }
