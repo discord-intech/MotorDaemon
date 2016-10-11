@@ -13,11 +13,11 @@
 #include "Odometry.hpp"
 #include "Servo.hpp"
 
-#define AVERAGE_SPEED_SIZE	10
+#define AVERAGE_SPEED_SIZE	15
 
 #define FREQ_ASSERV 2500
 
-#define PI 3.14159265
+#define PI 3.141592
 
 #define RAYON_COD_GAUCHE 35
 #define RAYON_COD_DROITE 35
