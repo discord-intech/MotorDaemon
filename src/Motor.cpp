@@ -95,8 +95,6 @@ void Motor::run(int duty) //duty € [-255;255]
     }
     //system((ECHO+std::to_string((ABS(duty) / 255) * PWM_TIME_PERIOD)+PWMduty).c_str());
 
-    const char *a = std::to_string((int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str();
-
     this->dutyFile = freopen(dutyPath.c_str(), "w", this->dutyFile);
 
     if(this->dutyFile == NULL)
@@ -105,13 +103,23 @@ void Motor::run(int duty) //duty € [-255;255]
         return;
     }
 
+    if(duty != 0)
+    {
+        fputs(std::to_string((int)((((float)ABS(duty) / 255.) * (3*PWM_TIME_PERIOD/5))
+                                   + (2*PWM_TIME_PERIOD/5))).c_str(), this->dutyFile);
+    }
+    else
+    {
+        fputs(std::to_string(0).c_str(), this->dutyFile);
+    }
+
+    fflush(this->dutyFile);
+
     //dutyFile.seekp(std::ios::beg);
     //dutyFile << (int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD);
     //dutyFile.flush();
 
     // fseek (dutyFile, 0, SEEK_SET);
-    fputs(a, this->dutyFile);
-    fflush(this->dutyFile);
     //fclose(dutyFile);
     this->actualDuty = duty;
     //pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
