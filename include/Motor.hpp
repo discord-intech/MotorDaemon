@@ -43,7 +43,7 @@
 
         std::string PWMduty;
 
-        std::ofstream dutyFile;
+        FILE * dutyFile;
 
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
         int actualDuty = 0;
