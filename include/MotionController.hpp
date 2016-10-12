@@ -15,7 +15,7 @@
 
 #define AVERAGE_SPEED_SIZE	10
 
-#define FREQ_ASSERV 2500
+#define FREQ_ASSERV 2000
 
 #define PI 3.141592
 

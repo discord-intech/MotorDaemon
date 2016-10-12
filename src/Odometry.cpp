@@ -94,7 +94,11 @@ void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_
             onTickChanBRight();
         }
 
-        usleep(100);
+        //usleep(100);
+        timespec t, r;
+        t.tv_sec=0;
+        t.tv_nsec = 10000;
+        nanosleep(&t, &r);
     }
 }
 
