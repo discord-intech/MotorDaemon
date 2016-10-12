@@ -19,7 +19,7 @@ Motor::Motor(uint8_t pwm, int dir1, int dir2) : PWMpin(pwm),
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
 
     PWMduty = std::string(" > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
-    dutyPath = (std::string("/sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str();
+    dutyPath = (char *) (std::string("/sys/class/pwm/pwmchip0/pwm") + std::to_string(PWMpin) + std::string("/duty_cycle")).c_str();
 }
 
 LeftMotor::LeftMotor() : Motor(0, 49, 60) {}
