@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <cstring>
 #include "../include/Motor.hpp"
 
 
@@ -101,7 +102,7 @@ void Motor::run(int duty) //duty € [-255;255]
     //dutyFile.flush();
 
     // fseek (dutyFile, 0, SEEK_SET);
-    fwrite(a, 1, sizeof(a), dutyFile);
+    fwrite(a, 1, strlen(a), dutyFile);
     fflush(dutyFile);
     fclose(dutyFile);
     actualDuty = duty;
