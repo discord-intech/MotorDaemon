@@ -103,10 +103,10 @@ void Motor::run(int duty) //duty € [-255;255]
         return;
     }
 
-    if(duty != 0)
+    if(ABS(duty) > 10)
     {
-        fputs(std::to_string((int)((((float)ABS(duty) / 255.) * (3*PWM_TIME_PERIOD/5))
-                                   + (2*PWM_TIME_PERIOD/5))).c_str(), this->dutyFile);
+        fputs(std::to_string((int)((((float)ABS(duty) / 255.) * (2*PWM_TIME_PERIOD/5))
+                                   + (3*PWM_TIME_PERIOD/5))).c_str(), this->dutyFile);
     }
     else
     {
