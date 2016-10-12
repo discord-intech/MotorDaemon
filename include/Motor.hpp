@@ -50,7 +50,7 @@
         void setDirection(Direction);
         void setDirectionPins(void);
 
-        char * dutyPath;
+        std::string dutyPath;
 
     public:
         Motor(uint8_t, int, int);
