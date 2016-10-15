@@ -48,8 +48,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
     translationPID.setTunings(10, 0, 0);
-    leftSpeedPID.setTunings(1, 0, 0); // ki 0.00001
-    rightSpeedPID.setTunings(1, 0, 0);
+    leftSpeedPID.setTunings(0.1, 0, 0); // ki 0.00001
+    rightSpeedPID.setTunings(0.1, 0, 0);
     curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
@@ -95,7 +95,7 @@ void MotionController::mainWorker(MotionController *&asser)
         {
             count = 0;
             std::cout << "Time for 10.000 : " << Millis() - lastTime << std::endl;
-            asser->printTranslationError();
+           // asser->printTranslationError();
             lastTime = Millis();
         }
 
