@@ -95,6 +95,7 @@ void MotionController::mainWorker(MotionController *asser)
         {
             count = 0;
             std::cout << "Time for 10.000 : " << Millis() - lastTime << std::endl;
+            asser->printTranslationError();
             lastTime = Millis();
         }
 
@@ -397,7 +398,7 @@ void MotionController::orderTranslation(long mmDistance)
         translationPID.resetErrors();
         moving = true;
     }
-    translationSetpoint += (int32_t) mmDistance / TICK_TO_MM;
+    translationSetpoint += (int32_t) ((float)mmDistance / TICK_TO_MM);
 }
 
 Odometry* MotionController::getOdometry(void)

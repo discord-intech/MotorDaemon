@@ -15,7 +15,7 @@
 
 #define AVERAGE_SPEED_SIZE	10
 
-#define FREQ_ASSERV 1000
+#define FREQ_ASSERV 1100
 
 #define PI 3.141592
 
@@ -126,6 +126,11 @@ public:
 
     Odometry* getOdometry(void);
     long getCurveRadius(void);
+
+    std::string printTranslationError()
+    {
+        std::cout << "Trans err : " << this->translationSetpoint - this->currentDistance << " ; " << this->translationPID.getError() << std::endl;
+    }
 
 };
 
