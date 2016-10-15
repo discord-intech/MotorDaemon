@@ -20,7 +20,7 @@ void Servo::initPWM(void)
 {
     system((std::string("echo 0 > /sys/class/pwm/pwmchip6/export")).c_str());
     system((std::string("echo ")+std::to_string(SERVO_PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip6/pwm0/period")).c_str());
-    system((std::string("echo 0 > /sys/class/pwm/pwmchip6/pmw0/duty_cycle")).c_str());
+    system((std::string("echo 0 > /sys/class/pwm/pwmchip6/pwm0/duty_cycle")).c_str());
     system((std::string("echo 1 > /sys/class/pwm/pwmchip6/pwm0/enable")).c_str());
 
     this->dutyPath = std::string("/sys/class/pwm/pwmchip6/pwm0/duty_cycle");
