@@ -5,7 +5,7 @@
 #ifndef MOTORDAEMON_SERVO_HPP
 #define MOTORDAEMON_SERVO_HPP
 
-#define SERVO_PWM_TIME_PERIOD 20  // millisecondes
+#define SERVO_PWM_TIME_PERIOD 20*1000*1000  // nanosec
 
 #include "Motor.hpp"
 #include <BlackPWM.h>
