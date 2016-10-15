@@ -13,7 +13,7 @@
 #include "Odometry.hpp"
 #include "Servo.hpp"
 
-#define AVERAGE_SPEED_SIZE	10
+#define AVERAGE_SPEED_SIZE	15
 
 #define FREQ_ASSERV 1100
 
@@ -100,14 +100,15 @@ private:
 
     unsigned int delayToStop;  //En ms
 
+    static void mainWorker(MotionController*&);
+
+
 
 public:
     void control(void);
 
     MotionController(void);
     void init(void);
-
-    static void mainWorker(MotionController*);
 
     void stop(void);
 
@@ -129,7 +130,8 @@ public:
 
     std::string printTranslationError()
     {
-        std::cout << "Trans err : " << this->translationSetpoint - this->currentDistance << " ; " << this->translationPID.getError() << std::endl;
+        std::cout << "Trans err : " << this->translationSetpoint - this->currentDistance << " ; "
+                  << this->translationPID.getError() << " ; " << this->leftSpeedSetpoint << std::endl;
     }
 
 };

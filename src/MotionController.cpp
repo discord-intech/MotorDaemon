@@ -69,7 +69,7 @@ void MotionController::init()
     t.detach();
 }
 
-void MotionController::mainWorker(MotionController *asser)
+void MotionController::mainWorker(MotionController *&asser)
 {
     int count=0;
     long lastTime = Millis();
