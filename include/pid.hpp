@@ -43,12 +43,12 @@ public:
 				kp * error + ki * integral + kd * derivative);
 
 		//Saturation
-/*
+
 		if (result > outMax) {
 			result = outMax;
 		} else if (result < outMin) {
 			result = outMin;
-		}*/
+		}
 
 
 

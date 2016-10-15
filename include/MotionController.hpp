@@ -128,7 +128,7 @@ public:
     Odometry* getOdometry(void);
     long getCurveRadius(void);
 
-    std::string printTranslationError()
+    void printTranslationError(void)
     {
         std::cout << "Trans err : " << this->translationSetpoint - this->currentDistance << " ; "
                   << this->translationPID.getError() << " ; " << this->leftSpeedSetpoint << std::endl;
