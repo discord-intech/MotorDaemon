@@ -18,7 +18,7 @@ Motor::Motor(uint8_t pwm, int dir1, int dir2) : PWMpin(pwm),
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir1)+std::string("/direction")).c_str());
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
 
-    PWMduty = std::string(" > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
+    PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
 LeftMotor::LeftMotor() : Motor(0, 49, 60) {}
@@ -50,15 +50,15 @@ void Motor::initPWM()
 
     setDirection(Direction::FORWARD);
 
-    system((std::string("echo ")+std::to_string(PWMpin)+std::string(" > /sys/class/pwm/pwmchip0/export")).c_str());
-    system((std::string("echo ")+std::to_string(PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/period")).c_str());
-    system((std::string("echo 0 > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str());
-    system((std::string("echo 1 > /sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/enable")).c_str());
+    system((std::string("echo ")+std::to_string(PWMpin)+std::string(" > /sys/class/pwm/pwmchip3/export")).c_str());
+    system((std::string("echo ")+std::to_string(PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/period")).c_str());
+    system((std::string("echo 0 > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str());
+    system((std::string("echo 1 > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/enable")).c_str());
 
 
-    //dutyFile.open((std::string("/sys/class/pwm/pwmchip0/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str(), std::ios::out);
+    //dutyFile.open((std::string("/sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str(), std::ios::out);
 
-    this->dutyPath = std::string("/sys/class/pwm/pwmchip0/pwm") + std::to_string(PWMpin) + std::string("/duty_cycle");
+    this->dutyPath = std::string("/sys/class/pwm/pwmchip3/pwm") + std::to_string(PWMpin) + std::string("/duty_cycle");
 
     this->dutyFile = fopen(this->dutyPath.c_str(), "w");
 
@@ -105,11 +105,11 @@ void Motor::run(int duty) //duty € [-255;255]
 
     if(ABS(duty) > 10)
     {
-        fputs(std::to_string((int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD)).c_str(), this->dutyFile);
+        fputs((int)(((float)ABS(duty) / 255.) * PWM_TIME_PERIOD), this->dutyFile);
     }
     else
     {
-        fputs(std::to_string(0).c_str(), this->dutyFile);
+        fputs(0, this->dutyFile);
     }
 
     fflush(this->dutyFile);

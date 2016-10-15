@@ -20,8 +20,12 @@ public:
     void setAngle(float);
 
 private:
-    BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
-    BlackLib::pwmName PWMpin;
+
+    std::string dutyPath;
+
+    std::string PWMduty;
+
+    FILE * dutyFile;
 
     float lowerBound;
     float lowerAngle;
