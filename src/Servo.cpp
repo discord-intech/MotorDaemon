@@ -58,7 +58,7 @@ void Servo::setAngle(float angle)
     float max_ms(2.4), min_ms(0.5);
     int64_t value = (int64_t) (((max_ms - min_ms) / 180.0 * angle + min_ms) * 1000);
    // pwm.setPeriodTime(period, BlackLib::milisecond);
-    fputs(value, this->dutyFile);
+    fputs(std::to_string(value).c_str(), this->dutyFile);
 
     fflush(this->dutyFile);
 
