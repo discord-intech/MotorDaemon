@@ -53,12 +53,12 @@ void Servo::setAngle(float angle)
     //float duty = (angle-lowerAngle) / (upperAngle-lowerAngle);
 
     //pwm.setDutyPercent(duty);
-    if(angle < 0) angle = 0;
-    if(angle > 180) angle = 180;
-    float max_ms(1.55), min_ms(1.1);
-    int64_t value = (int64_t) (((max_ms - min_ms) / 180.0 * angle + min_ms) * 1000);
+    if(angle < lowerAngle) angle = lowerAngle;
+    if(angle > upperAngle) angle = upperAngle;
+
+    int64_t value = (int64_t) ((upperBound - lowerBound) / (upperAngle - lowerAngle) * angle + lowerBound);
    // pwm.setPeriodTime(period, BlackLib::milisecond);
-    fputs(std::to_string(value*1000).c_str(), this->dutyFile);
+    fputs(std::to_string(value).c_str(), this->dutyFile);
 
     fflush(this->dutyFile);
 

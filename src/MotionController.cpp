@@ -15,7 +15,7 @@ unsigned long Millis()
     return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
 }
 
-MotionController::MotionController() : leftMotor(), rightMotor(), direction(0, LOW_ANGLE, 100, HIGH_ANGLE), //FIXME bounds
+MotionController::MotionController() : leftMotor(), rightMotor(), direction(1100000, LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
 leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
 translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
