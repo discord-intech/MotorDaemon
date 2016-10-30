@@ -17,7 +17,7 @@
 
 #define FREQ_ASSERV 1300
 
-#define PI 3.141592
+#define PI 3.14159
 
 #define RAYON_COD_GAUCHE 35
 #define RAYON_COD_DROITE 35
