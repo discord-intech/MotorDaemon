@@ -29,7 +29,7 @@
 
 #define DELTA_FREQ_REFRESH 500
 
-#define MM_PER_TICK 0.04908
+#define MM_PER_TICK 0.21287
 
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
