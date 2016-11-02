@@ -157,7 +157,7 @@ void MotionController::control()
     if(ABS(currentRightSpeed - currentLeftSpeed) > 0)
     {
         currentRadius = (volatile long) ((currentLeftSpeed * RAYON_COD_DROITE + currentRightSpeed * RAYON_COD_GAUCHE)
-                                         / (TICK_TO_MM * (currentRightSpeed - currentLeftSpeed)));
+                                         / (MM_PER_TICK * (currentRightSpeed - currentLeftSpeed)));
     }
     else
     {
@@ -420,7 +420,7 @@ void MotionController::orderTranslation(long mmDistance)
         translationPID.resetErrors();
         moving = true;
     }
-    translationSetpoint += (int32_t) ((float)mmDistance / TICK_TO_MM);
+    translationSetpoint += (int32_t) ((float)mmDistance / MM_PER_TICK);
 }
 
 Odometry* MotionController::getOdometry(void)
