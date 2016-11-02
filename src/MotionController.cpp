@@ -109,7 +109,11 @@ void MotionController::mainWorker(MotionController *&asser)
 
 void MotionController::control()
 {
-   // long time = Millis();
+    static long time = Millis();
+
+    static long freq(0);
+
+    static int counter(0);
 
     // Pour le calcul de la vitesse instantan�e :
     static long previousLeftTicks = 0;
@@ -129,8 +133,16 @@ void MotionController::control()
 
     long leftTicks = odo.getLeftValue();
 
-    currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
-    currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
+    if(freq == 0)
+    {
+        currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+        currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
+    }
+    else
+    {
+        currentLeftSpeed = (leftTicks - previousLeftTicks)*freq; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+        currentRightSpeed = (rightTicks - previousRightTicks)*freq;
+    }
 
 
     previousLeftTicks = leftTicks;
@@ -232,6 +244,16 @@ void MotionController::control()
 
     leftMotor.run((int) leftPWM);
     rightMotor.run((int) rightPWM);
+
+    long t = Millis();
+
+    if(t-time >= DELTA_FREQ_REFRESH)
+    {
+        freq = counter / (t - time);
+        time = t;
+        counter = 0;
+    }
+    else counter++;
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
