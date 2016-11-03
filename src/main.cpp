@@ -11,8 +11,8 @@
 #define SOCKET_PORT 13337
 
 void getArgs(const std::string&, char, std::vector<std::string>&);
-
-void mainWorker();
+int writeMessage(int &sockfd, std::string &str);
+void mainWorker(void);
 
 int main(int argc, char *argv[])
 {
@@ -233,4 +233,9 @@ void mainWorker(void)
 
         //TODO Comm inter-process
     }
+}
+
+int writeMessage(int &sockfd, std::string &str)
+{
+    return (int) write(sockfd, str.c_str(), strlen(str.c_str()));
 }
