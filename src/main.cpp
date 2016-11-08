@@ -3,25 +3,52 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <syslog.h>
 #include <netdb.h>
 #include <stdlib.h>
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 
-#define SOCKET_PORT 13337
+#define SOCKET_PORT 56987
+#define SERVER_MODE_CMD "-s"
+#define DAEMON_NAME "motordaemon"
 
 void getArgs(const std::string&, char, std::vector<std::string>&);
 int writeMessage(int &sockfd, std::string &str);
-void mainWorker(void);
+void serverWorker(void);
+void localWorker(void);
+int treatOrder(std::string &order);
+
+MotionController motion = MotionController();
+std::vector<std::string> args = std::vector<std::string>();
+
 
 int main(int argc, char *argv[])
 {
-    MotionController motion = MotionController();
+    setlogmask(LOG_UPTO(LOG_NOTICE));
+    openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
+
+    if(argc >= 2 && strcmp(argv[1], SERVER_MODE_CMD))
+    {
+        std::thread t(serverWorker);
+        syslog(LOG_INFO, "MotorDaemon launched in server mode");
+        t.join(); //Do not shut down the main thread
+    }
+    else
+    {
+        std::thread t(localWorker);
+        syslog(LOG_INFO, "MotorDaemon launched in user mode");
+        t.join(); //Do not shut down the main thread
+    }
+
+}
+
+void localWorker(void)
+{
     motion.init();
 
     char orderC[100];
     std::string order = "";
-    std::vector<std::string> args = std::vector<std::string>();
 
     while(true)
     {
@@ -31,154 +58,163 @@ int main(int argc, char *argv[])
         if(order.length() == 0) continue;
         std::cout << std::endl;
 
-        if(!order.compare("exit")) break;
-
-        args.clear();
-        getArgs(order, ' ', args);
-
-        if(args.size() == 0) continue;
-
-        if(!args[0].compare("stop"))
+        if(treatOrder(order))
         {
             motion.stop();
-            continue;
+            exit(0);
         }
+    }
 
-        else if(!args[0].compare("setksg"))
+}
+
+int treatOrder(std::string &order)
+{
+    if(!order.compare("exit")) return 1;
+
+    args.clear();
+    getArgs(order, ' ', args);
+
+    if(args.size() == 0) return 0;
+
+    if(!args[0].compare("stop"))
+    {
+        motion.stop();
+        return 0;
+    }
+
+    else if(!args[0].compare("setksg"))
+    {
+
+        if(args.size() != 4)
         {
-
-            if(args.size() != 4)
-            {
-                std::cout << "USAGE : setksg <kp> <ki> <kd>" << std::endl;
-                continue;
-            }
-
-            float kp, ki, kd;
-            try
-            {
-                kp = std::stof(args[1]);
-                ki = std::stof(args[2]);
-                kd = std::stof(args[3]);
-            }
-            catch (std::exception const &e)
-            {
-                std::cout << "BAD VALUE" << std::endl;
-                continue;
-            }
-
-            motion.setLeftSpeedTunings(kp, ki, kd);
-            continue;
+            std::cout << "USAGE : setksg <kp> <ki> <kd>" << std::endl;
+            return 0;
         }
 
-        else if(!args[0].compare("setksd"))
+        float kp, ki, kd;
+        try
         {
-
-            if(args.size() != 4)
-            {
-                std::cout << "USAGE : setksd <kp> <ki> <kd>" << std::endl;
-                continue;
-            }
-
-            float kp, ki, kd;
-            try
-            {
-                kp = std::stof(args[1]);
-                ki = std::stof(args[2]);
-                kd = std::stof(args[3]);
-            }
-            catch (std::exception const &e)
-            {
-                std::cout << "BAD VALUE" << std::endl;
-                continue;
-            }
-
-            motion.setRightSpeedTunings(kp, ki, kd);
-            continue;
+            kp = std::stof(args[1]);
+            ki = std::stof(args[2]);
+            kd = std::stof(args[3]);
         }
-
-        else if(!args[0].compare("setktd"))
+        catch (std::exception const &e)
         {
-
-            if(args.size() != 4)
-            {
-                std::cout << "USAGE : setktd <kp> <ki> <kd>" << std::endl;
-                continue;
-            }
-
-            float kp, ki, kd;
-            try
-            {
-                kp = std::stof(args[1]);
-                ki = std::stof(args[2]);
-                kd = std::stof(args[3]);
-            }
-            catch (std::exception const &e)
-            {
-                std::cout << "BAD VALUE" << std::endl;
-                continue;
-            }
-
-            motion.setTranslationTunings(kp, ki, kd);
-            continue;
+            std::cout << "BAD VALUE" << std::endl;
+            return 0;
         }
 
-        else if(!args[0].compare("sweep"))
+        motion.setLeftSpeedTunings(kp, ki, kd);
+        return 0;
+    }
+
+    else if(!args[0].compare("setksd"))
+    {
+
+        if(args.size() != 4)
         {
-            Servo s = Servo(1100000, 0, 1550000, 180);
-
-            s.initPWM();
-
-            for(int i= 0; i < 180 ; i+=5)
-            {
-                std::cout << "angle : " << i << std::endl;
-                s.setAngle(i);
-                usleep(1000*1000);
-            }
-
-            continue;
+            std::cout << "USAGE : setksd <kp> <ki> <kd>" << std::endl;
+            return 0;
         }
 
-        else if(!args[0].compare("d"))
+        float kp, ki, kd;
+        try
         {
-
-            if(args.size() != 2)
-            {
-                std::cout << "USAGE : d <dist>" << std::endl;
-                continue;
-            }
-
-            long dist;
-            try
-            {
-                dist = std::stol(args[1]);
-            }
-            catch (std::exception const &e)
-            {
-                std::cout << "BAD VALUE" << std::endl;
-                continue;
-            }
-
-            motion.orderTranslation(dist);
-            continue;
+            kp = std::stof(args[1]);
+            ki = std::stof(args[2]);
+            kd = std::stof(args[3]);
         }
-
-        else if(!args[0].compare("c"))
+        catch (std::exception const &e)
         {
-
-            std::cout << motion.getOdometry()->getLeftValue() << " ; " << motion.getOdometry()->getRightValue() << std::endl;
-            std::cout << motion.getCurveRadius() << std::endl << std::endl;
-            continue;
+            std::cout << "BAD VALUE" << std::endl;
+            return 0;
         }
 
-        else
+        motion.setRightSpeedTunings(kp, ki, kd);
+        return 0;
+    }
+
+    else if(!args[0].compare("setktd"))
+    {
+
+        if(args.size() != 4)
         {
-            std::cout << "No such command" << std::endl;
+            std::cout << "USAGE : setktd <kp> <ki> <kd>" << std::endl;
+            return 0;
         }
 
+        float kp, ki, kd;
+        try
+        {
+            kp = std::stof(args[1]);
+            ki = std::stof(args[2]);
+            kd = std::stof(args[3]);
+        }
+        catch (std::exception const &e)
+        {
+            std::cout << "BAD VALUE" << std::endl;
+            return 0;
+        }
 
+        motion.setTranslationTunings(kp, ki, kd);
+        return 0;
+    }
+
+    else if(!args[0].compare("sweep"))
+    {
+        Servo s = Servo(1100000, 0, 1550000, 180);
+
+        s.initPWM();
+
+        for(int i= 0; i < 180 ; i+=5)
+        {
+            std::cout << "angle : " << i << std::endl;
+            s.setAngle(i);
+            usleep(1000*1000);
+        }
+
+        return 0;
+    }
+
+    else if(!args[0].compare("d"))
+    {
+
+        if(args.size() != 2)
+        {
+            std::cout << "USAGE : d <dist>" << std::endl;
+            return 0;
+        }
+
+        long dist;
+        try
+        {
+            dist = std::stol(args[1]);
+        }
+        catch (std::exception const &e)
+        {
+            std::cout << "BAD VALUE" << std::endl;
+            return 0;
+        }
+
+        motion.orderTranslation(dist);
+        return 0;
+    }
+
+    else if(!args[0].compare("c"))
+    {
+
+        std::cout << motion.getOdometry()->getLeftValue() << " ; " << motion.getOdometry()->getRightValue() << std::endl;
+        std::cout << motion.getCurveRadius() << std::endl << std::endl;
+        return 0;
+    }
+
+    else
+    {
+        std::cout << "No such command" << std::endl;
     }
 
     return 0;
+
 }
 
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
@@ -193,7 +229,7 @@ void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
     }
 }
 
-void mainWorker(void)
+void serverWorker(void)
 {
     int sockfd; // socket file descriptor
     struct sockaddr_in serv_addr;
