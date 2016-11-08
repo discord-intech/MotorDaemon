@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -258,6 +259,8 @@ void serverWorker(void)
         perror("ERROR connecting");
     }
 
+    motion.init();
+
     while(true)
     {
         char rbuff[256];
@@ -267,7 +270,13 @@ void serverWorker(void)
         rbytes = recv(sockfd, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
         rbuff[rbytes] = '\0'; // set null terminal
 
-        //TODO Comm inter-process
+        std::string order = std::string(rbuff);
+
+        if(treatOrder(order))
+        {
+            motion.stop();
+            exit(0);
+        }
     }
 }
 
