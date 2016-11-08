@@ -261,6 +261,8 @@ void serverWorker(void)
 
     motion.init();
 
+    std::string order = "";
+
     while(true)
     {
         char rbuff[256];
@@ -270,7 +272,7 @@ void serverWorker(void)
         rbytes = recv(sockfd, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
         rbuff[rbytes] = '\0'; // set null terminal
 
-        std::string order = std::string(rbuff);
+        order = std::string(rbuff);
 
         if(treatOrder(order))
         {
