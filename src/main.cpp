@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <sys/types.h>
+#include <sys/un.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <syslog.h>
@@ -20,7 +21,9 @@ void serverWorker(void);
 void localWorker(void);
 int treatOrder(std::string &order);
 
-MotionController motion = MotionController();
+#ifdef __arm__
+MotionController motion;
+#endif
 std::vector<std::string> args = std::vector<std::string>();
 
 
@@ -29,7 +32,12 @@ int main(int argc, char *argv[])
     setlogmask(LOG_UPTO(LOG_NOTICE));
     openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
 
-    if(argc >= 2 && strcmp(argv[1], SERVER_MODE_CMD))
+#ifdef __arm__
+    motion = MotionController();
+    motion.init();
+#endif
+
+    if(argc >= 2 && !strcmp(argv[1], SERVER_MODE_CMD))
     {
         std::thread t(serverWorker);
         syslog(LOG_INFO, "MotorDaemon launched in server mode");
@@ -46,7 +54,6 @@ int main(int argc, char *argv[])
 
 void localWorker(void)
 {
-    motion.init();
 
     char orderC[100];
     std::string order = "";
@@ -61,7 +68,9 @@ void localWorker(void)
 
         if(treatOrder(order))
         {
+#ifdef __arm__
             motion.stop();
+#endif
             exit(0);
         }
     }
@@ -79,7 +88,9 @@ int treatOrder(std::string &order)
 
     if(!args[0].compare("stop"))
     {
+#ifdef __arm__
         motion.stop();
+#endif
         return 0;
     }
 
@@ -104,8 +115,9 @@ int treatOrder(std::string &order)
             std::cout << "BAD VALUE" << std::endl;
             return 0;
         }
-
+#ifdef __arm__
         motion.setLeftSpeedTunings(kp, ki, kd);
+#endif
         return 0;
     }
 
@@ -130,8 +142,9 @@ int treatOrder(std::string &order)
             std::cout << "BAD VALUE" << std::endl;
             return 0;
         }
-
+#ifdef __arm__
         motion.setRightSpeedTunings(kp, ki, kd);
+#endif
         return 0;
     }
 
@@ -156,8 +169,9 @@ int treatOrder(std::string &order)
             std::cout << "BAD VALUE" << std::endl;
             return 0;
         }
-
+#ifdef __arm__
         motion.setTranslationTunings(kp, ki, kd);
+#endif
         return 0;
     }
 
@@ -196,16 +210,18 @@ int treatOrder(std::string &order)
             std::cout << "BAD VALUE" << std::endl;
             return 0;
         }
-
+#ifdef __arm__
         motion.orderTranslation(dist);
+#endif
         return 0;
     }
 
     else if(!args[0].compare("c"))
     {
-
+#ifdef __arm__
         std::cout << motion.getOdometry()->getLeftValue() << " ; " << motion.getOdometry()->getRightValue() << std::endl;
         std::cout << motion.getCurveRadius() << std::endl << std::endl;
+#endif
         return 0;
     }
 
@@ -240,9 +256,10 @@ void serverWorker(void)
     if (sockfd < 0)
     {
         perror("ERROR opening socket");
+        exit(0);
     }
 
-    server = gethostbyname("127.0.0.1"); //the ip address (or server name) of the listening server.
+    server = gethostbyname("localhost"); //the ip address (or server name) of the listening server.
     if (server == NULL)
     {
         fprintf(stderr,"ERROR, no such host\n");
@@ -254,12 +271,29 @@ void serverWorker(void)
     bcopy(server->h_addr, (char *)&serv_addr.sin_addr.s_addr, (size_t) server->h_length);
     serv_addr.sin_port = htons(SOCKET_PORT);
 
-    if (connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0)
+
+
+    if (bind(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0)
     {
-        perror("ERROR connecting");
+        perror("ERROR binding");
+        exit(0);
     }
 
-    motion.init();
+    if(listen(sockfd, 1) <0)
+    {
+        perror("ERROR connecting");
+        exit(0);
+    }
+
+    struct sockaddr_un client_name;
+    socklen_t client_name_len=sizeof(struct sockaddr_un);
+    int client_socket = accept(sockfd,(struct sockaddr *)&client_name, &client_name_len);
+
+    if(client_socket < 0)
+    {
+        perror("ERROR opening client socket");
+        exit(0);
+    }
 
     std::string order = "";
 
@@ -269,14 +303,16 @@ void serverWorker(void)
         ssize_t rbytes;
 
         //rbytes = read(sockfd, rbuff, sizeof(rbuff)); // read from socket and store the msg into buffer
-        rbytes = recv(sockfd, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
+        rbytes = recv(client_socket, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
         rbuff[rbytes] = '\0'; // set null terminal
 
         order = std::string(rbuff);
 
         if(treatOrder(order))
         {
+#ifdef __arm__
             motion.stop();
+#endif
             exit(0);
         }
     }
