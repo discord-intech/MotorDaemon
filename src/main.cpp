@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include <vector>
 #include <string>
 #include <sys/types.h>
@@ -8,6 +9,7 @@
 #include <syslog.h>
 #include <netdb.h>
 #include <stdlib.h>
+#include <malloc.h>
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 
@@ -16,10 +18,11 @@
 #define DAEMON_NAME "motordaemon"
 
 void getArgs(const std::string&, char, std::vector<std::string>&);
-int writeMessage(int &sockfd, std::string &str);
+//void writeMessage(int &sockfd, char *);
+//void printMessage(char *);
 void serverWorker(void);
 void localWorker(void);
-int treatOrder(std::string &order);
+int treatOrder(std::string &order, std::function<void(char*)>);
 
 #ifdef __arm__
 MotionController motion;
@@ -52,6 +55,22 @@ int main(int argc, char *argv[])
 
 }
 
+class Writters
+{
+public:
+
+
+    static void writeMessage(int &sockfd, char * str)
+    {
+        write(sockfd, str, strlen(str));
+    }
+
+    static void printMessage(char * str)
+    {
+        std::cout << str << std::endl;
+    }
+};
+
 void localWorker(void)
 {
 
@@ -66,7 +85,7 @@ void localWorker(void)
         if(order.length() == 0) continue;
         std::cout << std::endl;
 
-        if(treatOrder(order))
+        if(treatOrder(order, &Writters::printMessage))
         {
 #ifdef __arm__
             motion.stop();
@@ -77,7 +96,7 @@ void localWorker(void)
 
 }
 
-int treatOrder(std::string &order)
+int treatOrder(std::string &order, std::function<void(char*)> print)
 {
     if(!order.compare("exit")) return 1;
 
@@ -99,7 +118,7 @@ int treatOrder(std::string &order)
 
         if(args.size() != 4)
         {
-            std::cout << "USAGE : setksg <kp> <ki> <kd>" << std::endl;
+            print((char *) "USAGE : setksg <kp> <ki> <kd>\r\n");
             return 0;
         }
 
@@ -112,7 +131,7 @@ int treatOrder(std::string &order)
         }
         catch (std::exception const &e)
         {
-            std::cout << "BAD VALUE" << std::endl;
+            print((char *) "BAD VALUE\r\n");
             return 0;
         }
 #ifdef __arm__
@@ -126,7 +145,7 @@ int treatOrder(std::string &order)
 
         if(args.size() != 4)
         {
-            std::cout << "USAGE : setksd <kp> <ki> <kd>" << std::endl;
+            print((char *) "USAGE : setksd <kp> <ki> <kd>\r\n");
             return 0;
         }
 
@@ -139,7 +158,7 @@ int treatOrder(std::string &order)
         }
         catch (std::exception const &e)
         {
-            std::cout << "BAD VALUE" << std::endl;
+            print((char *) "BAD VALUE\r\n");
             return 0;
         }
 #ifdef __arm__
@@ -153,7 +172,7 @@ int treatOrder(std::string &order)
 
         if(args.size() != 4)
         {
-            std::cout << "USAGE : setktd <kp> <ki> <kd>" << std::endl;
+            print((char *) "USAGE : setktd <kp> <ki> <kd>\r\n");
             return 0;
         }
 
@@ -166,7 +185,7 @@ int treatOrder(std::string &order)
         }
         catch (std::exception const &e)
         {
-            std::cout << "BAD VALUE" << std::endl;
+            print((char*)"BAD VALUE\r\n");
             return 0;
         }
 #ifdef __arm__
@@ -183,7 +202,8 @@ int treatOrder(std::string &order)
 
         for(int i= 0; i < 180 ; i+=5)
         {
-            std::cout << "angle : " << i << std::endl;
+            print((char*)("angle :" + std::to_string(i) + "\r\n").c_str());
+
             s.setAngle(i);
             usleep(1000*1000);
         }
@@ -196,7 +216,7 @@ int treatOrder(std::string &order)
 
         if(args.size() != 2)
         {
-            std::cout << "USAGE : d <dist>" << std::endl;
+            print((char *) "USAGE : d <dist>\r\n");
             return 0;
         }
 
@@ -207,7 +227,7 @@ int treatOrder(std::string &order)
         }
         catch (std::exception const &e)
         {
-            std::cout << "BAD VALUE" << std::endl;
+            print((char*)"BAD VALUE\r\n");
             return 0;
         }
 #ifdef __arm__
@@ -227,7 +247,7 @@ int treatOrder(std::string &order)
 
     else
     {
-        std::cout << "No such command" << std::endl;
+        print((char *) "No such command\r\n");
     }
 
     return 0;
@@ -240,8 +260,8 @@ void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
     ss.str(s);
     std::string item;
 
-    while (getline(ss, item, delim)) {
-        std::cout << item << std::endl;
+    while (getline(ss, item, delim))
+    {
         elems.push_back(item);
     }
 }
@@ -308,7 +328,7 @@ void serverWorker(void)
 
         order = std::string(rbuff);
 
-        if(treatOrder(order))
+        if(treatOrder(order, std::bind(&Writters::writeMessage, client_socket, std::placeholders::_1)))
         {
 #ifdef __arm__
             motion.stop();
@@ -318,7 +338,3 @@ void serverWorker(void)
     }
 }
 
-int writeMessage(int &sockfd, std::string &str)
-{
-    return (int) write(sockfd, str.c_str(), strlen(str.c_str()));
-}
