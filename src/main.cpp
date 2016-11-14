@@ -1,15 +1,12 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
-#include <string>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <syslog.h>
 #include <netdb.h>
-#include <stdlib.h>
-#include <malloc.h>
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 
@@ -18,8 +15,6 @@
 #define DAEMON_NAME "motordaemon"
 
 void getArgs(const std::string&, char, std::vector<std::string>&);
-//void writeMessage(int &sockfd, char *);
-//void printMessage(char *);
 void serverWorker(void);
 void localWorker(void);
 int treatOrder(std::string &order, std::function<void(char*)>);
