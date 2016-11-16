@@ -152,7 +152,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
     if(chan == AL)
     {
         if (size != -1) {
-            buffer[size] = NULL;
+            buffer[size] = '\0';
             valueAL = atoi(buffer);
         }
         else {
@@ -160,7 +160,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
         }
     } else if(chan == BL) {
         if (size != -1) {
-            buffer[size] = NULL;
+            buffer[size] = '\0';
             valueBL = atoi(buffer);
         }
         else {
@@ -168,7 +168,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
         }
     } else if(chan == AR) {
         if (size != -1) {
-            buffer[size] = NULL;
+            buffer[size] = '\0';
             valueAR = atoi(buffer);
         }
         else {
@@ -176,7 +176,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
         }
     } else if(chan == BR) {
         if (size != -1) {
-            buffer[size] = NULL;
+            buffer[size] = '\0';
             valueBR = atoi(buffer);
         }
         else {

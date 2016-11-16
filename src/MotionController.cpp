@@ -61,7 +61,9 @@ void MotionController::init()
 {
     leftMotor.initPWM();
     rightMotor.initPWM();
- //   direction.initPWM();
+    direction.initPWM();
+
+    direction.setAngle(0);
 
     started = true;
 
@@ -421,6 +423,11 @@ void MotionController::orderTranslation(long mmDistance)
         moving = true;
     }
     translationSetpoint += (int32_t) ((float)mmDistance / MM_PER_TICK);
+}
+
+void MotionController::orderAngle(float angle)
+{
+    direction.setAngle(angle);
 }
 
 Odometry* MotionController::getOdometry(void)

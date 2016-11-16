@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdlib.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/un.h>
@@ -7,22 +6,15 @@
 #include <netinet/in.h>
 #include <syslog.h>
 #include <netdb.h>
-#include "../include/Odometry.hpp"
-#include "../include/MotionController.hpp"
+#include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
+#define BUFFER_MAX_SIZE 256
 #define SERVER_MODE_CMD "-s"
 #define DAEMON_NAME "motordaemon"
 
-void getArgs(const std::string&, char, std::vector<std::string>&);
 void serverWorker(void);
 void localWorker(void);
-int treatOrder(std::string &order, std::function<void(char*)>);
-
-#ifdef __arm__
-MotionController motion;
-#endif
-std::vector<std::string> args = std::vector<std::string>();
 
 
 int main(int argc, char *argv[])
@@ -44,10 +36,14 @@ int main(int argc, char *argv[])
     else
     {
         std::thread t(localWorker);
-        syslog(LOG_INFO, "MotorDaemon launched in user mode");
+        std::cout << "MotorDaemon launched in bash mode" << std::endl;
+#ifdef __arm__
+        std::cout << "ARM CPU detected, using PWMs" << std::endl;
+#endif
         t.join(); //Do not shut down the main thread
     }
 
+    return 0;
 }
 
 class Writters
@@ -85,180 +81,10 @@ void localWorker(void)
 #ifdef __arm__
             motion.stop();
 #endif
-            exit(0);
+            return;
         }
     }
 
-}
-
-int treatOrder(std::string &order, std::function<void(char*)> print)
-{
-    if(!order.compare("exit")) return 1;
-
-    args.clear();
-    getArgs(order, ' ', args);
-
-    if(args.size() == 0) return 0;
-
-    if(!args[0].compare("stop"))
-    {
-#ifdef __arm__
-        motion.stop();
-#endif
-        return 0;
-    }
-
-    else if(!args[0].compare("setksg"))
-    {
-
-        if(args.size() != 4)
-        {
-            print((char *) "USAGE : setksg <kp> <ki> <kd>\r\n");
-            return 0;
-        }
-
-        float kp, ki, kd;
-        try
-        {
-            kp = std::stof(args[1]);
-            ki = std::stof(args[2]);
-            kd = std::stof(args[3]);
-        }
-        catch (std::exception const &e)
-        {
-            print((char *) "BAD VALUE\r\n");
-            return 0;
-        }
-#ifdef __arm__
-        motion.setLeftSpeedTunings(kp, ki, kd);
-#endif
-        return 0;
-    }
-
-    else if(!args[0].compare("setksd"))
-    {
-
-        if(args.size() != 4)
-        {
-            print((char *) "USAGE : setksd <kp> <ki> <kd>\r\n");
-            return 0;
-        }
-
-        float kp, ki, kd;
-        try
-        {
-            kp = std::stof(args[1]);
-            ki = std::stof(args[2]);
-            kd = std::stof(args[3]);
-        }
-        catch (std::exception const &e)
-        {
-            print((char *) "BAD VALUE\r\n");
-            return 0;
-        }
-#ifdef __arm__
-        motion.setRightSpeedTunings(kp, ki, kd);
-#endif
-        return 0;
-    }
-
-    else if(!args[0].compare("setktd"))
-    {
-
-        if(args.size() != 4)
-        {
-            print((char *) "USAGE : setktd <kp> <ki> <kd>\r\n");
-            return 0;
-        }
-
-        float kp, ki, kd;
-        try
-        {
-            kp = std::stof(args[1]);
-            ki = std::stof(args[2]);
-            kd = std::stof(args[3]);
-        }
-        catch (std::exception const &e)
-        {
-            print((char*)"BAD VALUE\r\n");
-            return 0;
-        }
-#ifdef __arm__
-        motion.setTranslationTunings(kp, ki, kd);
-#endif
-        return 0;
-    }
-
-    else if(!args[0].compare("sweep"))
-    {
-        Servo s = Servo(1100000, 0, 1550000, 180);
-
-        s.initPWM();
-
-        for(int i= 0; i < 180 ; i+=5)
-        {
-            print((char*)("angle :" + std::to_string(i) + "\r\n").c_str());
-
-            s.setAngle(i);
-            usleep(1000*1000);
-        }
-
-        return 0;
-    }
-
-    else if(!args[0].compare("d"))
-    {
-
-        if(args.size() != 2)
-        {
-            print((char *) "USAGE : d <dist>\r\n");
-            return 0;
-        }
-
-        long dist;
-        try
-        {
-            dist = std::stol(args[1]);
-        }
-        catch (std::exception const &e)
-        {
-            print((char*)"BAD VALUE\r\n");
-            return 0;
-        }
-#ifdef __arm__
-        motion.orderTranslation(dist);
-#endif
-        return 0;
-    }
-
-    else if(!args[0].compare("c"))
-    {
-#ifdef __arm__
-        std::cout << motion.getOdometry()->getLeftValue() << " ; " << motion.getOdometry()->getRightValue() << std::endl;
-        std::cout << motion.getCurveRadius() << std::endl << std::endl;
-#endif
-        return 0;
-    }
-
-    else
-    {
-        print((char *) "No such command\r\n");
-    }
-
-    return 0;
-
-}
-
-void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
-{
-    std::stringstream ss;
-    ss.str(s);
-    std::string item;
-
-    while (getline(ss, item, delim))
-    {
-        elems.push_back(item);
-    }
 }
 
 void serverWorker(void)
@@ -271,14 +97,15 @@ void serverWorker(void)
     if (sockfd < 0)
     {
         perror("ERROR opening socket");
-        exit(0);
+        return;
     }
 
     server = gethostbyname("localhost"); //the ip address (or server name) of the listening server.
     if (server == NULL)
     {
         fprintf(stderr,"ERROR, no such host\n");
-        exit(0);
+        close(sockfd);
+        return;
     }
 
     bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -291,13 +118,15 @@ void serverWorker(void)
     if (bind(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0)
     {
         perror("ERROR binding");
-        exit(0);
+        close(sockfd);
+        return;
     }
 
-    if(listen(sockfd, 1) <0)
+    listening:if(listen(sockfd, 1) <0)
     {
         perror("ERROR connecting");
-        exit(0);
+        close(sockfd);
+        return;
     }
 
     struct sockaddr_un client_name;
@@ -307,18 +136,26 @@ void serverWorker(void)
     if(client_socket < 0)
     {
         perror("ERROR opening client socket");
-        exit(0);
+        close(sockfd);
+        return;
     }
 
     std::string order = "";
 
     while(true)
     {
-        char rbuff[256];
+        char rbuff[BUFFER_MAX_SIZE];
         ssize_t rbytes;
 
-        //rbytes = read(sockfd, rbuff, sizeof(rbuff)); // read from socket and store the msg into buffer
         rbytes = recv(client_socket, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
+
+        if(rbytes < 0)
+        {
+            perror("ERROR socket is unavailable");
+            close(client_socket);
+            goto listening;
+        }
+
         rbuff[rbytes] = '\0'; // set null terminal
 
         order = std::string(rbuff);
@@ -328,7 +165,9 @@ void serverWorker(void)
 #ifdef __arm__
             motion.stop();
 #endif
-            exit(0);
+            close(client_socket);
+            close(sockfd);
+            return;
         }
     }
 }

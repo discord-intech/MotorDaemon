@@ -118,6 +118,7 @@ public:
     void manageStop(void);
 
     void orderTranslation(long);
+    void orderAngle(float);
 
     void setTranslationTunings(float, float, float);
     void setLeftSpeedTunings(float, float, float);
