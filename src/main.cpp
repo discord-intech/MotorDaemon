@@ -16,11 +16,22 @@
 void serverWorker(void);
 void localWorker(void);
 
+class Writters
+{
+public:
+    static void writeMessage(int &sockfd, char * str)
+    {
+        write(sockfd, str, strlen(str));
+    }
+
+    static void printMessage(char * str)
+    {
+        std::cout << str << std::endl;
+    }
+};
 
 int main(int argc, char *argv[])
 {
-    setlogmask(LOG_UPTO(LOG_NOTICE));
-    openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
 
 #ifdef __arm__
     motion = MotionController();
@@ -29,6 +40,9 @@ int main(int argc, char *argv[])
 
     if(argc >= 2 && !strcmp(argv[1], SERVER_MODE_CMD))
     {
+        setlogmask(LOG_UPTO(LOG_NOTICE));
+        openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
+        serverMode = true;
         std::thread t(serverWorker);
         syslog(LOG_INFO, "MotorDaemon launched in server mode");
         t.join(); //Do not shut down the main thread
@@ -45,22 +59,6 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-class Writters
-{
-public:
-
-
-    static void writeMessage(int &sockfd, char * str)
-    {
-        write(sockfd, str, strlen(str));
-    }
-
-    static void printMessage(char * str)
-    {
-        std::cout << str << std::endl;
-    }
-};
 
 void localWorker(void)
 {

@@ -14,6 +14,8 @@ MotionController motion;
 #endif
 std::vector<std::string> args = std::vector<std::string>();
 
+static bool serverMode = false;
+
 
 
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
