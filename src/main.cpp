@@ -6,6 +6,8 @@
 #include <netinet/in.h>
 #include <syslog.h>
 #include <netdb.h>
+#include <signal.h>
+#include <stdlib.h>
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
@@ -15,6 +17,20 @@
 
 void serverWorker(void);
 void localWorker(void);
+
+int sockfd;
+std::thread t;
+
+void signalHandler(int sign)
+{
+    if(sign == SIGINT)
+    {
+        t.detach();
+        pthread_cancel(t.native_handle());
+        close(sockfd);
+        exit(0);
+    }
+}
 
 class Writters
 {
@@ -39,6 +55,11 @@ public:
 int main(int argc, char *argv[])
 {
 
+    if (signal(SIGINT, signalHandler) == SIG_ERR)
+    {
+        std::cerr << std::endl << "Can't catch SIGINT" << std::endl;
+    }
+
 #ifdef __arm__
     motion = MotionController();
     motion.init();
@@ -49,13 +70,13 @@ int main(int argc, char *argv[])
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
         serverMode = true;
-        std::thread t(serverWorker);
+        t = std::thread(serverWorker);
         syslog(LOG_INFO, "MotorDaemon launched in server mode");
         t.join(); //Do not shut down the main thread
     }
     else
     {
-        std::thread t(localWorker);
+        t = std::thread(localWorker);
         std::cout << "MotorDaemon launched in bash mode" << std::endl;
 #ifdef __arm__
         std::cout << "ARM CPU detected, using PWMs" << std::endl;
@@ -93,7 +114,6 @@ void localWorker(void)
 
 void serverWorker(void)
 {
-    int sockfd; // socket file descriptor
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
