@@ -9,7 +9,7 @@
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
-#define BUFFER_MAX_SIZE 256
+#define BUFFER_MAX_SIZE 2048
 #define SERVER_MODE_CMD "-s"
 #define DAEMON_NAME "motordaemon"
 
@@ -21,6 +21,12 @@ class Writters
 public:
     static void writeMessage(int &sockfd, char * str)
     {
+        if(strlen(str) > BUFFER_MAX_SIZE)
+        {
+            printf("RESPONSE TOO LONG : %s\n", str);
+            return;
+        }
+
         write(sockfd, str, strlen(str));
     }
 
