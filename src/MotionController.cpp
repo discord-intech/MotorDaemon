@@ -91,7 +91,7 @@ void MotionController::mainWorker(MotionController *&asser)
 
         count++;
 
-        if(count % 10 == 0)
+        if(count % 5 == 0)
         {
             asser->manageStop();
             asser->updatePosition();
@@ -175,10 +175,8 @@ void MotionController::control()
     currentAngle = ((rightTicks - currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - currentDistance)) / 2;
 
 
-    if(ABS(translationSetpoint-currentDistance) > toleranceTranslation)
-    {
-        translationPID.compute();
-    }
+    translationPID.compute();
+
 /*    curvePID.compute();
 
     leftCurveRatio = (ABS(radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1:1)))/(ABS(radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
@@ -299,7 +297,7 @@ void MotionController::manageStop()
   //  static uint32_t timeNotEstablished = 0;
   //  static bool isSpeedEstablished = false;
 
-    if (/*isPhysicallyStopped() &&*/ moving) // Pour un blocage classique
+    if (isPhysicallyStopped() && moving) // Pour un blocage classique
     {
 
         if (time == 0)
