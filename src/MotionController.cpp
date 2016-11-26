@@ -88,10 +88,14 @@ void MotionController::mainWorker(MotionController *&asser)
     {
 
         asser->control();
-        asser->manageStop();
-        asser->updatePosition();
 
         count++;
+
+        if(count % 10 == 0)
+        {
+            asser->manageStop();
+            asser->updatePosition();
+        }
 
         if(count == 10000)
         {
