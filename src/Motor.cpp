@@ -8,22 +8,18 @@
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(uint8_t pwm, int dir1, int dir2) : PWMpin(pwm),
-                                                directionPin1(dir1),
-                                                directionPin2(dir2)
+Motor::Motor(uint8_t pwm, int dir) : PWMpin(pwm), directionPin(dir)
 {
-    system((std::string("echo ")+std::to_string(dir1)+std::string(" > /sys/class/gpio/export")).c_str());
-    system((std::string("echo ")+std::to_string(dir2)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo ")+std::to_string(dir)+std::string(" > /sys/class/gpio/export")).c_str());
 
-    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir1)+std::string("/direction")).c_str());
-    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
+    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir)+std::string("/direction")).c_str());
 
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
-LeftMotor::LeftMotor() : Motor(0, 49, 60) {}
+LeftMotor::LeftMotor() : Motor(0, 49) {}
 
-RightMotor::RightMotor() : Motor(1, 117, 125) {}
+RightMotor::RightMotor() : Motor(1, 117) {}
 
 void Motor::setDirection(Direction way)
 {
@@ -34,11 +30,9 @@ void Motor::setDirection(Direction way)
 
     //TODO Check side
     if (way == Direction::FORWARD) {
-        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
-        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
+        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
     } else {
-        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin1)+std::string("/value")).c_str());
-        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin2)+std::string("/value")).c_str());
+        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
     }
 
     actualDirection = way;

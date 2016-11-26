@@ -38,8 +38,7 @@
        // BlackLib::BlackPWM pwm = BlackLib::BlackPWM(BlackLib::PWMDISABLE);
         uint8_t PWMpin;
 
-        int directionPin1;
-        int directionPin2;
+        int directionPin;
 
         std::string PWMduty;
 
@@ -53,7 +52,7 @@
         std::string dutyPath;
 
     public:
-        Motor(uint8_t, int, int);
+        Motor(uint8_t, int);
         void initPWM(void);
         void run(int);
     };
