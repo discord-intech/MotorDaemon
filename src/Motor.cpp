@@ -17,9 +17,9 @@ Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), i
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
-LeftMotor::LeftMotor() : Motor(0, 49, false) {}
+LeftMotor::LeftMotor() : Motor(0, 49, true) {}
 
-RightMotor::RightMotor() : Motor(1, 117, true) {}
+RightMotor::RightMotor() : Motor(1, 117, false) {}
 
 void Motor::setDirection(Direction way)
 {
