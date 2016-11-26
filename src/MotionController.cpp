@@ -171,7 +171,10 @@ void MotionController::control()
     currentAngle = ((rightTicks - currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - currentDistance)) / 2;
 
 
-    translationPID.compute();	// Actualise la valeur de 'translationSpeed'
+    if(ABS(translationSetpoint-currentDistance) > toleranceTranslation)
+    {
+        translationPID.compute();
+    }
 /*    curvePID.compute();
 
     leftCurveRatio = (ABS(radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1:1)))/(ABS(radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
