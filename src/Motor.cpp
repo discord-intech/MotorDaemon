@@ -8,7 +8,7 @@
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(uint8_t pwm, int dir) : PWMpin(pwm), directionPin(dir)
+Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), inversed(inv)
 {
     system((std::string("echo ")+std::to_string(dir)+std::string(" > /sys/class/gpio/export")).c_str());
 
@@ -17,9 +17,9 @@ Motor::Motor(uint8_t pwm, int dir) : PWMpin(pwm), directionPin(dir)
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
-LeftMotor::LeftMotor() : Motor(0, 49) {}
+LeftMotor::LeftMotor() : Motor(0, 49, false) {}
 
-RightMotor::RightMotor() : Motor(1, 117) {}
+RightMotor::RightMotor() : Motor(1, 117, true) {}
 
 void Motor::setDirection(Direction way)
 {
@@ -28,11 +28,21 @@ void Motor::setDirection(Direction way)
         return;
     }
 
-    //TODO Check side
-    if (way == Direction::FORWARD) {
-        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
-    } else {
-        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
+    if(inversed)
+    {
+        if (way == Direction::FORWARD) {
+            system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
+        } else {
+            system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
+        }
+    }
+    else
+    {
+        if (way == Direction::FORWARD) {
+            system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
+        } else {
+            system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
+        }
     }
 
     actualDirection = way;

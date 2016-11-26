@@ -44,6 +44,8 @@
 
         FILE * dutyFile;
 
+        bool inversed;
+
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
         int actualDuty = 0;
         void setDirection(Direction);
@@ -52,7 +54,7 @@
         std::string dutyPath;
 
     public:
-        Motor(uint8_t, int);
+        Motor(uint8_t, int, bool);
         void initPWM(void);
         void run(int);
     };
