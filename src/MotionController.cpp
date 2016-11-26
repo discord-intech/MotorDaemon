@@ -292,14 +292,14 @@ void MotionController::stop()
 
 void MotionController::manageStop()
 {
-    static uint32_t time = 0;
+    static long time = 0;
   //  static uint32_t time2 = 0;
   //  static uint32_t time3 = 0;
   //  static uint32_t timeToEstablish = 0;
   //  static uint32_t timeNotEstablished = 0;
   //  static bool isSpeedEstablished = false;
 
-    if (isPhysicallyStopped() && moving) // Pour un blocage classique
+    if (/*isPhysicallyStopped() &&*/ moving) // Pour un blocage classique
     {
 
         if (time == 0)
