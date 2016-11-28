@@ -110,6 +110,7 @@ void MotionController::mainWorker(MotionController *&asser)
             count = 0;
             std::cout << "Time for 10.000 : " << Millis() - lastTime << std::endl;
            // asser->printTranslationError();
+            std::cout << asser->getTranslationSetPointPointer() << std::endl;
             lastTime = Millis();
         }
 
@@ -437,7 +438,7 @@ void MotionController::orderTranslation(long mmDistance)
         moving = true;
     }
     translationSetpoint += (long) ((float)mmDistance / MM_PER_TICK);
-    std::cout << this << std::endl;
+    std::cout << &translationSetpoint << std::endl;
 }
 
 void MotionController::orderAngle(float angle)

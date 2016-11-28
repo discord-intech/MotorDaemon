@@ -128,6 +128,8 @@ public:
 
     bool isPhysicallyStopped(void);
 
+    long getTranslationSetPointPointer(void) { return (long)&translationSetpoint;}
+
     Odometry* getOdometry(void);
     long getCurveRadius(void);
 
