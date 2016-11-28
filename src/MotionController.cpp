@@ -82,6 +82,8 @@ void MotionController::mainWorker(MotionController *&asser)
     int count=0;
     long lastTime = Millis();
 
+    std::cout << asser << std::endl;
+
     sched_param par;
     par.__sched_priority=sched_get_priority_max(SCHED_RR);
     if(sched_setscheduler(0, SCHED_RR, &par) != 0)
@@ -434,7 +436,8 @@ void MotionController::orderTranslation(long mmDistance)
         translationPID.resetErrors();
         moving = true;
     }
-    translationSetpoint += (int32_t) ((float)mmDistance / MM_PER_TICK);
+    translationSetpoint += (long) ((float)mmDistance / MM_PER_TICK);
+    std::cout << this << std::endl;
 }
 
 void MotionController::orderAngle(float angle)

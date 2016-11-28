@@ -131,12 +131,12 @@ private:
 	volatile long* output; //Output : pwm
 	volatile long* setPoint; //Valeur ? atteindre
 
-	long epsilon;
+	long volatile epsilon;
 	long outMin, outMax;
 
-	long pre_error;
-	long derivative;
-	long integral;
+    volatile long pre_error;
+    volatile long derivative;
+    volatile long integral;
 };
 
 #endif
