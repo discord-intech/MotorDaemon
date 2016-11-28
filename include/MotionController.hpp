@@ -44,21 +44,21 @@ private:
 
     //	Asservissement en vitesse du moteur droit
     PID rightSpeedPID;
-    volatile long rightSpeedSetpoint=0;	// ticks/seconde
-    volatile long currentRightSpeed=0;		// ticks/seconde
-    volatile long rightPWM=0;
+    volatile long rightSpeedSetpoint;	// ticks/seconde
+    volatile long currentRightSpeed;		// ticks/seconde
+    volatile long rightPWM;
 
     //	Asservissement en vitesse du moteur gauche
     PID leftSpeedPID;
-    volatile long leftSpeedSetpoint=0;		// ticks/seconde
-    volatile long currentLeftSpeed=0;		// ticks/seconde
-    volatile long leftPWM=0;
+    volatile long leftSpeedSetpoint;		// ticks/seconde
+    volatile long currentLeftSpeed;		// ticks/seconde
+    volatile long leftPWM;
 
     //	Asservissement en position : translation
     PID translationPID;
-    volatile long translationSetpoint=0;	// ticks
-    volatile long currentDistance=0;		// ticks
-    volatile long translationSpeed=0;		// ticks/seconde
+    volatile long translationSetpoint;	// ticks
+    volatile long currentDistance;		// ticks
+    volatile long translationSpeed;		// ticks/seconde
 
     PID curvePID; //FIXME INIT
     volatile long curveSetpoint;
@@ -72,11 +72,11 @@ private:
     //	Limitation d'acc�l�ration
     volatile long maxAcceleration;
 
-    volatile long currentAngle=0;			// ticks
+    volatile long currentAngle;			// ticks
 
     //Les ratios de vitesse pour commander un d�placement courbe
-    volatile float leftCurveRatio=1;
-    volatile float rightCurveRatio=1;
+    volatile float leftCurveRatio;
+    volatile float rightCurveRatio;
 
     static bool started;
 
