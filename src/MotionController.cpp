@@ -108,7 +108,6 @@ void MotionController::mainWorker(MotionController *&asser)
             count = 0;
             std::cout << "Time for 10.000 : " << Millis() - lastTime << std::endl;
            // asser->printTranslationError();
-            std::cout << asser->getTranslationSetPoint() << std::endl;
             lastTime = Millis();
         }
 
@@ -318,6 +317,7 @@ void MotionController::manageStop()
                 if (ABS(translationPID.getError()) <= toleranceTranslation)
                 { //Stop� pour cause de fin de mouvement
                     std::cout << "DEBUG : ARRIVED AT DESTINATION" << std::endl;
+                    std::cout << translationSetpoint << std::endl;
                     stop();
                    // moveAbnormal = false;
                 }
