@@ -43,6 +43,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     if(!args[0].compare("stop"))
     {
 #ifdef __arm__
+        print("Ordering to stop\r\n");
         motion.stop();
 #endif
         return 0;
