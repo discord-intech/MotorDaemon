@@ -265,6 +265,7 @@ void MotionController::control()
         freq = counter / (t - time);
         time = t;
         counter = 0;
+        std::cout << "it's me : " << (long)this << std::endl;
     }
     else counter++;
 
@@ -436,7 +437,7 @@ void MotionController::orderTranslation(long mmDistance)
         moving = true;
     }
     translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
-    std::cout << translationSetpoint << std::endl;
+    std::cout << "it's me order: " << (long)this << std::endl;
 }
 
 void MotionController::orderAngle(float angle)
