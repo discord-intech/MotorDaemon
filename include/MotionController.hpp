@@ -49,18 +49,18 @@ private:
     volatile long rightPWM;
 
     //	Asservissement en vitesse du moteur gauche
-    volatile PID leftSpeedPID;
+     PID leftSpeedPID;
     volatile long leftSpeedSetpoint;		// ticks/seconde
     volatile long currentLeftSpeed;		// ticks/seconde
     volatile long leftPWM;
 
     //	Asservissement en position : translation
-    volatile PID translationPID;
+     PID translationPID;
     volatile long translationSetpoint;	// ticks
     volatile long currentDistance;		// ticks
     volatile long translationSpeed;		// ticks/seconde
 
-    volatile PID curvePID; //FIXME INIT
+     PID curvePID; //FIXME INIT
     volatile long curveSetpoint;
     volatile long currentRadius;
     volatile long radiusToSet;
