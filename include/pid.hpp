@@ -81,7 +81,7 @@ public:
 			(*output) = outMin;
 	}
 
-	long getOutputLimit() const {
+	long getOutputLimit()  {
 		return outMax;
 	}
 
@@ -91,7 +91,7 @@ public:
 		epsilon = seuil;
 	}
 
-	long getEpsilon() const {
+	long getEpsilon()  {
 		return epsilon;
 	}
 
@@ -99,25 +99,25 @@ public:
 		pre_error = 0;
 		integral = 0;
 	}
-	float getKp() const {
+	float getKp()  {
 		return kp;
 	}
-	float getKi() const {
+	float getKi()  {
 		return ki;
 	}
-	float getKd() const {
+	float getKd()  {
 		return kd;
 	}
 
-	long getError() const {
+	long getError()  {
 		return pre_error;
 	}
 
-	long getDerivativeError() const {
+	long getDerivativeError()  {
 		return derivative;
 	}
 
-	long getIntegralErrol() const {
+	long getIntegralErrol()  {
 		return integral;
 	}
 
