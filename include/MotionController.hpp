@@ -43,24 +43,24 @@ private:
     Servo direction;
 
     //	Asservissement en vitesse du moteur droit
-    PID rightSpeedPID;
+    volatile PID rightSpeedPID;
     volatile long rightSpeedSetpoint;	// ticks/seconde
     volatile long currentRightSpeed;		// ticks/seconde
     volatile long rightPWM;
 
     //	Asservissement en vitesse du moteur gauche
-    PID leftSpeedPID;
+    volatile PID leftSpeedPID;
     volatile long leftSpeedSetpoint;		// ticks/seconde
     volatile long currentLeftSpeed;		// ticks/seconde
     volatile long leftPWM;
 
     //	Asservissement en position : translation
-    PID translationPID;
+    volatile PID translationPID;
     volatile long translationSetpoint;	// ticks
     volatile long currentDistance;		// ticks
     volatile long translationSpeed;		// ticks/seconde
 
-    PID curvePID; //FIXME INIT
+    volatile PID curvePID; //FIXME INIT
     volatile long curveSetpoint;
     volatile long currentRadius;
     volatile long radiusToSet;
