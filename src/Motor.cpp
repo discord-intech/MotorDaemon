@@ -72,10 +72,12 @@ void Motor::initPWM()
         return;
     }
 
-   /* if(dutyFile == NULL)
-    {
-        std::cout << "Can't open duty file for PWM" << PWMpin << " !" << std::endl;
-    }*/
+    fclose(this->dutyFile);
+
+    /* if(dutyFile == NULL)
+     {
+         std::cout << "Can't open duty file for PWM" << PWMpin << " !" << std::endl;
+     }*/
 
   /*  pwm.setPeriodTime(PWM_TIME_PERIOD);
     pwm.setDutyPercent(0.0);
@@ -99,7 +101,9 @@ void Motor::run(int duty) //duty € [-255;255]
     }
     //system((ECHO+std::to_string((ABS(duty) / 255) * PWM_TIME_PERIOD)+PWMduty).c_str());
 
-    this->dutyFile = freopen(dutyPath.c_str(), "w", this->dutyFile);
+   // this->dutyFile = freopen(dutyPath.c_str(), "w", this->dutyFile);
+
+    this->dutyFile = fopen(dutyPath.c_str(), "w");
 
     if(this->dutyFile == NULL)
     {
@@ -123,7 +127,7 @@ void Motor::run(int duty) //duty € [-255;255]
     //dutyFile.flush();
 
     // fseek (dutyFile, 0, SEEK_SET);
-    //fclose(dutyFile);
+    fclose(this->dutyFile);
     this->actualDuty = duty;
     //pwm.setDutyCycle((uint64_t) ((ABS(duty) / 255) * PWM_TIME_PERIOD));
 }
