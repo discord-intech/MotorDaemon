@@ -122,6 +122,11 @@ public:
 		return integral;
 	}
 
+    volatile long* getPTR() volatile
+    {
+        return input;
+    }
+
 private:
 
 	float kp;

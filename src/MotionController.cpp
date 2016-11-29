@@ -265,7 +265,7 @@ void MotionController::control()
         freq = counter / (t - time);
         time = t;
         counter = 0;
-        std::cout << "it's me : " << (long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
+        std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
     }
     else counter++;
 
