@@ -44,26 +44,26 @@ private:
 
     //	Asservissement en vitesse du moteur droit
     PID rightSpeedPID;
-    volatile long rightSpeedSetpoint;	// ticks/seconde
-    volatile long currentRightSpeed;		// ticks/seconde
-    volatile long rightPWM;
+     long rightSpeedSetpoint;	// ticks/seconde
+     long currentRightSpeed;		// ticks/seconde
+     long rightPWM;
 
     //	Asservissement en vitesse du moteur gauche
     PID leftSpeedPID;
-    volatile long leftSpeedSetpoint;		// ticks/seconde
-    volatile long currentLeftSpeed;		// ticks/seconde
-    volatile long leftPWM;
+     long leftSpeedSetpoint;		// ticks/seconde
+     long currentLeftSpeed;		// ticks/seconde
+     long leftPWM;
 
     //	Asservissement en position : translation
     PID translationPID;
-    volatile long translationSetpoint;	// ticks
-    volatile long currentDistance;		// ticks
-    volatile long translationSpeed;		// ticks/seconde
+     long translationSetpoint;	// ticks
+     long currentDistance;		// ticks
+     long translationSpeed;		// ticks/seconde
 
     PID curvePID; //FIXME INIT
-    volatile long curveSetpoint;
-    volatile long currentRadius;
-    volatile long radiusToSet;
+     long curveSetpoint;
+     long currentRadius;
+     long radiusToSet;
 
     //	Limitation de vitesses
     long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
