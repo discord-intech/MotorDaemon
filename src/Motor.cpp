@@ -28,7 +28,7 @@ void Motor::setDirection(Direction way)
         return;
     }
 
-    if(inversed)
+    if(!inversed)
     {
         if (way == Direction::FORWARD) {
             system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(directionPin)+std::string("/value")).c_str());
