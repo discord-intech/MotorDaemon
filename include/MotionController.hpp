@@ -75,8 +75,8 @@ private:
     volatile long currentAngle;			// ticks
 
     //Les ratios de vitesse pour commander un d�placement courbe
-    volatile float leftCurveRatio;
-    volatile float rightCurveRatio;
+    volatile double leftCurveRatio;
+    volatile double rightCurveRatio;
 
     static bool started;
 
@@ -84,15 +84,15 @@ private:
     Average<long, AVERAGE_SPEED_SIZE> averageRightSpeed;
 
     //Nombre de ticks de tol�rance pour consid�rer qu'on est arriv� � destination
-    int toleranceTranslation;
-    int toleranceRotation;
+    long toleranceTranslation;
+    long toleranceRotation;
 
-    int toleranceSpeed; // Tol�rance avant de consid�rer le mouvement anormal (�cart entre la consigne de vitesse et la vitesse r�elle)
-    int toleranceSpeedEstablished; // Tol�rance autour de la vitesse �tablie avant de capter un blocage
+    long toleranceSpeed; // Tol�rance avant de consid�rer le mouvement anormal (�cart entre la consigne de vitesse et la vitesse r�elle)
+    long toleranceSpeedEstablished; // Tol�rance autour de la vitesse �tablie avant de capter un blocage
 
-    int toleranceDifferentielle;
+    long toleranceDifferentielle;
 
-    int delayToEstablish; // Temps � attendre avant de consid�rer la vitesse stable
+    long delayToEstablish; // Temps � attendre avant de consid�rer la vitesse stable
 
     int32_t distanceTest;
 

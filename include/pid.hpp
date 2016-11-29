@@ -29,7 +29,6 @@ public:
 		pre_error = 0;
 		derivative = 0;
 		integral = 0;
-		resetErrors();
 	}
 
 	void compute() {

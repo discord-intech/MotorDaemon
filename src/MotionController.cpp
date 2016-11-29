@@ -316,7 +316,7 @@ void MotionController::manageStop()
             { //Si arr�t� plus de 'delayToStop' ms
                 if (ABS(translationPID.getError()) <= toleranceTranslation)
                 { //Stop� pour cause de fin de mouvement
-                    std::cout << "DEBUG : ARRIVED AT DESTINATION" << std::endl;
+                    std::cout << "DEBUG : ARRIVED AT DESTINATION " << translationPID.getError() << " : " << translationSetpoint << std::endl;
                     std::cout << translationSetpoint << std::endl;
                     stop();
                    // moveAbnormal = false;
