@@ -21,6 +21,7 @@
 #define TAN(x) ((x)+(((x)*(x)*(x))/3))
 
 #define PWM_TIME_PERIOD 1000*1000  // nanosecondes
+#define LIMITER 1.0 //Used to limit PWM output
 
 #define ECHO std::string("echo ")
 
@@ -47,7 +48,7 @@
         bool inversed;
 
         Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
-        int actualDuty = 0;
+        volatile int actualDuty = 0;
         void setDirection(Direction);
         void setDirectionPins(void);
 

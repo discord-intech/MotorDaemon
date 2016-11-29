@@ -256,7 +256,7 @@ void MotionController::control()
         freq = counter / (t - time);
         time = t;
         counter = 0;
-        std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
+       // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
     }
     else counter++;
 
@@ -309,7 +309,6 @@ void MotionController::manageStop()
                 if (ABS(translationPID.getError()) <= toleranceTranslation)
                 { //Stop� pour cause de fin de mouvement
                     std::cout << "DEBUG : ARRIVED AT DESTINATION " << translationPID.getError() << " : " << translationSetpoint << std::endl;
-                    std::cout << translationSetpoint << std::endl;
                     stop();
                    // moveAbnormal = false;
                 }
@@ -428,7 +427,7 @@ void MotionController::orderTranslation(long mmDistance)
         moving = true;
     }
     translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
-    std::cout << "it's me order: " << translationSetpoint << std::endl;
+    //std::cout << "it's me order: " << translationSetpoint << std::endl;
 }
 
 void MotionController::orderAngle(float angle)

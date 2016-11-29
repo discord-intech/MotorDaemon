@@ -66,17 +66,17 @@ private:
     volatile long radiusToSet;
 
     //	Limitation de vitesses
-    volatile long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
-    volatile long maxSpeedTranslation;	// definit la consigne max de vitesse de translation envoi�e au PID (trap�ze)
+    long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
+    long maxSpeedTranslation;	// definit la consigne max de vitesse de translation envoi�e au PID (trap�ze)
 
     //	Limitation d'acc�l�ration
-    volatile long maxAcceleration;
+    long maxAcceleration;
 
-    volatile long currentAngle;			// ticks
+    long currentAngle;			// ticks
 
     //Les ratios de vitesse pour commander un d�placement courbe
-    volatile double leftCurveRatio;
-    volatile double rightCurveRatio;
+    double leftCurveRatio;
+    double rightCurveRatio;
 
     static bool started;
 
