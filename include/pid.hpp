@@ -30,7 +30,6 @@ public:
 		derivative = 0;
 		integral = 0;
 
-        std::cout << (long) input << std::endl;
 	}
 
 	void compute() volatile {

@@ -22,15 +22,6 @@ translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
 curvePID(&currentRadius, &radiusToSet, &curveSetpoint),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 {
-    translationSetpoint = 0;
-    leftSpeedSetpoint = 0;
-    rightSpeedSetpoint = 0;
-    currentRightSpeed = 0;
-    rightPWM = 0;
-    currentLeftSpeed = 0;
-    leftPWM = 0;
-    currentDistance = 0;
-    translationSpeed = 0;
 
     leftSpeedPID.setOutputLimits(-255,255);
     rightSpeedPID.setOutputLimits(-255,255);
