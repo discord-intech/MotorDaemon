@@ -122,9 +122,9 @@ public:
 		return integral;
 	}
 
-    volatile long* getPTR() volatile
+    volatile long getPTR() volatile
     {
-        return input;
+        return *input;
     }
 
 private:
