@@ -31,7 +31,7 @@ public:
 		integral = 0;
 	}
 
-	void compute() {
+	void compute() volatile {
 
 		long error = (*setPoint) - (*input);
 		derivative = error - pre_error;
@@ -58,7 +58,7 @@ public:
 		(*output) = result;
 	}
 
-	void setTunings(float kp, float ki, float kd) {
+	void setTunings(float kp, float ki, float kd) volatile {
 		if (kp < 0 || ki < 0 || kd < 0)
 			return;
 
@@ -67,7 +67,7 @@ public:
 		this->kd = kd;
 	}
 
-	void setOutputLimits(int32_t min, int32_t max) {
+	void setOutputLimits(int32_t min, int32_t max) volatile {
 		if (min >= max)
 			return;
 
@@ -80,43 +80,43 @@ public:
 			(*output) = outMin;
 	}
 
-	long getOutputLimit()  {
+	long getOutputLimit() volatile {
 		return outMax;
 	}
 
-	void setEpsilon(int32_t seuil) {
+	void setEpsilon(int32_t seuil) volatile {
 		if(seuil < 0)
 			return;
 		epsilon = seuil;
 	}
 
-	long getEpsilon()  {
+	long getEpsilon() volatile {
 		return epsilon;
 	}
 
-	void resetErrors() {
+	void resetErrors() volatile {
 		pre_error = 0;
 		integral = 0;
 	}
-	float getKp()  {
+	float getKp() volatile  {
 		return kp;
 	}
-	float getKi()  {
+	float getKi() volatile  {
 		return ki;
 	}
-	float getKd()  {
+	float getKd() volatile  {
 		return kd;
 	}
 
-	long getError()  {
+	long getError() volatile  {
 		return pre_error;
 	}
 
-	long getDerivativeError()  {
+	long getDerivativeError() volatile  {
 		return derivative;
 	}
 
-	long getIntegralErrol()  {
+	long getIntegralErrol() volatile  {
 		return integral;
 	}
 
