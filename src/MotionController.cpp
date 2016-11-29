@@ -73,13 +73,13 @@ void MotionController::mainWorker(MotionController *&asser)
     int count=0;
     long lastTime = Millis();
 
-    sched_param par;
+  /*  sched_param par;
     par.__sched_priority=sched_get_priority_max(SCHED_RR);
     if(sched_setscheduler(0, SCHED_RR, &par) != 0)
     {
         std::cerr << "Failed to set RR sched !!" << std::endl;
         return;
-    }
+    }*/
 
     while(started)
     {
@@ -257,6 +257,7 @@ void MotionController::control()
         time = t;
         counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
+        std::cout << "it's me : " << leftPWM << " : " << rightPWM << std::endl;
     }
     else counter++;
 
