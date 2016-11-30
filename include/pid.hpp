@@ -19,20 +19,21 @@ class PID
 public:
 
 
-	PID(std::shared_ptr<long> input, std::shared_ptr<long> output, std::shared_ptr<long> setPoint)
-	{
-		this->output = output;
-		this->input = input;
-		this->setPoint = setPoint;
+	PID() {}
 
-		setOutputLimits(-2147483647, 2147483647);
-		setTunings(0, 0, 0);
-		epsilon = 0;
-		pre_error = 0;
-		derivative = 0;
-		integral = 0;
+    void setPointers(std::shared_ptr<long> input, std::shared_ptr<long> output, std::shared_ptr<long> setPoint)
+    {
+        this->input = input;
+        this->output = output;
+        this->setPoint = setPoint;
 
-	}
+        setOutputLimits(-2147483647, 2147483647);
+        setTunings(0, 0, 0);
+        epsilon = 0;
+        pre_error = 0;
+        derivative = 0;
+        integral = 0;
+    }
 
 	void compute() {
 

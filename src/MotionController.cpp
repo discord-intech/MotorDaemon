@@ -16,12 +16,14 @@ unsigned long Millis()
 }
 
 MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
-rightSpeedPID(currentRightSpeed, rightPWM, rightSpeedSetpoint),
-leftSpeedPID(currentLeftSpeed, leftPWM, leftSpeedSetpoint),
-translationPID(currentDistance, translationSpeed, translationSetpoint),
-curvePID(currentRadius, radiusToSet, curveSetpoint),
+rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 {
+
+    rightSpeedPID.setPointers(currentRightSpeed, rightPWM, rightSpeedSetpoint);
+    leftSpeedPID.setPointers(currentLeftSpeed, leftPWM, leftSpeedSetpoint);
+    translationPID.setPointers(currentDistance, translationSpeed, translationSetpoint);
+    curvePID.setPointers(currentRadius, radiusToSet, curveSetpoint);
 
     leftSpeedPID.setOutputLimits(-255,255);
     rightSpeedPID.setOutputLimits(-255,255);
@@ -44,9 +46,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(1, 0, 0);
-    leftSpeedPID.setTunings(0.01, 0, 0); // ki 0.00001
-    rightSpeedPID.setTunings(0.01, 0, 0);
+    translationPID.setTunings(10, 1, 0);
+    leftSpeedPID.setTunings(0.01, 0.01, 0); // ki 0.00001
+    rightSpeedPID.setTunings(0.01, 0.01, 0);
     curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
@@ -97,7 +99,7 @@ void MotionController::mainWorker(MotionController *&asser)
         if(count == 10000)
         {
             count = 0;
-            std::cout << "Frequency : " << 10000./(double)(Millis() - lastTime) << " Hz" << std::endl;
+            std::cout << "Frequency : " << 10000000./(double)(Millis() - lastTime) << " Hz" << std::endl;
            // asser->printTranslationError();
             lastTime = Millis();
         }
@@ -257,7 +259,7 @@ void MotionController::control()
         time = t;
         counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
-        std::cout << "it's me : " << *leftPWM << " : " << *rightPWM << std::endl;
+        std::cout << "it's me : " << *leftPWM << " : " << *rightPWM << " : " << *translationSetpoint << std::endl;
     }
     else counter++;
 
@@ -428,7 +430,7 @@ void MotionController::orderTranslation(long mmDistance)
         moving = true;
     }
     *translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
-    //std::cout << "it's me order: " << translationSetpoint << std::endl;
+    std::cout << "it's me order: " << *translationSetpoint << std::endl;
 }
 
 void MotionController::orderAngle(float angle)
