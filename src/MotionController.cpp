@@ -37,7 +37,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     // maxjerk = 1; // Valeur de jerk maxi(secousse d'acc�l�ration)
 
-    toleranceTranslation = 30;
+    toleranceTranslation = 100;
     toleranceRotation = 50;
     toleranceSpeed = 50;
     toleranceSpeedEstablished = 50; // Doit �tre la plus petite possible, sans bloquer les trajectoires courbes 50
@@ -46,9 +46,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(10, 0.01, 0);
-    leftSpeedPID.setTunings(0.01, 0.0001, 0); // ki 0.00001
-    rightSpeedPID.setTunings(0.01, 0.0001, 0);
+    translationPID.setTunings(0.5, 0, 0);
+    leftSpeedPID.setTunings(0.01, 0, 0); // ki 0.00001
+    rightSpeedPID.setTunings(0.01, 0, 0);
     curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
