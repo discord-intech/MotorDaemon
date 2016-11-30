@@ -19,7 +19,7 @@ Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), i
 
 LeftMotor::LeftMotor() : Motor(0, 49, true) {}
 
-RightMotor::RightMotor() : Motor(1, 117, false) {}
+RightMotor::RightMotor() : Motor(1, 60, false) {}
 
 void Motor::setDirection(Direction way)
 {
