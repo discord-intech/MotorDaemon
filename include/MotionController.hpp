@@ -44,26 +44,26 @@ private:
 
     //	Asservissement en vitesse du moteur droit
     PID rightSpeedPID;
-    std::shared_ptr<long> rightSpeedSetpoint;	// ticks/seconde
-    std::shared_ptr<long> currentRightSpeed;		// ticks/seconde
-    std::shared_ptr<long> rightPWM;
+    std::shared_ptr<long> rightSpeedSetpoint = std::shared_ptr<long>(new long(0));	// ticks/seconde
+    std::shared_ptr<long> currentRightSpeed = std::shared_ptr<long>(new long(0));		// ticks/seconde
+    std::shared_ptr<long> rightPWM = std::shared_ptr<long>(new long(0));
 
     //	Asservissement en vitesse du moteur gauche
     PID leftSpeedPID;
-    std::shared_ptr<long> leftSpeedSetpoint;		// ticks/seconde
-    std::shared_ptr<long> currentLeftSpeed;		// ticks/seconde
-    std::shared_ptr<long> leftPWM;
+    std::shared_ptr<long> leftSpeedSetpoint = std::shared_ptr<long>(new long(0));		// ticks/seconde
+    std::shared_ptr<long> currentLeftSpeed = std::shared_ptr<long>(new long(0));		// ticks/seconde
+    std::shared_ptr<long> leftPWM = std::shared_ptr<long>(new long(0));
 
     //	Asservissement en position : translation
     PID translationPID;
-    std::shared_ptr<long> translationSetpoint;	// ticks
-    std::shared_ptr<long> currentDistance;		// ticks
-    std::shared_ptr<long> translationSpeed;		// ticks/seconde
+    std::shared_ptr<long> translationSetpoint = std::shared_ptr<long>(new long(0));	// ticks
+    std::shared_ptr<long> currentDistance = std::shared_ptr<long>(new long(0));		// ticks
+    std::shared_ptr<long> translationSpeed = std::shared_ptr<long>(new long(0));		// ticks/seconde
 
     PID curvePID; //FIXME INIT
-    std::shared_ptr<long> curveSetpoint;
-    std::shared_ptr<long> currentRadius;
-    std::shared_ptr<long> radiusToSet;
+    std::shared_ptr<long> curveSetpoint = std::shared_ptr<long>(new long(0));
+    std::shared_ptr<long> currentRadius = std::shared_ptr<long>(new long(0));
+    std::shared_ptr<long> radiusToSet = std::shared_ptr<long>(new long(0));
 
     //	Limitation de vitesses
     long maxSpeed; 				// definit la vitesse maximal des moteurs du robot

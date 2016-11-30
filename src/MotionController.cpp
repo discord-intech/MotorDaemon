@@ -16,10 +16,6 @@ unsigned long Millis()
 }
 
 MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
-currentRightSpeed(new long (0)),rightPWM(new long (0)),rightSpeedSetpoint(new long (0)),
-currentLeftSpeed(new long (0)),leftPWM(new long (0)),leftSpeedSetpoint(new long (0)),
-currentDistance(new long (0)),translationSpeed(new long (0)),translationSetpoint(new long (0)),
-currentRadius(new long (0)),radiusToSet(new long (0)),curveSetpoint(new long (0)),
 rightSpeedPID(currentRightSpeed, rightPWM, rightSpeedSetpoint),
 leftSpeedPID(currentLeftSpeed, leftPWM, leftSpeedSetpoint),
 translationPID(currentDistance, translationSpeed, translationSetpoint),
