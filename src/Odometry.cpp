@@ -114,7 +114,7 @@ void Odometry::onTickChanALeft(void)
 {
     if(valueAL == valueBL)
     {
-        leftTicks++;
+        leftTicks--;
     }
 }
 
@@ -122,7 +122,7 @@ void Odometry::onTickChanBLeft(void)
 {
     if(valueAL == valueBL)
     {
-        leftTicks--;
+        leftTicks++;
     }
 }
 
