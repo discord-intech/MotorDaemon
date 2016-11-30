@@ -37,7 +37,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     // maxjerk = 1; // Valeur de jerk maxi(secousse d'acc�l�ration)
 
-    toleranceTranslation = 100;
+    toleranceTranslation = 200;
     toleranceRotation = 50;
     toleranceSpeed = 50;
     toleranceSpeedEstablished = 50; // Doit �tre la plus petite possible, sans bloquer les trajectoires courbes 50
@@ -47,8 +47,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
     translationPID.setTunings(0.5, 0, 0);
-    leftSpeedPID.setTunings(0.01, 0, 0); // ki 0.00001
-    rightSpeedPID.setTunings(0.01, 0, 0);
+    leftSpeedPID.setTunings(0.06, 0, 0); // ki 0.00001
+    rightSpeedPID.setTunings(0.06, 0, 0);
     curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
@@ -273,6 +273,7 @@ void MotionController::stop()
 
     std::cout << "DEBUG : STOP" << std::endl;
 
+    *currentDistance = ABS(odo.getRightValue()-odo.getLeftValue())/2;
     *translationSetpoint = *currentDistance;
     *leftSpeedSetpoint = 0;
     *rightSpeedSetpoint = 0;
@@ -399,7 +400,7 @@ void MotionController::updatePosition() {
 }
 
 bool MotionController::isPhysicallyStopped() {
-    return (translationPID.getDerivativeError() == 0) /*|| (ABS(ABS(leftSpeedPID.getError())-ABS(rightSpeedPID.getError()))>toleranceDifferentielle)*/;
+    return (translationPID.getDerivativeError() == 0) || (ABS(ABS(leftSpeedPID.getError())-ABS(rightSpeedPID.getError()))>toleranceDifferentielle);
 }
 
 void MotionController::setTranslationTunings(float kp, float ki, float kd)
