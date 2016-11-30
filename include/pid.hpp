@@ -10,6 +10,8 @@
 #define PID_HPP
 
 #include <stdint.h>
+#include <memory>
+
 
 
 class PID
@@ -17,7 +19,7 @@ class PID
 public:
 
 
-	PID(volatile long* input, volatile long* output, volatile long* setPoint)
+	PID(std::shared_ptr<long> input, std::shared_ptr<long> output, std::shared_ptr<long> setPoint)
 	{
 		this->output = output;
 		this->input = input;
@@ -32,7 +34,7 @@ public:
 
 	}
 
-	void compute() volatile {
+	void compute() {
 
 		long error = (*setPoint) - (*input);
 		derivative = error - pre_error;
@@ -68,7 +70,7 @@ public:
 		this->kd = kd;
 	}
 
-	void setOutputLimits(int32_t min, int32_t max) volatile {
+	void setOutputLimits(int32_t min, int32_t max) {
 		if (min >= max)
 			return;
 
@@ -91,7 +93,7 @@ public:
 		epsilon = seuil;
 	}
 
-	long getEpsilon() volatile {
+	long getEpsilon() {
 		return epsilon;
 	}
 
@@ -99,29 +101,29 @@ public:
 		pre_error = 0;
 		integral = 0;
 	}
-	float getKp() volatile  {
+	float getKp()  {
 		return kp;
 	}
-	float getKi() volatile  {
+	float getKi()  {
 		return ki;
 	}
-	float getKd() volatile  {
+	float getKd()  {
 		return kd;
 	}
 
-	long getError() volatile  {
+	long getError()  {
 		return pre_error;
 	}
 
-	long getDerivativeError() volatile  {
+	long getDerivativeError()  {
 		return derivative;
 	}
 
-	long getIntegralErrol() volatile  {
+	long getIntegralErrol()  {
 		return integral;
 	}
 
-    volatile long getPTR() volatile
+    long getPTR()
     {
         return *input;
     }
@@ -132,9 +134,9 @@ private:
 	float ki;
 	float kd;
 
-	volatile long* input; //Valeur du codeur
-	volatile long* output; //Output : pwm
-	volatile long* setPoint; //Valeur ? atteindre
+	std::shared_ptr<long> input; //Valeur du codeur
+    std::shared_ptr<long> output; //Output : pwm
+    std::shared_ptr<long> setPoint; //Valeur ? atteindre
 
 	long volatile epsilon;
 	long outMin, outMax;

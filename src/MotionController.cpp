@@ -16,10 +16,14 @@ unsigned long Millis()
 }
 
 MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
-rightSpeedPID(&currentRightSpeed, &rightPWM, &rightSpeedSetpoint),
-leftSpeedPID(&currentLeftSpeed, &leftPWM, &leftSpeedSetpoint),
-translationPID(&currentDistance, &translationSpeed, &translationSetpoint),
-curvePID(&currentRadius, &radiusToSet, &curveSetpoint),
+currentRightSpeed(new long (0)),rightPWM(new long (0)),rightSpeedSetpoint(new long (0)),
+currentLeftSpeed(new long (0)),leftPWM(new long (0)),leftSpeedSetpoint(new long (0)),
+currentDistance(new long (0)),translationSpeed(new long (0)),translationSetpoint(new long (0)),
+currentRadius(new long (0)),radiusToSet(new long (0)),curveSetpoint(new long (0)),
+rightSpeedPID(currentRightSpeed, rightPWM, rightSpeedSetpoint),
+leftSpeedPID(currentLeftSpeed, leftPWM, leftSpeedSetpoint),
+translationPID(currentDistance, translationSpeed, translationSetpoint),
+curvePID(currentRadius, radiusToSet, curveSetpoint),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 {
 
@@ -138,38 +142,38 @@ void MotionController::control()
 
     if(freq == 0)
     {
-        currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
-        currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
+        *currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+        *currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
     }
     else
     {
-        currentLeftSpeed = (leftTicks - previousLeftTicks)*freq; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
-        currentRightSpeed = (rightTicks - previousRightTicks)*freq;
+        *currentLeftSpeed = (leftTicks - previousLeftTicks)*freq; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+        *currentRightSpeed = (rightTicks - previousRightTicks)*freq;
     }
 
 
     previousLeftTicks = leftTicks;
     previousRightTicks = rightTicks;
 
-    averageLeftSpeed.add(currentLeftSpeed);
-    averageRightSpeed.add(currentRightSpeed);
+    averageLeftSpeed.add(*currentLeftSpeed);
+    averageRightSpeed.add(*currentRightSpeed);
 
-    currentLeftSpeed = averageLeftSpeed.value(); // On utilise pour l'asserv la valeur moyenne des dernieres current Speed
-    currentRightSpeed = averageRightSpeed.value(); // sinon le robot il fait nawak.
+    *currentLeftSpeed = averageLeftSpeed.value(); // On utilise pour l'asserv la valeur moyenne des dernieres current Speed
+    *currentRightSpeed = averageRightSpeed.value(); // sinon le robot il fait nawak.
 
-    if(ABS(currentRightSpeed - currentLeftSpeed) > 0)
+    if(ABS(*currentRightSpeed - *currentLeftSpeed) > 0)
     {
-        currentRadius = (volatile long) ((currentLeftSpeed * RAYON_COD_DROITE + currentRightSpeed * RAYON_COD_GAUCHE)
-                                         / (MM_PER_TICK * (currentRightSpeed - currentLeftSpeed)));
+        *currentRadius = (volatile long) ((*currentLeftSpeed * RAYON_COD_DROITE + *currentRightSpeed * RAYON_COD_GAUCHE)
+                                         / (MM_PER_TICK * (*currentRightSpeed - *currentLeftSpeed)));
     }
     else
     {
-        currentRadius = INT64_MAX;
+        *currentRadius = INT64_MAX;
     }
 
 
-    currentDistance = (leftTicks + rightTicks) / 2;
-    currentAngle = ((rightTicks - currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - currentDistance)) / 2;
+    *currentDistance = (leftTicks + rightTicks) / 2;
+    currentAngle = ((rightTicks - *currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - *currentDistance)) / 2;
 
 
     translationPID.compute();
@@ -199,8 +203,8 @@ void MotionController::control()
         translationSpeed = -maxSpeedTranslation;*/
 
 
-    leftSpeedSetpoint = (long) (translationSpeed * leftCurveRatio);
-    rightSpeedSetpoint = (long) (translationSpeed * rightCurveRatio);
+    *leftSpeedSetpoint = (long) (*translationSpeed * leftCurveRatio);
+    *rightSpeedSetpoint = (long) (*translationSpeed * rightCurveRatio);
 
     // Limitation de la vitesse
   /*  if(leftSpeedSetpoint > maxSpeed)
@@ -235,8 +239,8 @@ void MotionController::control()
 
 
 
-    previousLeftSpeedSetpoint = leftSpeedSetpoint;			// Mise à jour des consignes de vitesse
-    previousRightSpeedSetpoint = rightSpeedSetpoint;
+    previousLeftSpeedSetpoint = *leftSpeedSetpoint;			// Mise à jour des consignes de vitesse
+    previousRightSpeedSetpoint = *rightSpeedSetpoint;
 
 
 
@@ -246,8 +250,8 @@ void MotionController::control()
     //std::cout << "calculation time : " << Millis() - time << std::endl;
    // time = Millis();
 
-    leftMotor.run((int) leftPWM);
-    rightMotor.run((int) rightPWM);
+    leftMotor.run((int) *leftPWM);
+    rightMotor.run((int) *rightPWM);
 
     long t = Millis();
 
@@ -257,7 +261,7 @@ void MotionController::control()
         time = t;
         counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
-        std::cout << "it's me : " << leftPWM << " : " << rightPWM << std::endl;
+        std::cout << "it's me : " << *leftPWM << " : " << *rightPWM << std::endl;
     }
     else counter++;
 
@@ -271,9 +275,9 @@ void MotionController::stop()
 
     std::cout << "DEBUG : STOP" << std::endl;
 
-    translationSetpoint = currentDistance;
-    leftSpeedSetpoint = 0;
-    rightSpeedSetpoint = 0;
+    *translationSetpoint = *currentDistance;
+    *leftSpeedSetpoint = 0;
+    *rightSpeedSetpoint = 0;
 
     leftMotor.run(0);
     rightMotor.run(0);
@@ -427,7 +431,7 @@ void MotionController::orderTranslation(long mmDistance)
         translationPID.resetErrors();
         moving = true;
     }
-    translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
+    *translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
     //std::cout << "it's me order: " << translationSetpoint << std::endl;
 }
 
@@ -443,5 +447,5 @@ Odometry* MotionController::getOdometry(void)
 
 long MotionController::getCurveRadius()
 {
-    return currentRadius;
+    return *currentRadius;
 }

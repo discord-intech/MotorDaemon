@@ -44,26 +44,26 @@ private:
 
     //	Asservissement en vitesse du moteur droit
     PID rightSpeedPID;
-     long rightSpeedSetpoint;	// ticks/seconde
-     long currentRightSpeed;		// ticks/seconde
-     long rightPWM;
+    std::shared_ptr<long> rightSpeedSetpoint;	// ticks/seconde
+    std::shared_ptr<long> currentRightSpeed;		// ticks/seconde
+    std::shared_ptr<long> rightPWM;
 
     //	Asservissement en vitesse du moteur gauche
     PID leftSpeedPID;
-     long leftSpeedSetpoint;		// ticks/seconde
-     long currentLeftSpeed;		// ticks/seconde
-     long leftPWM;
+    std::shared_ptr<long> leftSpeedSetpoint;		// ticks/seconde
+    std::shared_ptr<long> currentLeftSpeed;		// ticks/seconde
+    std::shared_ptr<long> leftPWM;
 
     //	Asservissement en position : translation
     PID translationPID;
-     long translationSetpoint;	// ticks
-     long currentDistance;		// ticks
-     long translationSpeed;		// ticks/seconde
+    std::shared_ptr<long> translationSetpoint;	// ticks
+    std::shared_ptr<long> currentDistance;		// ticks
+    std::shared_ptr<long> translationSpeed;		// ticks/seconde
 
     PID curvePID; //FIXME INIT
-     long curveSetpoint;
-     long currentRadius;
-     long radiusToSet;
+    std::shared_ptr<long> curveSetpoint;
+    std::shared_ptr<long> currentRadius;
+    std::shared_ptr<long> radiusToSet;
 
     //	Limitation de vitesses
     long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
@@ -128,15 +128,15 @@ public:
 
     bool isPhysicallyStopped(void);
 
-    long getTranslationSetPoint(void) { return translationSetpoint;}
+    long getTranslationSetPoint(void) { return *translationSetpoint;}
 
     Odometry* getOdometry(void);
     long getCurveRadius(void);
 
     void printTranslationError(void)
     {
-        std::cout << "Trans err : " << this->translationSetpoint - this->currentDistance << " ; "
-                  << this->translationPID.getError() << " ; " << this->leftSpeedSetpoint << std::endl;
+        std::cout << "Trans err : " << *translationSetpoint - *currentDistance << " ; "
+                  << translationPID.getError() << " ; " << *leftSpeedSetpoint << std::endl;
     }
 
 };
