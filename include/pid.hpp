@@ -61,7 +61,7 @@ public:
 		(*output) = result;
 	}
 
-	void setTunings(float kp, float ki, float kd) volatile {
+	void setTunings(float kp, float ki, float kd) {
 		if (kp < 0 || ki < 0 || kd < 0)
 			return;
 
@@ -83,11 +83,11 @@ public:
 			(*output) = outMin;
 	}
 
-	long getOutputLimit() volatile {
+	long getOutputLimit() {
 		return outMax;
 	}
 
-	void setEpsilon(int32_t seuil) volatile {
+	void setEpsilon(int32_t seuil) {
 		if(seuil < 0)
 			return;
 		epsilon = seuil;
@@ -97,7 +97,7 @@ public:
 		return epsilon;
 	}
 
-	void resetErrors() volatile {
+	void resetErrors() {
 		pre_error = 0;
 		integral = 0;
 	}
@@ -138,12 +138,12 @@ private:
     std::shared_ptr<long> output; //Output : pwm
     std::shared_ptr<long> setPoint; //Valeur ? atteindre
 
-	long volatile epsilon;
+	long epsilon;
 	long outMin, outMax;
 
-    volatile long pre_error;
-    volatile long derivative;
-    volatile long integral;
+    long pre_error;
+    long derivative;
+    long integral;
 };
 
 #endif

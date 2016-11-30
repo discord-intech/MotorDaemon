@@ -163,7 +163,7 @@ void MotionController::control()
 
     if(ABS(*currentRightSpeed - *currentLeftSpeed) > 0)
     {
-        *currentRadius = (volatile long) ((*currentLeftSpeed * RAYON_COD_DROITE + *currentRightSpeed * RAYON_COD_GAUCHE)
+        *currentRadius = (long) ((*currentLeftSpeed * RAYON_COD_DROITE + *currentRightSpeed * RAYON_COD_GAUCHE)
                                          / (MM_PER_TICK * (*currentRightSpeed - *currentLeftSpeed)));
     }
     else
