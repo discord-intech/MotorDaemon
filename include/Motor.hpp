@@ -47,7 +47,7 @@
 
         bool inversed;
 
-        Direction actualDirection = Direction::BACKWARD; //Changed to FORWARD in init
+        Direction actualDirection;
         int actualDuty;
         void setDirection(Direction);
         void setDirectionPins(void);

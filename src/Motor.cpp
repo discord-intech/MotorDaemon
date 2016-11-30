@@ -8,7 +8,7 @@
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), inversed(inv)
+Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), inversed(inv), actualDirection(Direction::BACKWARD)
 {
     system((std::string("echo ")+std::to_string(dir)+std::string(" > /sys/class/gpio/export")).c_str());
 
@@ -85,6 +85,11 @@ void Motor::initPWM()
 void Motor::run(int duty) //duty € [-255;255]
 {
 
+    if(duty == this->actualDuty)
+    {
+        return;
+    }
+
     if(duty < -255)
     {
         duty = -255;
@@ -93,11 +98,6 @@ void Motor::run(int duty) //duty € [-255;255]
     if(duty > 255)
     {
         duty = 255;
-    }
-
-    if(duty == this->actualDuty)
-    {
-        return;
     }
 
     if(duty >= 0)
