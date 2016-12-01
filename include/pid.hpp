@@ -37,6 +37,8 @@ public:
 
 	void compute() {
 
+        if(kp <=0 && ki <=0 && kd <= 0) return;
+
 		long error = (*setPoint) - (*input);
 		derivative = error - pre_error;
 		integral += error;
