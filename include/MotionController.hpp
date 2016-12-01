@@ -80,6 +80,9 @@ private:
 
     static bool started;
 
+    static long startTime;
+    static long execTime;
+
     Average<long, AVERAGE_SPEED_SIZE> averageLeftSpeed;
     Average<long, AVERAGE_SPEED_SIZE> averageRightSpeed;
 

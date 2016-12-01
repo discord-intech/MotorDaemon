@@ -7,18 +7,28 @@
 #include <sys/resource.h>
 
 bool MotionController::started;
+long MotionController::startTime;
+long MotionController::execTime;
 
-unsigned long Millis()
+unsigned long Millis(void)
 {
     struct timeval tv;
     if(gettimeofday(&tv, NULL) != 0) return 0;
     return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
 }
 
+unsigned long Micros(void)
+{
+    struct timeval tv;
+    if(gettimeofday(&tv, NULL) != 0) return 0;
+    return (unsigned long) (1000000 * tv.tv_sec + tv.tv_usec);
+}
+
 MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 {
+    execTime = 0;
 
     rightSpeedPID.setPointers(currentRightSpeed, rightPWM, rightSpeedSetpoint);
     leftSpeedPID.setPointers(currentLeftSpeed, leftPWM, leftSpeedSetpoint);
@@ -86,6 +96,8 @@ void MotionController::mainWorker(MotionController *&asser)
     while(started)
     {
 
+        startTime = Micros();
+
         asser->control();
 
         count++;
@@ -104,17 +116,19 @@ void MotionController::mainWorker(MotionController *&asser)
             lastTime = Millis();
         }
 
+        execTime = Micros() - startTime;
+
         //usleep((__useconds_t) (1000000 / FREQ_ASSERV));
         timespec t, r;
         t.tv_sec=0;
-        t.tv_nsec = 1000000000 / FREQ_ASSERV;
+        t.tv_nsec = (1000000000 / FREQ_ASSERV) - (execTime*1000);
         nanosleep(&t, &r);
     }
 }
 
 void MotionController::control()
 {
-    static long time = Millis();
+   // static long time = Millis();
 
     static long freq(0);
 
@@ -138,7 +152,7 @@ void MotionController::control()
 
     long leftTicks = odo.getLeftValue();
 
-    if(freq == 0)
+ /*   if(freq == 0)
     {
         *currentLeftSpeed = (leftTicks - previousLeftTicks)*FREQ_ASSERV; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
         *currentRightSpeed = (rightTicks - previousRightTicks)*FREQ_ASSERV;
@@ -147,7 +161,10 @@ void MotionController::control()
     {
         *currentLeftSpeed = (leftTicks - previousLeftTicks)*freq; // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
         *currentRightSpeed = (rightTicks - previousRightTicks)*freq;
-    }
+    }*/
+
+    *currentLeftSpeed = (long) ((leftTicks - previousLeftTicks) / (execTime / 1000000.)); // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+    *currentRightSpeed = (long) ((rightTicks - previousRightTicks) / (execTime / 1000000.));
 
 
     previousLeftTicks = leftTicks;
@@ -251,7 +268,7 @@ void MotionController::control()
     leftMotor.run((int) *leftPWM);
     rightMotor.run((int) *rightPWM);
 
-    long t = Millis();
+    /*long t = Millis();
 
     if(t-time >= DELTA_FREQ_REFRESH)
     {
@@ -261,7 +278,7 @@ void MotionController::control()
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
         std::cout << "it's me : " << *leftPWM << " : " << *rightPWM << " : " << *translationSetpoint << std::endl;
     }
-    else counter++;
+    else counter++;*/
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
