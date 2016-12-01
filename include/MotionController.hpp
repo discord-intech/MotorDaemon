@@ -126,6 +126,8 @@ public:
 
     void testPosition(void);
 
+    void testSpeed(void);
+
     bool isPhysicallyStopped(void);
 
     long getTranslationSetPoint(void) { return *translationSetpoint;}

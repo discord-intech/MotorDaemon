@@ -195,6 +195,19 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("ts"))
+    {
+
+        print((char*)"Speed test launched !\r\n");
+
+#ifdef __arm__
+        motion.testSpeed();
+#endif
+        print((char*)"Speed test ended !\r\n");
+
+        return 0;
+    }
+
     else if(!args[0].compare("c"))
     {
 #ifdef __arm__
