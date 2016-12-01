@@ -22,7 +22,7 @@
 
 #define PWM_TIME_PERIOD 1000*1000  // nanosecondes
 
-#define MINIMAL_PWM_PERC 0.15
+#define MINIMAL_PWM_PERC 0.1
 #define MAXIMUM_PWM_PERC 1.0 //Used to limit PWM output
 
 #define ECHO std::string("echo ")

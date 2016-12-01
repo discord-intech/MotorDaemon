@@ -120,8 +120,7 @@ void Motor::run(int duty) //duty € [-255;255]
 
     if(ABS(duty) > 255*MINIMAL_PWM_PERC)
     {
-        fputs(std::to_string((int)((((float)ABS(duty) / (255.-MINIMAL_PWM_PERC)) * (MAXIMUM_PWM_PERC-MINIMAL_PWM_PERC)
-                                    + MINIMAL_PWM_PERC) * PWM_TIME_PERIOD)).c_str(), this->dutyFile);
+        fputs(std::to_string((int)(((float)ABS(duty) / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD)).c_str(), this->dutyFile);
     }
     else
     {
