@@ -275,6 +275,7 @@ void MotionController::stop()
 
     *currentDistance = ABS(odo.getRightValue()-odo.getLeftValue())/2;
     *translationSetpoint = *currentDistance;
+    *translationSpeed = 0;
     *leftSpeedSetpoint = 0;
     *rightSpeedSetpoint = 0;
 
@@ -436,7 +437,7 @@ void MotionController::orderTranslation(long mmDistance)
 
 void MotionController::testSpeed(void)
 {
-    *leftSpeedSetpoint = 1250; *rightSpeedSetpoint = 1250;
+    *translationSpeed = 1250;
 
     timespec t, r;
     t.tv_sec= 2;
