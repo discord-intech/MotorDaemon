@@ -198,25 +198,29 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     else if(!args[0].compare("ts"))
     {
 
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : ts <speed>\r\n");
+            return 0;
+        }
+
+        long dist;
+        try
+        {
+            dist = std::stol(args[1]);
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+
         print((char*)"Speed test launched !\r\n");
 
 #ifdef __arm__
-        motion.testSpeed(false);
+        motion.testSpeed(dist);
 #endif
         print((char*)"Speed test ended !\r\n");
-
-        return 0;
-    }
-
-    else if(!args[0].compare("tsr"))
-    {
-
-        print((char*)"Reversed speed test launched !\r\n");
-
-#ifdef __arm__
-        motion.testSpeed(true);
-#endif
-        print((char*)"Reversed speed test ended !\r\n");
 
         return 0;
     }

@@ -40,6 +40,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     rightSpeedPID.setOutputLimits(-255,255);
     curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
 
+    leftSpeedPID.setEpsilon(100);
+    rightSpeedPID.setEpsilon(100);
+
     maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
     maxAcceleration = 500;
@@ -474,9 +477,9 @@ void MotionController::orderTranslation(long mmDistance)
     std::cout << "it's me order: " << *translationSetpoint << std::endl;
 }
 
-void MotionController::testSpeed(bool reversed)
+void MotionController::testSpeed(int speed)
 {
-    *translationSpeed = (reversed ? -1 : 1)*800;
+    *translationSpeed = speed;
 
     timespec t, r;
     t.tv_sec= 2;

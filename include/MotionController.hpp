@@ -129,7 +129,7 @@ public:
 
     void testPosition(void);
 
-    void testSpeed(bool);
+    void testSpeed(int);
 
     bool isPhysicallyStopped(void);
 
