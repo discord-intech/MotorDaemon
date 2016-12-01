@@ -40,9 +40,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     rightSpeedPID.setOutputLimits(-255,255);
     curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
 
-    maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
-    maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
-    maxAcceleration = 15000;
+    maxSpeed = 2000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
+    maxSpeedTranslation = 1500; // Consigne max envoy�e au PID
+    maxAcceleration = 1000;
     leftCurveRatio = 1;
     rightCurveRatio = 1;
 
@@ -57,7 +57,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(0, 0, 0);
+    translationPID.setTunings(0.1, 0, 0);
     leftSpeedPID.setTunings(0.1, 0.0001, 0.0001); // ki 0.00001
     rightSpeedPID.setTunings(0.1, 0.0001, 0.0001);
     curvePID.setTunings(0, 0, 0);
@@ -290,6 +290,9 @@ void MotionController::stop()
 
     std::cout << "DEBUG : STOP" << std::endl;
 
+    leftMotor.run(0);
+    rightMotor.run(0);
+
     *currentDistance = ABS(odo.getRightValue()-odo.getLeftValue())/2;
     *translationSetpoint = *currentDistance;
     *translationSpeed = 0;
@@ -300,6 +303,23 @@ void MotionController::stop()
 
     leftMotor.run(0);
     rightMotor.run(0);
+
+    timespec t, r;
+    t.tv_sec=0;
+    t.tv_nsec = 1000000;
+    nanosleep(&t, &r);
+
+    *currentDistance = ABS(odo.getRightValue()-odo.getLeftValue())/2;
+    *translationSetpoint = *currentDistance;
+    *translationSpeed = 0;
+    *leftSpeedSetpoint = 0;
+    *rightSpeedSetpoint = 0;
+    *leftPWM = 0;
+    *rightPWM = 0;
+
+    leftMotor.run(0);
+    rightMotor.run(0);
+
     leftCurveRatio = 1.0;
     rightCurveRatio = 1.0;
     translationPID.resetErrors();
