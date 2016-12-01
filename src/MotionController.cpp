@@ -42,7 +42,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
-    maxAcceleration = 15000;
+    maxAcceleration = 500;
     leftCurveRatio = 1;
     rightCurveRatio = 1;
 
@@ -127,7 +127,7 @@ void MotionController::mainWorker(MotionController *&asser)
 
 void MotionController::control()
 {
-   // static long time = Millis();
+    static long time = Millis();
 
     static long freq(0);
 
@@ -212,45 +212,45 @@ void MotionController::control()
 */
 
     // Limitation de la consigne de vitesse en translation
-   /* if(translationSpeed > maxSpeedTranslation)
-        translationSpeed = maxSpeedTranslation;
-    else if(translationSpeed < -maxSpeedTranslation)
-        translationSpeed = -maxSpeedTranslation;*/
+    if(*translationSpeed > maxSpeedTranslation)
+        *translationSpeed = maxSpeedTranslation;
+    else if(*translationSpeed < -maxSpeedTranslation)
+        *translationSpeed = -maxSpeedTranslation;
 
 
     *leftSpeedSetpoint = (long) (*translationSpeed * leftCurveRatio);
     *rightSpeedSetpoint = (long) (*translationSpeed * rightCurveRatio);
 
     // Limitation de la vitesse
-  /*  if(leftSpeedSetpoint > maxSpeed)
-        leftSpeedSetpoint = maxSpeed;
-    else if(leftSpeedSetpoint < -maxSpeed)
-        leftSpeedSetpoint = -maxSpeed;
-    if(rightSpeedSetpoint > maxSpeed)
-        rightSpeedSetpoint = maxSpeed;
-    else if(rightSpeedSetpoint < -maxSpeed)
-        rightSpeedSetpoint = -maxSpeed;*/
+    if(*leftSpeedSetpoint > maxSpeed)
+        *leftSpeedSetpoint = maxSpeed;
+    else if(*leftSpeedSetpoint < -maxSpeed)
+        *leftSpeedSetpoint = -maxSpeed;
+    if(*rightSpeedSetpoint > maxSpeed)
+        *rightSpeedSetpoint = maxSpeed;
+    else if(*rightSpeedSetpoint < -maxSpeed)
+        *rightSpeedSetpoint = -maxSpeed;
 
 
     // Limitation de l'accélération du moteur gauche (permet de règler la pente du trapèze de vitesse)
- /*   if(leftSpeedSetpoint - previousLeftSpeedSetpoint > maxAcceleration)
+    if(*leftSpeedSetpoint - previousLeftSpeedSetpoint > maxAcceleration)
     {
-        leftSpeedSetpoint = previousLeftSpeedSetpoint + maxAcceleration*leftCurveRatio;
+        *leftSpeedSetpoint = previousLeftSpeedSetpoint + maxAcceleration*leftCurveRatio;
     }
-    else if(leftSpeedSetpoint - previousLeftSpeedSetpoint < -maxAcceleration)
+    else if(*leftSpeedSetpoint - previousLeftSpeedSetpoint < -maxAcceleration)
     {
-        leftSpeedSetpoint = previousLeftSpeedSetpoint - maxAcceleration*leftCurveRatio;
+        *leftSpeedSetpoint = previousLeftSpeedSetpoint - maxAcceleration*leftCurveRatio;
     }
 
     // Limitation de l'acc�l�ration du moteur droit
-    if(rightSpeedSetpoint - previousRightSpeedSetpoint > maxAcceleration)
+    if(*rightSpeedSetpoint - previousRightSpeedSetpoint > maxAcceleration)
     {
-        rightSpeedSetpoint = previousRightSpeedSetpoint + maxAcceleration*rightCurveRatio;
+        *rightSpeedSetpoint = previousRightSpeedSetpoint + maxAcceleration*rightCurveRatio;
     }
-    else if(rightSpeedSetpoint - previousRightSpeedSetpoint < -maxAcceleration)
+    else if(*rightSpeedSetpoint - previousRightSpeedSetpoint < -maxAcceleration)
     {
-        rightSpeedSetpoint = previousRightSpeedSetpoint - maxAcceleration*rightCurveRatio;
-    }*/
+        *rightSpeedSetpoint = previousRightSpeedSetpoint - maxAcceleration*rightCurveRatio;
+    }
 
 
 
@@ -268,17 +268,17 @@ void MotionController::control()
     leftMotor.run((int) *leftPWM);
     rightMotor.run((int) *rightPWM);
 
-    /*long t = Millis();
+    long t = Millis();
 
     if(t-time >= DELTA_FREQ_REFRESH)
     {
-        freq = counter / (t - time);
+        //freq = counter / (t - time);
         time = t;
         counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
         std::cout << "it's me : " << *leftPWM << " : " << *rightPWM << " : " << *translationSetpoint << std::endl;
     }
-    else counter++;*/
+    else counter++;
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
