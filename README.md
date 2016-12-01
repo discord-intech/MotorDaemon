@@ -1,4 +1,4 @@
-# MotorDaemon
+# MotorDaemon (WIP)
 A feedback loop motor deamon with odometer support for the BeagleBone Black
 
 This daemon consist of multiple threads to handle odometry, motors, actuators and a piloting interface.
