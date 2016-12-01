@@ -40,9 +40,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     rightSpeedPID.setOutputLimits(-255,255);
     curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
 
-    maxSpeed = 2000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
-    maxSpeedTranslation = 1500; // Consigne max envoy�e au PID
-    maxAcceleration = 1000;
+    maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
+    maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
+    maxAcceleration = 15000;
     leftCurveRatio = 1;
     rightCurveRatio = 1;
 
