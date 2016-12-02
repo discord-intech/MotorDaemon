@@ -296,7 +296,7 @@ void MotionController::stop()
     leftMotor.run(0);
     rightMotor.run(0);
 
-    *currentDistance = ABS(odo.getRightValue()-odo.getLeftValue())/2;
+    *currentDistance = (odo.getRightValue()+odo.getLeftValue())/2;
     *translationSetpoint = *currentDistance;
     *translationSpeed = 0;
     *leftSpeedSetpoint = 0;
@@ -312,7 +312,7 @@ void MotionController::stop()
     t.tv_nsec = 1000000;
     nanosleep(&t, &r);
 
-    *currentDistance = ABS(odo.getRightValue()-odo.getLeftValue())/2;
+    *currentDistance = (odo.getRightValue()+odo.getLeftValue())/2;
     *translationSetpoint = *currentDistance;
     *translationSpeed = 0;
     *leftSpeedSetpoint = 0;
@@ -452,7 +452,7 @@ const char * MotionController::getTunings(void)
             std::string("\nLEFT SPEED : ")+std::to_string(leftSpeedPID.getKp())+std::string(" ")+std::to_string(leftSpeedPID.getKi())+std::string(" ")+std::to_string(leftSpeedPID.getKd())+std::string("\r\n")+
             std::string("RIGHT SPEED : ")+std::to_string(rightSpeedPID.getKp())+std::string(" ")+std::to_string(rightSpeedPID.getKi())+std::string(" ")+std::to_string(rightSpeedPID.getKd())+std::string("\r\n")+
             std::string("TRANSLATION : ")+std::to_string(translationPID.getKp())+std::string(" ")+std::to_string(translationPID.getKi())+std::string(" ")+std::to_string(translationPID.getKd())+std::string("\r\n")+
-            std::string("CURVE : ")+std::to_string(rightSpeedPID.getKp())+std::string(" ")+std::to_string(rightSpeedPID.getKi())+std::string(" ")+std::to_string(rightSpeedPID.getKd())+std::string("\r\n\n")
+            std::string("CURVE : ")+std::to_string(curvePID.getKp())+std::string(" ")+std::to_string(curvePID.getKi())+std::string(" ")+std::to_string(curvePID.getKd())+std::string("\r\n\n")
           ).c_str();
 }
 
