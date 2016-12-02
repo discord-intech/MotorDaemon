@@ -13,7 +13,7 @@
 #include "Odometry.hpp"
 #include "Servo.hpp"
 
-#define AVERAGE_SPEED_SIZE	15
+#define AVERAGE_SPEED_SIZE	25
 
 #define FREQ_ASSERV 1300
 

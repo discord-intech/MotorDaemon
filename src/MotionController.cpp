@@ -45,7 +45,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
-    maxAcceleration = 500;
+    maxAcceleration = 1000;
     leftCurveRatio = 1;
     rightCurveRatio = 1;
 
@@ -279,7 +279,7 @@ void MotionController::control()
         time = t;
         counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
-        std::cout << "it's me : " << *leftPWM << " : " << *rightPWM << " : " << *translationSetpoint << std::endl;
+        std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << " : " << *rightPWM << ";" << *rightSpeedSetpoint << " : " << *translationSetpoint << std::endl;
     }
     else counter++;
 
