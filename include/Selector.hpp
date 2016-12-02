@@ -228,8 +228,17 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     else if(!args[0].compare("c"))
     {
 #ifdef __arm__
-        std::cout << motion.getOdometry()->getLeftValue() << " ; " << motion.getOdometry()->getRightValue() << std::endl;
-        std::cout << motion.getCurveRadius() << std::endl << std::endl;
+        print((char*)(
+                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\r\n")+
+                std::to_string(motion.getCurveRadius())+std::string("\r\n\n")).c_str());
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("k"))
+    {
+#ifdef __arm__
+        print((char*) motion.getTunings());
 #endif
         return 0;
     }

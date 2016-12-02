@@ -127,6 +127,8 @@ public:
     void setLeftSpeedTunings(float, float, float);
     void setRightSpeedTunings(float, float, float);
 
+    const char* getTunings(void);
+
     void testPosition(void);
 
     void testSpeed(int);
