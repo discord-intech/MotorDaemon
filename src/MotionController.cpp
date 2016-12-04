@@ -196,10 +196,10 @@ void MotionController::control()
 
     translationPID.compute();
 
-/*    curvePID.compute();
+    curvePID.compute();
 
-    leftCurveRatio = (ABS(radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1:1)))/(ABS(radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
-    rightCurveRatio = (ABS(radiusToSet)+(RAYON_COD_DROITE*(radiusToSet<0?-1:1)))/(ABS(radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+    leftCurveRatio = (ABS(*radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1:1)))/(ABS(*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+    rightCurveRatio = (ABS(*radiusToSet)+(RAYON_COD_DROITE*(radiusToSet<0?-1:1)))/(ABS(*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
 
     if(MAX(leftCurveRatio, rightCurveRatio) > 1.0)
     {
@@ -212,7 +212,7 @@ void MotionController::control()
         leftCurveRatio=0;
     if(rightCurveRatio<0)
         rightCurveRatio=0;
-*/
+
 
     // Limitation de la consigne de vitesse en translation
     if(*translationSpeed > maxSpeedTranslation)
@@ -285,8 +285,8 @@ void MotionController::control()
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
-    //direction.setAngle(ARCTAN(DIST_MOTOR_DIRECTION/radiusToSet));
-    //direction.setAngle(0); //TODO
+    direction.setAngle(ARCTAN(DIST_MOTOR_DIRECTION / *radiusToSet));
+    //direction.setAngle(0);
 }
 
 void MotionController::stop()
