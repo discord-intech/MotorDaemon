@@ -186,7 +186,7 @@ void MotionController::control()
     }
     else
     {
-        *currentRadius = INT64_MAX;
+        *currentRadius = INT32_MAX;
     }
 
 
