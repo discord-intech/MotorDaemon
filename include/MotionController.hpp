@@ -61,9 +61,9 @@ private:
     std::shared_ptr<long> translationSpeed = std::shared_ptr<long>(new long(0));		// ticks/seconde
 
     PID curvePID; //FIXME INIT
-    std::shared_ptr<long> curveSetpoint = std::shared_ptr<long>(new long(0));
-    std::shared_ptr<long> currentRadius = std::shared_ptr<long>(new long(0));
-    std::shared_ptr<long> radiusToSet = std::shared_ptr<long>(new long(0));
+    std::shared_ptr<long> curveSetpoint = std::shared_ptr<long>(new long(INT64_MAX));
+    std::shared_ptr<long> currentRadius = std::shared_ptr<long>(new long(INT64_MAX));
+    std::shared_ptr<long> radiusToSet = std::shared_ptr<long>(new long(INT64_MAX));
 
     //	Limitation de vitesses
     long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
