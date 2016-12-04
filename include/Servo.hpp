@@ -17,7 +17,7 @@ public:
     Servo(float, float, float, float);
     void initPWM();
 
-    void setAngle(float);
+    void setAngle(double);
 
 private:
 

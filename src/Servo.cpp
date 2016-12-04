@@ -34,7 +34,7 @@ void Servo::initPWM(void)
     }
 }
 
-void Servo::setAngle(float angle)
+void Servo::setAngle(double angle)
 {
     /*if(angle < lowerAngle || angle > upperAngle)
     {

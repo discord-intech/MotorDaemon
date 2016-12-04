@@ -34,7 +34,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     rightSpeedPID.setPointers(currentRightSpeed, rightPWM, rightSpeedSetpoint);
     leftSpeedPID.setPointers(currentLeftSpeed, leftPWM, leftSpeedSetpoint);
     translationPID.setPointers(currentDistance, translationSpeed, translationSetpoint);
-    curvePID.setPointers(currentRadius, radiusToSet, curveSetpoint);
+    curvePID.setPointers(currentRadius, deltaRadius, curveSetpoint);
 
     leftSpeedPID.setOutputLimits(-255,255);
     rightSpeedPID.setOutputLimits(-255,255);
@@ -199,10 +199,10 @@ void MotionController::control()
     curvePID.compute();
 
 
-    if(ABS(*radiusToSet) < MAX_RADIUS)
+    if(ABS(*curveSetpoint + *deltaRadius) < MAX_RADIUS)
     {
-        leftCurveRatio = (ABS((double)*radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1.0:1.0)))/(ABS((double)*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
-        rightCurveRatio = (ABS((double)*radiusToSet)+(RAYON_COD_DROITE*(radiusToSet<0?-1.0:1.0)))/(ABS((double)*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+        leftCurveRatio = ((double)ABS(*curveSetpoint + *deltaRadius)-(RAYON_COD_GAUCHE*(curveSetpoint<0?-1.0:1.0)))/((double)ABS(*curveSetpoint + *deltaRadius)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+        rightCurveRatio = ((double)ABS(*curveSetpoint + *deltaRadius)+(RAYON_COD_DROITE*(curveSetpoint<0?-1.0:1.0)))/((double)ABS(*curveSetpoint + *deltaRadius)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
     }
     else
     {
@@ -295,7 +295,7 @@ void MotionController::control()
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
-    direction.setAngle(ARCTAN(DIST_MOTOR_DIRECTION / *radiusToSet));
+    direction.setAngle(ARCTAN((double)DIST_MOTOR_DIRECTION / (double)(*curveSetpoint + *deltaRadius)));
     //direction.setAngle(0);
 }
 
