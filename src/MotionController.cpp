@@ -179,7 +179,7 @@ void MotionController::control()
     *currentLeftSpeed = averageLeftSpeed.value(); // On utilise pour l'asserv la valeur moyenne des dernieres current Speed
     *currentRightSpeed = averageRightSpeed.value(); // sinon le robot il fait nawak.
 
-    if(ABS(*currentRightSpeed - *currentLeftSpeed) > 0)
+    if(ABS(*currentRightSpeed - *currentLeftSpeed) > 5)
     {
         *currentRadius = (long) ((*currentLeftSpeed * RAYON_COD_DROITE + *currentRightSpeed * RAYON_COD_GAUCHE)
                                          / (MM_PER_TICK * (*currentRightSpeed - *currentLeftSpeed)));
@@ -289,7 +289,8 @@ void MotionController::control()
         counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
         std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << " : " << *rightPWM << ";" << *rightSpeedSetpoint
-                  << " : " << *currentDistance << ";" << *translationSetpoint << " : " << leftCurveRatio << ";" << rightCurveRatio  << std::endl;
+                  << " : " << *currentDistance << ";" << *translationSetpoint << " : " << leftCurveRatio << ";" << rightCurveRatio
+                  << " : " << curveSetpoint << ";" << deltaRadius << std::endl;
     }
     else counter++;
 
