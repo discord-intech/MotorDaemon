@@ -198,8 +198,8 @@ void MotionController::control()
 
     curvePID.compute();
 
-    leftCurveRatio = (ABS(*radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1:1)))/(ABS(*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
-    rightCurveRatio = (ABS(*radiusToSet)+(RAYON_COD_DROITE*(radiusToSet<0?-1:1)))/(ABS(*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+    leftCurveRatio = (ABS((double)*radiusToSet)-(RAYON_COD_GAUCHE*(radiusToSet<0?-1.0:1.0)))/(ABS((double)*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+    rightCurveRatio = (ABS((double)*radiusToSet)+(RAYON_COD_DROITE*(radiusToSet<0?-1.0:1.0)))/(ABS((double)*radiusToSet)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
 
     if(MAX(leftCurveRatio, rightCurveRatio) > 1.0)
     {
