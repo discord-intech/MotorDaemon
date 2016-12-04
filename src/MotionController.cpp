@@ -60,7 +60,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(3.5, 0, 0);
+    translationPID.setTunings(19, 0.001, 0);
     leftSpeedPID.setTunings(0.1, 0.00001, 0.0001); // ki 0.00001
     rightSpeedPID.setTunings(0.1, 0.00001, 0.0001);
     curvePID.setTunings(0, 0, 0);
@@ -286,6 +286,7 @@ void MotionController::control()
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
     //direction.setAngle(ARCTAN(DIST_MOTOR_DIRECTION/radiusToSet));
+    //direction.setAngle(0); //TODO
 }
 
 void MotionController::stop()
