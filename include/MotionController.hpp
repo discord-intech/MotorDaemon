@@ -73,6 +73,7 @@ private:
 
     //	Limitation d'acc�l�ration
     long maxAcceleration;
+    long maxDecceleration;
 
     long currentAngle;			// ticks
 

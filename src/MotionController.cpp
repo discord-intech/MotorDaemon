@@ -46,8 +46,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
     maxAcceleration = 1000;
-    leftCurveRatio = 1;
-    rightCurveRatio = 1;
+    maxDecceleration = 200;
+    leftCurveRatio = 1.0;
+    rightCurveRatio = 1.0;
 
     // maxjerk = 1; // Valeur de jerk maxi(secousse d'acc�l�ration)
 
@@ -247,21 +248,21 @@ void MotionController::control()
     // Limitation de l'accélération du moteur gauche (permet de règler la pente du trapèze de vitesse)
     if(*leftSpeedSetpoint - previousLeftSpeedSetpoint > maxAcceleration)
     {
-        *leftSpeedSetpoint = previousLeftSpeedSetpoint + maxAcceleration*leftCurveRatio;
+        *leftSpeedSetpoint = (long) (previousLeftSpeedSetpoint + maxAcceleration * leftCurveRatio);
     }
     else if(*leftSpeedSetpoint - previousLeftSpeedSetpoint < -maxAcceleration)
     {
-        *leftSpeedSetpoint = previousLeftSpeedSetpoint - maxAcceleration*leftCurveRatio;
+        *leftSpeedSetpoint = (long) (previousLeftSpeedSetpoint - maxDecceleration * leftCurveRatio);
     }
 
     // Limitation de l'acc�l�ration du moteur droit
     if(*rightSpeedSetpoint - previousRightSpeedSetpoint > maxAcceleration)
     {
-        *rightSpeedSetpoint = previousRightSpeedSetpoint + maxAcceleration*rightCurveRatio;
+        *rightSpeedSetpoint = (long) (previousRightSpeedSetpoint + maxAcceleration * rightCurveRatio);
     }
     else if(*rightSpeedSetpoint - previousRightSpeedSetpoint < -maxAcceleration)
     {
-        *rightSpeedSetpoint = previousRightSpeedSetpoint - maxAcceleration*rightCurveRatio;
+        *rightSpeedSetpoint = (long) (previousRightSpeedSetpoint - maxDecceleration * rightCurveRatio);
     }
 
 
