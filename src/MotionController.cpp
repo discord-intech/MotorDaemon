@@ -197,7 +197,14 @@ void MotionController::control()
 
     translationPID.compute();
 
-    curvePID.compute();
+    if(ABS(*currentRightSpeed - *currentLeftSpeed) > 3)
+    {
+        curvePID.compute();
+    }
+    else
+    {
+        *deltaRadius = 0;
+    }
 
 
     if(ABS(*curveSetpoint + *deltaRadius) < MAX_RADIUS)
@@ -297,7 +304,8 @@ void MotionController::control()
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
-    direction.setAngle(ARCTAN((double)DIST_MOTOR_DIRECTION / (double)(*curveSetpoint + *deltaRadius)));
+    direction.setAngle( ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0)
+                        * (1.5707 - ARCTAN((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION)));
     //direction.setAngle(0);
 }
 

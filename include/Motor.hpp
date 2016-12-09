@@ -6,6 +6,7 @@
 #define MOTORDAEMON_MOTOR_HPP
 
 #include <cstdint>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <string>
