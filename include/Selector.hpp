@@ -171,6 +171,30 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("cr"))
+    {
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : cr <rad>\r\n");
+            return 0;
+        }
+
+        long dist;
+        try
+        {
+            dist = std::stol(args[1]);
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+#ifdef __arm__
+        motion.orderCurveRadius(dist);
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("seta"))
     {
         if(args.size() != 2)

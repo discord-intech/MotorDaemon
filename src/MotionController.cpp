@@ -64,7 +64,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     translationPID.setTunings(19, 0.001, 0);
     leftSpeedPID.setTunings(0.1, 0.00001, 0.0001); // ki 0.00001
     rightSpeedPID.setTunings(0.1, 0.00001, 0.0001);
-    curvePID.setTunings(0, 0, 0);
+    curvePID.setTunings(1, 0, 0);
 
     distanceTest = 200;
 
@@ -498,6 +498,11 @@ void MotionController::orderTranslation(long mmDistance)
     }
     *translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
     std::cout << "it's me order: " << *translationSetpoint << std::endl;
+}
+
+void MotionController::orderCurveRadius(long c)
+{
+    *curveSetpoint = c;
 }
 
 void MotionController::testSpeed(int speed)
