@@ -56,7 +56,7 @@ void Servo::setAngle(double angle)
     if(angle < lowerAngle) angle = lowerAngle;
     if(angle > upperAngle) angle = upperAngle;
 
-    int64_t value = (int64_t) ((upperBound - lowerBound) / (upperAngle - lowerAngle) * angle + lowerBound);
+    int64_t value = (int64_t) ((upperBound - lowerBound) / (upperAngle - lowerAngle) * (angle + ABS(lowerAngle)) + lowerBound);
    // pwm.setPeriodTime(period, BlackLib::milisecond);
     fputs(std::to_string(value).c_str(), this->dutyFile);
 
