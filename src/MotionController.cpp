@@ -299,7 +299,7 @@ void MotionController::control()
         std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << " : " << *rightPWM << ";" << *rightSpeedSetpoint
                   << " : " << *currentDistance << ";" << *translationSetpoint << " : " << leftCurveRatio << ";" << rightCurveRatio
                   << " : " << *curveSetpoint << ";" << *deltaRadius << " : "
-                  << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * (1.5707 - ARCTAN((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION))
+                  << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * (1.5707 - atan((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION))
                   << std::endl;
     }
     else counter++;
@@ -307,7 +307,7 @@ void MotionController::control()
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
     direction.setAngle( ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0)
-                        * (1.5707 - ARCTAN((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION)));
+                        * (1.5707 - atan((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION)));
     //direction.setAngle(0);
 }
 

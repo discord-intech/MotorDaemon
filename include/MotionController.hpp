@@ -7,6 +7,7 @@
 
 #include <sys/time.h>
 #include <chrono>
+#include <math.h>
 #include "Motor.hpp"
 #include "pid.hpp"
 #include "average.hpp"
