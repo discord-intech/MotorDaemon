@@ -46,7 +46,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
     maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
     maxAcceleration = 1000;
-    maxDecceleration = 200;
+    maxDecceleration = 500;
     leftCurveRatio = 1.0;
     rightCurveRatio = 1.0;
 
