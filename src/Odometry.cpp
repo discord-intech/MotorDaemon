@@ -20,6 +20,16 @@ int Odometry::valueBL;
 int Odometry::valueAR;
 int Odometry::valueBR;
 
+
+int inline fast_atoi( const char * str )
+{
+    int val = 0;
+    while( *str ) {
+        val = val*10 + (*str++ - '0');
+    }
+    return val;
+}
+
 Odometry::Odometry(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_t chanBR)
 {
     system((std::string("echo ")+std::to_string(chanAL)+std::string(" > /sys/class/gpio/export")).c_str());
@@ -153,7 +163,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
     {
         if (size != -1) {
             buffer[size] = '\0';
-            valueAL = atoi(buffer);
+            valueAL = fast_atoi(buffer);
         }
         else {
             valueAL = -1;
@@ -161,7 +171,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
     } else if(chan == BL) {
         if (size != -1) {
             buffer[size] = '\0';
-            valueBL = atoi(buffer);
+            valueBL = fast_atoi(buffer);
         }
         else {
             valueBL = -1;
@@ -169,7 +179,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
     } else if(chan == AR) {
         if (size != -1) {
             buffer[size] = '\0';
-            valueAR = atoi(buffer);
+            valueAR = fast_atoi(buffer);
         }
         else {
             valueAR = -1;
@@ -177,7 +187,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
     } else if(chan == BR) {
         if (size != -1) {
             buffer[size] = '\0';
-            valueBR = atoi(buffer);
+            valueBR = fast_atoi(buffer);
         }
         else {
             valueBR = -1;
