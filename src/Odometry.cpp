@@ -157,7 +157,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
     lseek(fd, 0, 0);
 
     char buffer[4];
-    int size = read(fd, buffer, sizeof(buffer));
+    ssize_t size = read(fd, buffer, sizeof(buffer));
 
     if(chan == AL)
     {

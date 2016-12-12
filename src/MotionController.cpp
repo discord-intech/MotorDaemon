@@ -24,7 +24,7 @@ unsigned long Micros(void)
     return (unsigned long) (1000000 * tv.tv_sec + tv.tv_usec);
 }
 
-MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
+MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, (float) LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 {
@@ -38,7 +38,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     leftSpeedPID.setOutputLimits(-255,255);
     rightSpeedPID.setOutputLimits(-255,255);
-    curvePID.setOutputLimits(DIST_MOTOR_DIRECTION/TAN(LOW_ANGLE), DIST_MOTOR_DIRECTION/TAN(HIGH_ANGLE));
+    curvePID.setOutputLimits((int32_t) (DIST_MOTOR_DIRECTION / tan((float)LOW_ANGLE)),
+                             (int32_t) (DIST_MOTOR_DIRECTION / tan((float)HIGH_ANGLE)));
 
     leftSpeedPID.setEpsilon(20);
     rightSpeedPID.setEpsilon(20);
@@ -299,7 +300,7 @@ void MotionController::control()
         std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << " : " << *rightPWM << ";" << *rightSpeedSetpoint
                   << " : " << *currentDistance << ";" << *translationSetpoint << " : " << leftCurveRatio << ";" << rightCurveRatio
                   << " : " << *curveSetpoint << ";" << *deltaRadius << " : "
-                  << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * (1.5707 - atan((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION))
+                  << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * (1.5707 - atan((float)ABS(*curveSetpoint + *deltaRadius) / (float)DIST_MOTOR_DIRECTION))
                   << std::endl;
     }
     else counter++;
@@ -307,7 +308,7 @@ void MotionController::control()
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
     direction.setAngle( ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0)
-                        * (1.5707 - atan((double)ABS(*curveSetpoint + *deltaRadius) / (double)DIST_MOTOR_DIRECTION)));
+                        * (1.5707 - atan((float)ABS(*curveSetpoint + *deltaRadius) / (float)DIST_MOTOR_DIRECTION)));
     //direction.setAngle(0);
 }
 
