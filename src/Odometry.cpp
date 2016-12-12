@@ -124,7 +124,7 @@ void Odometry::onTickChanALeft(void)
 {
     if(valueAL == valueBL)
     {
-        leftTicks++;
+        ++leftTicks;
     }
 }
 
@@ -132,7 +132,7 @@ void Odometry::onTickChanBLeft(void)
 {
     if(valueAL == valueBL)
     {
-        leftTicks--;
+        --leftTicks;
     }
 }
 
@@ -140,7 +140,7 @@ void Odometry::onTickChanARight(void)
 {
     if(valueAR == valueBR)
     {
-        rightTicks--;
+        --rightTicks;
     }
 }
 
@@ -148,7 +148,7 @@ void Odometry::onTickChanBRight(void)
 {
     if(valueAR == valueBR)
     {
-        rightTicks++;
+        ++rightTicks;
     }
 }
 
@@ -156,7 +156,7 @@ void Odometry::get_lead(int& fd, uint8_t chan) //chan : 0=AL, 1=BL, 2=AR, 3=BR
 {
     lseek(fd, 0, 0);
 
-    char buffer[8];
+    char buffer[4];
     int size = read(fd, buffer, sizeof(buffer));
 
     if(chan == AL)
