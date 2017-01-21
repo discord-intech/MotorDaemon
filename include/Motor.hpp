@@ -57,7 +57,7 @@
 
         void create_itoa_lookup_table(void);
 
-        char ** itoa_lookup_table;
+        std::string itoa_lookup_table[256];
 
         std::string dutyPath;
 

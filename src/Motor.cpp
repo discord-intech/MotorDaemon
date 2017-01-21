@@ -75,7 +75,7 @@ void Motor::initPWM()
     create_itoa_lookup_table();
 
     std::cout << "Printing itoa table :" << std::endl;
-    for(int i =0 ; i<256 ; i++)
+    for(int i =0 ; i<256 ; i+=5)
     {
         std::cout << i << " : " << itoa_lookup_table[i] << std::endl;
     }
@@ -92,13 +92,11 @@ void Motor::initPWM()
 
 void Motor::create_itoa_lookup_table(void)
 {
-    this->itoa_lookup_table = (char **) malloc(256 * sizeof(char*));
-
     std::cout << "Creating ITOA table" << std::endl;
 
     for(int i=0 ; i<256 ; i++)
     {
-        this->itoa_lookup_table[i] = (char *) std::to_string((long)(((double)i / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD)).c_str();
+        this->itoa_lookup_table[i] = std::to_string((long)(((double)i / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD));
     }
 }
 
@@ -140,11 +138,11 @@ void Motor::run(int duty) //duty € [-255;255]
 
     if(ABS(duty) > 255*MINIMAL_PWM_PERC)
     {
-        fputs(itoa_lookup_table[ABS(duty)], this->dutyFile);
+        fputs(itoa_lookup_table[ABS(duty)].c_str(), this->dutyFile);
     }
     else
     {
-        fputs(itoa_lookup_table[0], this->dutyFile);
+        fputs(itoa_lookup_table[0].c_str(), this->dutyFile);
     }
 
     fflush(this->dutyFile);
