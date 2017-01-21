@@ -92,11 +92,12 @@ void Motor::initPWM()
 
 void Motor::create_itoa_lookup_table(void)
 {
-    this->itoa_lookup_table = (char**) malloc(256*sizeof(char*));
+    this->itoa_lookup_table = (volatile char **) malloc(256 * sizeof(char*));
+
+    std::cout << "Creating ITOA table" << std::endl;
 
     for(int i=0 ; i<256 ; i++)
     {
-        this->itoa_lookup_table[i] = (char*) malloc(24*sizeof(char));
         this->itoa_lookup_table[i] = (char *) std::to_string((long)(((double)i / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD)).c_str();
     }
 }
