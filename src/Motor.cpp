@@ -15,8 +15,6 @@ Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), i
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir)+std::string("/direction")).c_str());
 
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
-
-    create_itoa_lookup_table();
 }
 
 LeftMotor::LeftMotor() : Motor(0, 49, true) {}
@@ -74,6 +72,8 @@ void Motor::initPWM()
         return;
     }
 
+    create_itoa_lookup_table();
+
     std::cout << "Printing itoa table :" << std::endl;
     for(int i =0 ; i<256 ; i++)
     {
@@ -92,7 +92,7 @@ void Motor::initPWM()
 
 void Motor::create_itoa_lookup_table(void)
 {
-    this->itoa_lookup_table = (volatile char **) malloc(256 * sizeof(char*));
+    this->itoa_lookup_table = (char **) malloc(256 * sizeof(char*));
 
     std::cout << "Creating ITOA table" << std::endl;
 

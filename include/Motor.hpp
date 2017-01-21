@@ -57,7 +57,7 @@
 
         void create_itoa_lookup_table(void);
 
-        volatile char ** itoa_lookup_table;
+        char ** itoa_lookup_table;
 
         std::string dutyPath;
 
