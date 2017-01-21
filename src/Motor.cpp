@@ -55,7 +55,7 @@ void Motor::initPWM()
     setDirection(Direction::FORWARD);
 
     system((std::string("echo ")+std::to_string(PWMpin)+std::string(" > /sys/class/pwm/pwmchip3/export")).c_str());
-    system((std::string("echo ")+std::to_string(PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/period")).c_str());
+    system((std::string("echo ")+std::to_string((int)PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/period")).c_str());
     system((std::string("echo 0 > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str());
     system((std::string("echo 1 > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/enable")).c_str());
 
