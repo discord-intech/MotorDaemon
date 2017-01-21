@@ -21,10 +21,10 @@
 #define ARCTAN(x) ((x)-(((x)*(x)*(x))/3.0))
 #define TAN(x) ((x)+(((x)*(x)*(x))/3.0))
 
-#define PWM_TIME_PERIOD 1000*1000  // nanosecondes
+#define PWM_TIME_PERIOD (1000.0*1000.0)  // nanosecondes
 
-#define MINIMAL_PWM_PERC 0
-#define MAXIMUM_PWM_PERC 0.75 //Used to limit PWM output
+#define MINIMAL_PWM_PERC (0)
+#define MAXIMUM_PWM_PERC (0.75) //Used to limit PWM output
 
 #define ECHO std::string("echo ")
 
@@ -54,6 +54,10 @@
         int actualDuty;
         void setDirection(Direction);
         void setDirectionPins(void);
+
+        void create_itoa_lookup_table(void);
+
+        char ** itoa_lookup_table;
 
         std::string dutyPath;
 

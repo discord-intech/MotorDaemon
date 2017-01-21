@@ -15,6 +15,8 @@ Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), i
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir)+std::string("/direction")).c_str());
 
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
+
+    create_itoa_lookup_table();
 }
 
 LeftMotor::LeftMotor() : Motor(0, 49, true) {}
@@ -82,6 +84,17 @@ void Motor::initPWM()
     pwm.setRunState(BlackLib::run);*/
 }
 
+void Motor::create_itoa_lookup_table(void)
+{
+    this->itoa_lookup_table = (char**) malloc(256*sizeof(char*));
+
+    for(int i=0 ; i<256 ; i++)
+    {
+        this->itoa_lookup_table[i] = (char*) malloc(24*sizeof(char));
+        this->itoa_lookup_table[i] = (char *) std::to_string((long)(((double)i / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD)).c_str();
+    }
+}
+
 void Motor::run(int duty) //duty € [-255;255]
 {
 
@@ -120,11 +133,11 @@ void Motor::run(int duty) //duty € [-255;255]
 
     if(ABS(duty) > 255*MINIMAL_PWM_PERC)
     {
-        fputs(std::to_string((int)(((float)ABS(duty) / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD)).c_str(), this->dutyFile);
+        fputs(itoa_lookup_table[ABS(duty)], this->dutyFile);
     }
     else
     {
-        fputs(std::to_string(0).c_str(), this->dutyFile);
+        fputs(itoa_lookup_table[0], this->dutyFile);
     }
 
     fflush(this->dutyFile);
