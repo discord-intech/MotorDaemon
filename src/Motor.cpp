@@ -74,6 +74,12 @@ void Motor::initPWM()
         return;
     }
 
+    std::cout << "Printing itoa table :" << std::endl;
+    for(int i =0 ; i<256 ; i++)
+    {
+        std::cout << i << " : " << itoa_lookup_table[i] << std::endl;
+    }
+
    /* if(dutyFile == NULL)
     {
         std::cout << "Can't open duty file for PWM" << PWMpin << " !" << std::endl;
