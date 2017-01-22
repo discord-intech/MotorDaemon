@@ -357,6 +357,11 @@ void MotionController::stop()
 
 }
 
+void MotionController::setSpeedTranslation(int speed)
+{
+    maxSpeedTranslation = speed;
+}
+
 void MotionController::manageStop()
 {
     static long time = 0;

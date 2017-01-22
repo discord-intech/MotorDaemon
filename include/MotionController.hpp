@@ -127,6 +127,8 @@ public:
     void orderTranslation(long);
     void orderAngle(float);
 
+    void setSpeedTranslation(int);
+
     void orderCurveRadius(long);
 
     void setTranslationTunings(float, float, float);

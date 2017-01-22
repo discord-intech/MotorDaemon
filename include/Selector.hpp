@@ -220,6 +220,30 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("sets"))
+    {
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : sets <speed in ticks/s>\r\n");
+            return 0;
+        }
+
+        int s;
+        try
+        {
+            s = std::stoi(args[1]);
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+#ifdef __arm__
+        motion.setSpeedTranslation(s);
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("ts"))
     {
 
