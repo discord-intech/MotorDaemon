@@ -8,6 +8,7 @@
 
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
+#include <sstream>
 
 #ifdef __arm__
 MotionController motion;
@@ -20,7 +21,7 @@ static bool serverMode = false;
 
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
 {
-    std::stringstream ss;
+    std::stringstream ss(s);
     ss.str(s);
     std::string item;
 
