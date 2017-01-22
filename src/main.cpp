@@ -185,8 +185,6 @@ void serverWorker(void)
 
         order = std::string(rbuff);
 
-        std::cout << "Received : " << order << std::endl;
-
         if(treatOrder(order, std::bind(&Writters::writeMessage, client_socket, std::placeholders::_1)))
         {
 #ifdef __arm__
