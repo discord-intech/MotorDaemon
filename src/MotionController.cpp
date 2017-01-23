@@ -65,7 +65,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     translationPID.setTunings(19, 0.001, 0);
     leftSpeedPID.setTunings(0.1, 0.00001, 0.0001); // ki 0.00001
     rightSpeedPID.setTunings(0.1, 0.00001, 0.0001);
-    curvePID.setTunings(1, 0, 0);
+    curvePID.setTunings(0, 0, 0);
 
     distanceTest = 200;
 
@@ -155,7 +155,7 @@ void MotionController::control()
     if(sweeping)
     {
         sweepRadius += (sweepRadius >= 0) ? -80 : 80;
-        if(ABS(sweepRadius) < 800) sweepRadius = (sweepRadius <= 0) ? -800 : 800;
+        if(ABS(sweepRadius) < 500) sweepRadius = (sweepRadius <= 0) ? -500 : 500;
         *curveSetpoint = sweepRadius;
     }
 
@@ -206,7 +206,7 @@ void MotionController::control()
 
     if(ABS(*currentRightSpeed - *currentLeftSpeed) > 3)
     {
-        //curvePID.compute();
+        curvePID.compute();
     }
     else
     {
