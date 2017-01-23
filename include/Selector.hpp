@@ -182,6 +182,16 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("gor"))
+    {
+
+#ifdef __arm__
+        motion.setControlled(false);
+        motion.goR();
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("sweepR"))
     {
 

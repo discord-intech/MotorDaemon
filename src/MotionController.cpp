@@ -155,7 +155,7 @@ void MotionController::control()
     if(sweeping)
     {
         sweepRadius += (sweepRadius >= 0) ? -80 : 80;
-        if(ABS(sweepRadius) < 110) sweepRadius = (sweepRadius <= 0) ? -110 : 110;
+        if(ABS(sweepRadius) < 800) sweepRadius = (sweepRadius <= 0) ? -800 : 800;
         *curveSetpoint = sweepRadius;
     }
 

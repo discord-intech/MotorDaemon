@@ -153,6 +153,8 @@ public:
 
     void go(void) { *translationSpeed = maxSpeedTranslation; }
 
+    void goR(void) { *translationSpeed = - maxSpeedTranslation; }
+
     void setControlled(bool b) { controlled = b; }
 
     void sweep(bool way);
