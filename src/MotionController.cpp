@@ -154,7 +154,7 @@ void MotionController::control()
 
     if(sweeping)
     {
-        sweepRadius += (sweepRadius >= 0) ? -100 : 100;
+        sweepRadius += (sweepRadius >= 0) ? -50 : 50;
         if(ABS(sweepRadius) < 110) sweepRadius = (sweepRadius <= 0) ? -110 : 110;
         *curveSetpoint = sweepRadius;
     }
@@ -216,8 +216,8 @@ void MotionController::control()
 
     if(ABS(*curveSetpoint + *deltaRadius) < MAX_RADIUS)
     {
-        leftCurveRatio = ((double)ABS(*curveSetpoint + *deltaRadius)-(RAYON_COD_GAUCHE*(curveSetpoint<0?-1.0:1.0)))/((double)ABS(*curveSetpoint + *deltaRadius)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
-        rightCurveRatio = ((double)ABS(*curveSetpoint + *deltaRadius)+(RAYON_COD_DROITE*(curveSetpoint<0?-1.0:1.0)))/((double)ABS(*curveSetpoint + *deltaRadius)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+        leftCurveRatio = ((double)ABS(*curveSetpoint + *deltaRadius)+(RAYON_COD_GAUCHE*(curveSetpoint<0?-1.0:1.0)))/((double)ABS(*curveSetpoint + *deltaRadius)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
+        rightCurveRatio = ((double)ABS(*curveSetpoint + *deltaRadius)-(RAYON_COD_DROITE*(curveSetpoint<0?-1.0:1.0)))/((double)ABS(*curveSetpoint + *deltaRadius)+RAYON_COD_DROITE-RAYON_COD_GAUCHE);
     }
     else
     {
