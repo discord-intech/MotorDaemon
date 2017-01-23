@@ -105,6 +105,12 @@ private:
 
     bool moving = false;
 
+    bool controlled = true;
+
+    bool sweeping = false;
+
+    long sweepRadius = 1000000;
+
     std::thread t;
 
     unsigned int delayToStop;  //En ms
@@ -144,6 +150,14 @@ public:
     bool isPhysicallyStopped(void);
 
     long getTranslationSetPoint(void) { return *translationSetpoint;}
+
+    void go(void) { *translationSpeed = maxSpeedTranslation; }
+
+    void setControlled(bool b) { controlled = b; }
+
+    void sweep(bool way);
+
+    void stopSweep(void);
 
     Odometry* getOdometry(void);
     long getCurveRadius(void);

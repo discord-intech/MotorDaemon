@@ -152,6 +152,13 @@ void MotionController::control()
     static int32_t previousRightAcceleration = 0;
     */
 
+    if(sweeping)
+    {
+        sweepRadius += (sweepRadius >= 0) ? -100 : 100;
+        if(ABS(sweepRadius) < 100) sweepRadius = (sweepRadius < 0) ? -100 : 100;
+        *curveSetpoint = sweepRadius;
+    }
+
     long rightTicks = odo.getRightValue();
 
     long leftTicks = odo.getLeftValue();
@@ -195,8 +202,7 @@ void MotionController::control()
     *currentDistance = (leftTicks + rightTicks) / 2;
     currentAngle = ((rightTicks - *currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - *currentDistance)) / 2;
 
-
-    translationPID.compute();
+    if(controlled) translationPID.compute();
 
     if(ABS(*currentRightSpeed - *currentLeftSpeed) > 3)
     {
@@ -354,7 +360,7 @@ void MotionController::stop()
     rightSpeedPID.resetErrors();
 
     moving = false;
-
+    controlled = true;
 }
 
 void MotionController::setSpeedTranslation(int speed)
@@ -469,6 +475,18 @@ void MotionController::manageStop()
 
 void MotionController::updatePosition() {
     //TODO approx circulaire
+}
+
+void MotionController::sweep(bool way) // true >0 ; false <0
+{
+    sweepRadius = way ? 1000000 : -1000000;
+    sweeping = true;
+}
+
+void MotionController::stopSweep(void)
+{
+    sweeping = false;
+    *curveSetpoint = 10000000;
 }
 
 bool MotionController::isPhysicallyStopped() {

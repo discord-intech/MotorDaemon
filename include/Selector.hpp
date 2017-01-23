@@ -172,6 +172,42 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("go"))
+    {
+
+#ifdef __arm__
+        motion.orderTranslation(dist);
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("sweepR"))
+    {
+
+#ifdef __arm__
+        motion.sweep(false);
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("sweepL"))
+    {
+
+#ifdef __arm__
+        motion.sweep(true);
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("sweepstop"))
+    {
+
+#ifdef __arm__
+        motion.stopSweep();
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("cr"))
     {
         if(args.size() != 2)
