@@ -176,6 +176,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     {
 
 #ifdef __arm__
+        motion.setControlled(false);
         motion.go();
 #endif
         return 0;
