@@ -103,13 +103,13 @@ private:
 
     int32_t distanceTest;
 
-    bool moving = false;
+    volatile bool moving = false;
 
-    bool controlled = true;
+    volatile bool controlled = true;
 
-    bool sweeping = false;
+    volatile bool sweeping = false;
 
-    long sweepRadius = 1000000;
+    volatile long sweepRadius = 10000;
 
     std::thread t;
 

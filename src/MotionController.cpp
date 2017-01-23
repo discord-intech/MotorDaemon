@@ -155,7 +155,7 @@ void MotionController::control()
     if(sweeping)
     {
         sweepRadius += (sweepRadius >= 0) ? -100 : 100;
-        if(ABS(sweepRadius) < 100) sweepRadius = (sweepRadius < 0) ? -100 : 100;
+        if(ABS(sweepRadius) < 110) sweepRadius = (sweepRadius <= 0) ? -100 : 100;
         *curveSetpoint = sweepRadius;
     }
 
@@ -479,14 +479,14 @@ void MotionController::updatePosition() {
 
 void MotionController::sweep(bool way) // true >0 ; false <0
 {
-    sweepRadius = way ? 1000000 : -1000000;
+    sweepRadius = way ? 10000 : -10000;
     sweeping = true;
 }
 
 void MotionController::stopSweep(void)
 {
     sweeping = false;
-    *curveSetpoint = 10000000;
+    *curveSetpoint = 1000000;
 }
 
 bool MotionController::isPhysicallyStopped() {
