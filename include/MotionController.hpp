@@ -115,6 +115,10 @@ private:
 
     unsigned int delayToStop;  //En ms
 
+    float direction_table[MAX_RADIUS];
+
+    void compute_direction_table(void);
+
     static void mainWorker(MotionController*&);
 
 

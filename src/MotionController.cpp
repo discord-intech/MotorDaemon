@@ -80,6 +80,8 @@ void MotionController::init()
 
     direction.setAngle(0);
 
+    compute_direction_table();
+
     started = true;
 
     t = std::thread(std::bind(mainWorker, this), "Feedback Thread");
@@ -204,7 +206,8 @@ void MotionController::control()
 
     if(controlled) translationPID.compute();
 
-    if(ABS(*currentRightSpeed - *currentLeftSpeed) > 3)
+    if(leftCurveRatio != 0 && rightCurveRatio != 0 && *currentLeftSpeed > 20 && *currentRightSpeed > 20
+       && ABS((double)*currentRightSpeed / (double)*currentLeftSpeed) - (rightCurveRatio / leftCurveRatio) > 0.01)
     {
         curvePID.compute();
     }
@@ -212,7 +215,6 @@ void MotionController::control()
     {
         *deltaRadius = 0;
     }
-
 
     if(ABS(*curveSetpoint + *deltaRadius) < MAX_RADIUS)
     {
@@ -313,8 +315,17 @@ void MotionController::control()
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
-    direction.setAngle( ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0)
-                        * (1.5707 - atan((float)ABS(*curveSetpoint + *deltaRadius) / (float)DIST_MOTOR_DIRECTION)));
+    if(ABS(*curveSetpoint + *deltaRadius) >= MAX_RADIUS)
+    {
+        direction.setAngle(((*curveSetpoint + *deltaRadius) > 0 ? 1.0 : -1.0)*direction_table[MAX_RADIUS-1]);
+    }
+    else
+    {
+        direction.setAngle(((*curveSetpoint + *deltaRadius) > 0 ? 1.0 : -1.0)*direction_table[ABS(*curveSetpoint + *deltaRadius)]);
+    }
+
+    //direction.setAngle( ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0)
+    //                    * (1.5707 - atan((float)ABS(*curveSetpoint + *deltaRadius) / (float)DIST_MOTOR_DIRECTION)));
     //direction.setAngle(0);
 }
 
@@ -365,7 +376,7 @@ void MotionController::stop()
 
 void MotionController::setSpeedTranslation(int speed)
 {
-    maxSpeedTranslation = speed;
+    maxSpeedTranslation = ABS(speed);
 }
 
 void MotionController::manageStop()
@@ -487,6 +498,14 @@ void MotionController::stopSweep(void)
 {
     sweeping = false;
     *curveSetpoint = 1000000;
+}
+
+void MotionController::compute_direction_table(void)
+{
+    for(int i=0 ; i<MAX_RADIUS ; i++)
+    {
+        direction_table[i] = (float) ((1.5707 - atan((float)i / (float)DIST_MOTOR_DIRECTION)));
+    }
 }
 
 bool MotionController::isPhysicallyStopped() {
