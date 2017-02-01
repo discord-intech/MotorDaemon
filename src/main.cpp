@@ -12,11 +12,13 @@
 
 #define SOCKET_PORT 56987
 #define BUFFER_MAX_SIZE 2048
+#define END_OF_ORDER '\r'
 #define SERVER_MODE_CMD "-s"
 #define DAEMON_NAME "motordaemon"
 
 void serverWorker(void);
 void localWorker(void);
+char * readOrder(int socket);
 
 int sockfd;
 std::thread t;
@@ -169,19 +171,16 @@ void serverWorker(void)
 
     while(true)
     {
-        char rbuff[BUFFER_MAX_SIZE];
-        ssize_t rbytes;
+        char * rbuff;
 
-        rbytes = recv(client_socket, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
+        rbuff = readOrder(client_socket);
 
-        if(rbytes < 0)
+        if(rbuff == 0)
         {
             perror("ERROR socket is unavailable");
             close(client_socket);
             goto listening;
         }
-
-        rbuff[rbytes] = '\0'; // set null terminal
 
         order = std::string(rbuff);
 
@@ -195,5 +194,38 @@ void serverWorker(void)
             return;
         }
     }
+}
+
+char * readOrder(int socket)
+{
+    char * buf = (char*)malloc(BUFFER_MAX_SIZE * sizeof(char));
+
+    memset(buf, 0, BUFFER_MAX_SIZE*sizeof(char));
+
+    char * actual = (char*)malloc(2*sizeof(char));
+
+    memset(actual, 0, sizeof(actual));
+
+    ssize_t bytes;
+
+    while(true)
+    {
+        bytes = recv(socket, actual, sizeof(actual), 0);
+
+        if(bytes < 0)
+        {
+            return 0;
+        }
+
+        if(actual[0] == END_OF_ORDER) break;
+
+        actual[1] = 0;
+
+        strcat(buf, actual);
+
+        memset(actual, 0, sizeof(actual));
+    }
+
+    return buf;
 }
 
