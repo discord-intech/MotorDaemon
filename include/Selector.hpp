@@ -6,6 +6,9 @@
 #define MOTORDAEMON_SELECTOR_HPP
 
 
+#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! clockoverlay shaded-background=true ! theoraenc  ! oggmux ! tcpserversink port=56987 &"
+#define CAMERA_KILL_CALL "killall gst-launch-1.0"
+
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 #include <sstream>
@@ -40,6 +43,17 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     getArgs(order, ' ', args);
 
     if(args.size() == 0) return 0;
+
+    else if(!args[0].compare("startcamera"))
+    {
+        system(CAMERA_KILL_CALL);
+        system(CAMERA_SYSTEM_CALL);
+    }
+
+    else if(!args[0].compare("stopcamera"))
+    {
+        system(CAMERA_KILL_CALL);
+    }
 
     if(!args[0].compare("stop"))
     {
