@@ -210,7 +210,7 @@ char * readOrder(int socket)
 
     while(true)
     {
-        bytes = recv(socket, actual, sizeof(actual), 0);
+        bytes = recv(socket, actual, 1, 0);
 
         if(bytes < 0)
         {
