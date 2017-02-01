@@ -219,6 +219,8 @@ char * readOrder(int socket)
 
         if(actual[0] == END_OF_ORDER) break;
 
+        if(actual[0] == 0) continue;
+
         actual[1] = 0;
 
         strcat(buf, actual);
