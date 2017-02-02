@@ -11,8 +11,7 @@
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
-#define BUFFER_MAX_SIZE 2048
-#define END_OF_ORDER '\r'
+#define BUFFER_MAX_SIZE 1024
 #define SERVER_MODE_CMD "-s"
 #define DAEMON_NAME "motordaemon"
 
@@ -126,18 +125,18 @@ void serverWorker(void)
         return;
     }
 
-  /* server = gethostbyname("localhost"); //the ip address (or server name) of the listening server.
-    if (server == NULL)
-    {
-        fprintf(stderr,"ERROR, no such host\n");
-        close(sockfd);
-        return;
-    }*/
+    /* server = gethostbyname("localhost"); //the ip address (or server name) of the listening server.
+      if (server == NULL)
+      {
+          fprintf(stderr,"ERROR, no such host\n");
+          close(sockfd);
+          return;
+      }*/
 
     memset((char *) &serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
-   // memcpy(server->h_addr, (char *)&serv_addr.sin_addr.s_addr, (size_t) server->h_length);
+    // memcpy(server->h_addr, (char *)&serv_addr.sin_addr.s_addr, (size_t) server->h_length);
     serv_addr.sin_port = htons(SOCKET_PORT);
 
 
@@ -150,11 +149,11 @@ void serverWorker(void)
     }
 
     listening:if(listen(sockfd, 1) <0)
-    {
-        perror("ERROR connecting");
-        close(sockfd);
-        return;
-    }
+{
+    perror("ERROR connecting");
+    close(sockfd);
+    return;
+}
 
     struct sockaddr_un client_name;
     socklen_t client_name_len=sizeof(struct sockaddr_un);
@@ -171,16 +170,19 @@ void serverWorker(void)
 
     while(true)
     {
-        char * rbuff;
+        char rbuff[BUFFER_MAX_SIZE];
+        ssize_t rbytes;
 
-        rbuff = readOrder(client_socket);
+        rbytes = recv(client_socket, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
 
-        if(rbuff == 0)
+        if(rbytes < 0)
         {
             perror("ERROR socket is unavailable");
             close(client_socket);
             goto listening;
         }
+
+        rbuff[rbytes] = '\0'; // set null terminal
 
         order = std::string(rbuff);
 
@@ -194,40 +196,5 @@ void serverWorker(void)
             return;
         }
     }
-}
-
-char * readOrder(int socket)
-{
-    char * buf = (char*)malloc(BUFFER_MAX_SIZE * sizeof(char));
-
-    memset(buf, 0, BUFFER_MAX_SIZE*sizeof(char));
-
-    char * actual = (char*)malloc(2*sizeof(char));
-
-    memset(actual, 0, sizeof(actual));
-
-    ssize_t bytes;
-
-    while(true)
-    {
-        bytes = recv(socket, actual, 1, 0);
-
-        if(bytes < 0)
-        {
-            return 0;
-        }
-
-        if(actual[0] == END_OF_ORDER) break;
-
-        if(actual[0] == 0) continue;
-
-        actual[1] = 0;
-
-        strcat(buf, actual);
-
-        memset(actual, 0, sizeof(actual));
-    }
-
-    return buf;
 }
 
