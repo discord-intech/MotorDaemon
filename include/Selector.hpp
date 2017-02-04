@@ -6,12 +6,19 @@
 #define MOTORDAEMON_SELECTOR_HPP
 
 
-#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! clockoverlay shaded-background=true ! theoraenc  ! oggmux ! tcpserversink port=56988 &"
+#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! theoraenc  ! oggmux ! tcpserversink host=%s port=56988 &"
 #define CAMERA_KILL_CALL "killall gst-launch-1.0"
+#define INTERFACE "wlan0"
 
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 #include <sstream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <arpa/inet.h>
 
 #ifdef __arm__
 MotionController motion;
@@ -47,7 +54,20 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     else if(!args[0].compare("startcamera"))
     {
         system(CAMERA_KILL_CALL);
-        system(CAMERA_SYSTEM_CALL);
+
+        int fd;
+        struct ifreq ifr;
+
+        fd = socket(AF_INET, SOCK_DGRAM, 0);
+        ifr.ifr_addr.sa_family = AF_INET;
+        strncpy(ifr.ifr_name, INTERFACE, IFNAMSIZ-1);
+        ioctl(fd, SIOCGIFADDR, &ifr);
+        close(fd);
+
+        char buffer[4096];
+        sprintf(buffer, CAMERA_SYSTEM_CALL, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+
+        system(buffer);
     }
 
     else if(!args[0].compare("stopcamera"))
