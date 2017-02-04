@@ -167,6 +167,7 @@ void MotionController::control()
         if(GOcounter > GO_COUNTER_THRESHOLD)
         {
             GOcounter = 0;
+            std::cout << "Stopped for go timeout." << std::endl;
             stop();
         }
     }

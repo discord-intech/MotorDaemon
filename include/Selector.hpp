@@ -213,6 +213,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         motion.setControlled(false);
         motion.go();
 #endif
+        std::cout << "go received" << std::endl;
         return 0;
     }
 
