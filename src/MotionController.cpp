@@ -375,11 +375,10 @@ void MotionController::stop()
     leftMotor.run(0);
     rightMotor.run(0);
 
-    leftCurveRatio = 1.0;
-    rightCurveRatio = 1.0;
     translationPID.resetErrors();
     leftSpeedPID.resetErrors();
     rightSpeedPID.resetErrors();
+    curvePID.resetErrors();
 
     moving = false;
     controlled = true;
