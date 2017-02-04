@@ -32,6 +32,8 @@
 
 #define DELTA_FREQ_REFRESH 500
 
+#define GO_COUNTER_THRESHOLD 1000
+
 #define MM_PER_TICK 0.4331
 
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
@@ -109,6 +111,8 @@ private:
 
     volatile bool sweeping = false;
 
+    volatile int GOcounter = 0;
+
     volatile long sweepRadius = 10000;
 
     std::thread t;
@@ -153,11 +157,11 @@ public:
 
     bool isPhysicallyStopped(void);
 
-    long getTranslationSetPoint(void) { return *translationSetpoint;}
+    long getTranslationSetPoint(void) { return *translationSetpoint; }
 
-    void go(void) { *translationSpeed = maxSpeedTranslation; }
+    void go(void) { *translationSpeed = maxSpeedTranslation; GOcounter = 1; }
 
-    void goR(void) { *translationSpeed = - maxSpeedTranslation; }
+    void goR(void) { *translationSpeed = - maxSpeedTranslation; GOcounter = 1; }
 
     void setControlled(bool b) { controlled = b; }
 

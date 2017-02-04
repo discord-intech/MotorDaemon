@@ -161,6 +161,16 @@ void MotionController::control()
         *curveSetpoint = sweepRadius;
     }
 
+    if(GOcounter > 0)
+    {
+        GOcounter++;
+        if(GOcounter > GO_COUNTER_THRESHOLD)
+        {
+            GOcounter = 0;
+            stop();
+        }
+    }
+
     long rightTicks = odo.getRightValue();
 
     long leftTicks = odo.getLeftValue();
