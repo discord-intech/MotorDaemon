@@ -224,6 +224,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         motion.setControlled(false);
         motion.goR();
 #endif
+        std::cout << "gor received" << std::endl;
         return 0;
     }
 
@@ -233,6 +234,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
 #ifdef __arm__
         motion.sweep(false);
 #endif
+        std::cout << "sweepR received" << std::endl;
         return 0;
     }
 
@@ -242,6 +244,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
 #ifdef __arm__
         motion.sweep(true);
 #endif
+        std::cout << "sweepL received" << std::endl;
         return 0;
     }
 

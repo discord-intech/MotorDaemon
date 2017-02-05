@@ -40,7 +40,7 @@ public:
     {
         if(strlen(str) > BUFFER_MAX_SIZE)
         {
-            printf("RESPONSE TOO LONG : %s\n", str);
+            printf("RESPONSE TOO LONG (cmb): %s\n", str);
             return;
         }
 
