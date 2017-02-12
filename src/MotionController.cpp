@@ -114,10 +114,10 @@ void MotionController::mainWorker(MotionController *&asser)
             asser->updatePosition();
         }
 
-        if(count == 10000)
+        if(count == 50000)
         {
             count = 0;
-            std::cout << "Frequency : " << 10000000./(double)(Millis() - lastTime) << " Hz" << std::endl;
+            std::cout << "Frequency : " << 50000000./(double)(Millis() - lastTime) << " Hz" << std::endl;
            // asser->printTranslationError();
             lastTime = Millis();
         }
@@ -187,10 +187,12 @@ void MotionController::control()
         *currentRightSpeed = (rightTicks - previousRightTicks)*freq;
     }*/
 
-    *currentLeftSpeed = (long) ((leftTicks - previousLeftTicks) / ((Micros()-startTime) / 1000000.)); // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
-    *currentRightSpeed = (long) ((rightTicks - previousRightTicks) / ((Micros()-startTime) / 1000000.));
+    long actualTime = Micros();
 
-    startTime = Micros();
+    *currentLeftSpeed = (long) ((leftTicks - previousLeftTicks) / ((actualTime-startTime) / 1000000.)); // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
+    *currentRightSpeed = (long) ((rightTicks - previousRightTicks) / ((actualTime-startTime) / 1000000.));
+
+    startTime = actualTime;
 
     previousLeftTicks = leftTicks;
     previousRightTicks = rightTicks;
