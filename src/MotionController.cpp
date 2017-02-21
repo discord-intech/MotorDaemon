@@ -44,9 +44,9 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     leftSpeedPID.setEpsilon(20);
     rightSpeedPID.setEpsilon(20);
 
-    maxSpeed = 5000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
-    maxSpeedTranslation = 4000; // Consigne max envoy�e au PID
-    maxAcceleration = 1000;
+    maxSpeed = 3000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
+    maxSpeedTranslation = 3000; // Consigne max envoy�e au PID
+    maxAcceleration = 500;
     maxDecceleration = 500;
     leftCurveRatio = 1.0;
     rightCurveRatio = 1.0;
@@ -62,7 +62,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(19, 0.001, 0);
+    translationPID.setTunings(17, 0.001, 0);
     leftSpeedPID.setTunings(0.1, 0.00001, 0.0001); // ki 0.00001
     rightSpeedPID.setTunings(0.1, 0.00001, 0.0001);
     curvePID.setTunings(0, 0, 0);
@@ -321,7 +321,7 @@ void MotionController::control()
         std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << " : " << *rightPWM << ";" << *rightSpeedSetpoint
                   << " : " << *currentDistance << ";" << *translationSetpoint << " : " << leftCurveRatio << ";" << rightCurveRatio
                   << " : " << *curveSetpoint << ";" << *deltaRadius << " : "
-                  << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * (1.5707 - atan((float)ABS(*curveSetpoint + *deltaRadius) / (float)DIST_MOTOR_DIRECTION))
+                  << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * ((ABS(*curveSetpoint + *deltaRadius) >= MAX_RADIUS) ? direction_table[MAX_RADIUS-1] : direction_table[ABS(*curveSetpoint + *deltaRadius)])
                   << std::endl;
     }
     else counter++;
