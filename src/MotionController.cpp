@@ -44,10 +44,10 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     leftSpeedPID.setEpsilon(20);
     rightSpeedPID.setEpsilon(20);
 
-    maxSpeed = 3000; // Vitesse maximum, des moteurs (avec une marge au cas o� on s'amuse � faire forcer un peu la bestiole).
+    maxSpeed = 3000; // Vitesse maximum, des moteurs
     maxSpeedTranslation = 3000; // Consigne max envoy�e au PID
-    maxAcceleration = 500;
-    maxDecceleration = 500;
+    maxAcceleration = 600;
+    maxDecceleration = 600;
     leftCurveRatio = 1.0;
     rightCurveRatio = 1.0;
 
@@ -157,7 +157,7 @@ void MotionController::control()
     if(sweeping)
     {
         sweepRadius += (sweepRadius >= 0) ? -80 : 80;
-        if(ABS(sweepRadius) < 500) sweepRadius = (sweepRadius <= 0) ? -500 : 500;
+        if(ABS(sweepRadius) < 700) sweepRadius = (sweepRadius <= 0) ? -700 : 700;
         *curveSetpoint = sweepRadius;
     }
 
