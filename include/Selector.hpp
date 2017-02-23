@@ -6,7 +6,7 @@
 #define MOTORDAEMON_SELECTOR_HPP
 
 
-#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! theoraenc  ! oggmux ! tcpserversink host=%s port=56988 &"
+#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 do-timestamp=true ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! videorate ! video/x-raw,framerate=20/1 ! jpegenc quality=50 ! rtpjpegpay ! udpsink host=%s port=56988"
 #define CAMERA_KILL_CALL "killall gst-launch-1.0"
 #define INTERFACE "wlan0"
 
@@ -55,17 +55,14 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     {
         system(CAMERA_KILL_CALL);
 
-        int fd;
-        struct ifreq ifr;
-
-        fd = socket(AF_INET, SOCK_DGRAM, 0);
-        ifr.ifr_addr.sa_family = AF_INET;
-        strncpy(ifr.ifr_name, INTERFACE, IFNAMSIZ-1);
-        ioctl(fd, SIOCGIFADDR, &ifr);
-        close(fd);
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : startcamera <IP_client>\r\n");
+            return 0;
+        }
 
         char buffer[4096];
-        sprintf(buffer, CAMERA_SYSTEM_CALL, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+        sprintf(buffer, CAMERA_SYSTEM_CALL, args[1]);
 
         system(buffer);
     }
