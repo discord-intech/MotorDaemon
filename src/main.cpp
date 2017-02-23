@@ -11,16 +11,20 @@
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
+#define PROXY_SOCKET_PORT 56990
 #define BUFFER_MAX_SIZE 1024
 #define SERVER_MODE_CMD "-s"
+#define PROXY_MODE_CMD "-p"
 #define DAEMON_NAME "motordaemon"
 
 void serverWorker(void);
 void localWorker(void);
+void proxyWorker(void);
 char * readOrder(int socket);
 
 int sockfd;
 std::thread t;
+char * proxyAdress;
 
 void signalHandler(int sign)
 {
@@ -75,6 +79,16 @@ int main(int argc, char *argv[])
         syslog(LOG_INFO, "MotorDaemon launched in server mode");
         t.join(); //Do not shut down the main thread
     }
+    else if(argc >= 3 && !strcmp(argv[1], PROXY_MODE_CMD))
+    {
+        setlogmask(LOG_UPTO(LOG_NOTICE));
+        openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
+        proxyMode = true;
+        proxyAdress = argv[2];
+        t = std::thread(proxyWorker);
+        syslog(LOG_INFO, "MotorDaemon launched in proxy mode");
+        t.join(); //Do not shut down the main thread
+    }
     else
     {
         t = std::thread(localWorker);
@@ -90,7 +104,6 @@ int main(int argc, char *argv[])
 
 void localWorker(void)
 {
-
     char orderC[100];
     std::string order = "";
 
@@ -198,3 +211,68 @@ void serverWorker(void)
     }
 }
 
+void connecting ( in_port_t port, const char * hostname )
+{
+    sockfd = socket ( AF_INET, SOCK_STREAM, 0 ) ;
+    if ( sockfd == -1 ) {
+        perror ( "socket" ) ;
+    }
+
+    // Search for the host name.
+    struct hostent * hostent ;
+    hostent = gethostbyname ( hostname ) ;
+    if ( ! hostent ) {
+        fprintf ( stderr, "Problem with 'gethostbyname'.\n" ) ;
+    }
+
+    // Initialisation of the sockaddr_in data structure.
+    struct sockaddr_in addr ;
+    memset ( & addr, 0, sizeof ( struct sockaddr_in ) ) ;
+    addr.sin_family = AF_INET ;
+    addr.sin_port = port;
+    addr.sin_addr.s_addr = ( ( struct in_addr * ) ( hostent -> h_addr ) ) -> s_addr ;
+
+    // Name the socket.
+    int code ;
+    code = connect ( sockfd, ( struct sockaddr * ) & addr, sizeof ( struct sockaddr_in ) ) ;
+    if ( code == -1 ) {
+        perror ( "connect" ) ;
+    }
+}
+
+void proxyWorker(void)
+{
+    connect:connecting (htons(PROXY_SOCKET_PORT), proxyAdress) ;
+
+    printf("MotorDaemonProxy detected on %s:%d\nMotorDaemon is ready\n", proxyAdress, PROXY_SOCKET_PORT);
+
+    std::string order;
+
+    for( ; ; )
+    {
+        char rbuff[BUFFER_MAX_SIZE];
+        ssize_t rbytes;
+
+        rbytes = recv(sockfd, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
+
+        if(rbytes < 0)
+        {
+            perror("ERROR socket is unavailable");
+            close(sockfd);
+            goto connect;
+        }
+
+        rbuff[rbytes] = '\0'; // set null terminal
+
+        order = std::string(rbuff);
+
+        if(treatOrder(order, std::bind(&Writters::writeMessage, sockfd, std::placeholders::_1)))
+        {
+#ifdef __arm__
+            motion.stop();
+#endif
+            close(sockfd);
+            return;
+        }
+    }
+}
