@@ -64,6 +64,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         char buffer[4096];
         sprintf(buffer, CAMERA_SYSTEM_CALL, args[1]);
 
+        std::cout << buffer << std::endl;
+
         system(buffer);
     }
 
