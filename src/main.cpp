@@ -8,6 +8,7 @@
 #include <netdb.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <Settings.hpp>
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
@@ -64,6 +65,13 @@ int main(int argc, char *argv[])
     {
         std::cerr << std::endl << "Can't catch SIGINT" << std::endl;
     }
+
+#ifdef __arm__
+   // Settings settings("/etc/MotorDaemon.conf");
+
+#else
+   // Settings settings("MotorDaemon.conf");
+#endif
 
 #ifdef __arm__
     motion = MotionController();
