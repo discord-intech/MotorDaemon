@@ -6,7 +6,7 @@
 #define MOTORDAEMON_SELECTOR_HPP
 
 
-#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 do-timestamp=true ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! videorate ! video/x-raw,framerate=20/1 ! jpegenc quality=50 ! rtpjpegpay ! udpsink host=%s port=56988"
+#define CAMERA_SYSTEM_CALL "gst-launch-1.0 v4l2src device=/dev/video0 do-timestamp=true ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! videorate ! video/x-raw,framerate=20/1 ! jpegenc quality=50 ! rtpjpegpay ! udpsink host=%s port=56988 &"
 #define CAMERA_KILL_CALL "killall gst-launch-1.0"
 #define INTERFACE "wlan0"
 
