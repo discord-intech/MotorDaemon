@@ -5,6 +5,7 @@
 #include "../include/MotionController.hpp"
 #include <sched.h>
 #include <sys/resource.h>
+#include <Settings.hpp>
 
 bool MotionController::started;
 long MotionController::startTime;
@@ -24,9 +25,9 @@ unsigned long Micros(void)
     return (unsigned long) (1000000 * tv.tv_sec + tv.tv_usec);
 }
 
-MotionController::MotionController() :  rightMotor(), leftMotor(), direction(1100000, (float) LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
+MotionController::MotionController(Settings &s) :  rightMotor(), leftMotor(), direction(1100000, (float) LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
-averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
+averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
 {
     execTime = 0;
     startTime = 0;
@@ -44,32 +45,31 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26)
     leftSpeedPID.setEpsilon(20);
     rightSpeedPID.setEpsilon(20);
 
-    maxSpeed = 3000; // Vitesse maximum, des moteurs
-    maxSpeedTranslation = 3000; // Consigne max envoy�e au PID
-    maxAcceleration = 600;
-    maxDecceleration = 600;
+    maxSpeed = settings.getInt("MAX_MOTOR_SPEED"); // Vitesse maximum, des moteurs
+    maxSpeedTranslation = settings.getInt("MAX_TRANSLATION_SPEED"); // Consigne max envoy�e au PID
+    maxAcceleration = settings.getInt("MAX_ACCEL");
+    maxDecceleration = settings.getInt("MAX_DECEL");
     leftCurveRatio = 1.0;
     rightCurveRatio = 1.0;
 
     // maxjerk = 1; // Valeur de jerk maxi(secousse d'acc�l�ration)
 
-    toleranceTranslation = 30;
-    toleranceRotation = 50;
-    toleranceSpeed = 50;
+    toleranceTranslation = settings.getInt("TRANSLATION_TOLERANCY");
+    toleranceSpeed = settings.getInt("SPEED_TOLERANCY");
     toleranceSpeedEstablished = 50; // Doit �tre la plus petite possible, sans bloquer les trajectoires courbes 50
     delayToEstablish = 1000;
 
 
     toleranceDifferentielle = 500; // Pour les trajectoires "normales", v�rifie que les roues ne font pas nawak chacunes de leur cot�.
 
-    translationPID.setTunings(17, 0.001, 0);
-    leftSpeedPID.setTunings(0.1, 0.00001, 0.0001); // ki 0.00001
-    rightSpeedPID.setTunings(0.1, 0.00001, 0.0001);
-    curvePID.setTunings(0, 0, 0);
+    translationPID.setTunings(settings.getFloat("T_KP"), settings.getFloat("T_KI"), settings.getFloat("T_KD"));
+    leftSpeedPID.setTunings(settings.getFloat("SL_KP"), settings.getFloat("SL_KI"), settings.getFloat("SL_KD"));
+    rightSpeedPID.setTunings(settings.getFloat("SR_KP"), settings.getFloat("SR_KI"), settings.getFloat("SR_KD"));
+    curvePID.setTunings(settings.getFloat("C_KP"), settings.getFloat("C_KI"), settings.getFloat("C_KD"));
 
     distanceTest = 200;
 
-    delayToStop = 100;
+    delayToStop = (unsigned int) settings.getInt("DELAY_TO_STOP");
 }
 
 void MotionController::init()
@@ -156,8 +156,11 @@ void MotionController::control()
 
     if(sweeping)
     {
-        sweepRadius += (sweepRadius >= 0) ? -80 : 80;
-        if(ABS(sweepRadius) < 700) sweepRadius = (sweepRadius <= 0) ? -700 : 700;
+        sweepRadius += (sweepRadius >= 0) ? -settings.getInt("SWEEP_OFFSET") : settings.getInt("SWEEP_OFFSET");
+        if(ABS(sweepRadius) < settings.getInt("SWEEP_MAX"))
+        {
+            sweepRadius = (sweepRadius <= 0) ? -settings.getInt("SWEEP_MAX") : settings.getInt("SWEEP_MAX");
+        }
         *curveSetpoint = sweepRadius;
     }
 

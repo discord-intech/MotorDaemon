@@ -9,9 +9,8 @@
  * Constructor
  * @param p path to config file
  */
-Settings::Settings(std::string p)
+Settings::Settings(const std::string &p) : path(p)
 {
-    this->path = p;
     parse();
 }
 
@@ -130,7 +129,7 @@ void Settings::parse(void)
 
 }
 
-std::string Settings::get(std::string name)
+std::string Settings::get(const std::string &name)
 {
     if(settings.count(name) == 0)
     {
@@ -138,4 +137,61 @@ std::string Settings::get(std::string name)
     }
 
     return settings[name];
+}
+
+double Settings::getDouble(const std::string &name)
+{
+    std::string r = get(name);
+
+    if(name == NO_SETTINGS_FAIL) throw FailedToParse();
+
+    try {
+        return std::stod(r);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        throw FailedToParse();
+    }
+    catch(const std::out_of_range& ia)
+    {
+        throw FailedToParse();
+    }
+}
+
+int Settings::getInt(const std::string &name)
+{
+    std::string r = get(name);
+
+    if(name == NO_SETTINGS_FAIL) throw FailedToParse();
+
+    try {
+        return std::stoi(r);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        throw FailedToParse();
+    }
+    catch(const std::out_of_range& ia)
+    {
+        throw FailedToParse();
+    }
+}
+
+float Settings::getFloat(const std::string &name)
+{
+    std::string r = get(name);
+
+    if(name == NO_SETTINGS_FAIL) throw FailedToParse();
+
+    try {
+        return std::stof(r);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        throw FailedToParse();
+    }
+    catch(const std::out_of_range& ia)
+    {
+        throw FailedToParse();
+    }
 }

@@ -67,10 +67,10 @@ int main(int argc, char *argv[])
     }
 
 #ifdef __arm__
-   // Settings settings("/etc/MotorDaemon.conf");
+    Settings settings("/etc/MotorDaemon.conf");
 
 #else
-   // Settings settings("MotorDaemon.conf");
+    Settings settings("MotorDaemon.conf");
 #endif
 
 #ifdef __arm__
@@ -87,12 +87,22 @@ int main(int argc, char *argv[])
         syslog(LOG_INFO, "MotorDaemon launched in server mode");
         t.join(); //Do not shut down the main thread
     }
-    else if(argc >= 3 && !strcmp(argv[1], PROXY_MODE_CMD))
+    else if(argc == 3 && !strcmp(argv[1], PROXY_MODE_CMD))
     {
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
         proxyMode = true;
         proxyAdress = argv[2];
+        t = std::thread(proxyWorker);
+        syslog(LOG_INFO, "MotorDaemon launched in proxy mode");
+        t.join(); //Do not shut down the main thread
+    }
+    else if(argc == 2 && !strcmp(argv[1], PROXY_MODE_CMD))
+    {
+        setlogmask(LOG_UPTO(LOG_NOTICE));
+        openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
+        proxyMode = true;
+        proxyAdress = (char *)settings.get("IP_MOTORDAEMONPROXY").c_str();
         t = std::thread(proxyWorker);
         syslog(LOG_INFO, "MotorDaemon launched in proxy mode");
         t.join(); //Do not shut down the main thread

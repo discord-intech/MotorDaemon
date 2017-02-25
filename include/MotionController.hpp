@@ -13,6 +13,7 @@
 #include "average.hpp"
 #include "Odometry.hpp"
 #include "Servo.hpp"
+#include "Settings.hpp"
 
 #define AVERAGE_SPEED_SIZE	25
 
@@ -41,6 +42,8 @@
 class MotionController
 {
 private:
+
+    Settings settings;
 
     LeftMotor leftMotor;
     RightMotor rightMotor;
@@ -94,7 +97,6 @@ private:
 
     //Nombre de ticks de tol�rance pour consid�rer qu'on est arriv� � destination
     long toleranceTranslation;
-    long toleranceRotation;
 
     long toleranceSpeed; // Tol�rance avant de consid�rer le mouvement anormal (�cart entre la consigne de vitesse et la vitesse r�elle)
     long toleranceSpeedEstablished; // Tol�rance autour de la vitesse �tablie avant de capter un blocage
@@ -130,7 +132,7 @@ private:
 public:
     void control(void);
 
-    MotionController(void);
+    MotionController(Settings&);
     void init(void);
 
     void stop(void);

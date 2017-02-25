@@ -12,7 +12,7 @@
 class Settings {
 private:
 
-    std::string path;
+    const std::string path;
 
     std::unordered_map<std::string, std::string> settings;
 
@@ -20,10 +20,17 @@ private:
 
 public:
 
-    Settings(std::string);
+    Settings(const std::string&);
 
-    std::string get(std::string);
+    std::string get(const std::string&);
 
+    double getDouble(const std::string&);
+
+    int getInt(const std::string&);
+
+    float getFloat(const std::string&);
 };
+
+class FailedToParse{};
 
 #endif //MOTORDAEMON_SETTINGS_HPP
