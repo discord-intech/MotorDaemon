@@ -22,8 +22,15 @@
 #include <arpa/inet.h>
 
 #ifdef __arm__
-MotionController motion;
+Settings settings("/etc/MotorDaemon.conf");
+#else
+Settings settings("MotorDaemon.conf");
 #endif
+
+#ifdef __arm__
+MotionController motion(settings);
+#endif
+
 std::vector<std::string> args = std::vector<std::string>();
 
 static bool serverMode = false;
