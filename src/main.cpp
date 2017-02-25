@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef __arm__
-    motion = MotionController();
+    motion = MotionController(settings);
     motion.init();
 #endif
 
