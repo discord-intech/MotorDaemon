@@ -95,7 +95,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         std::string s = std::to_string(motion.getX())+std::string(";")
                             +std::to_string(motion.getY())+std::string(";")
                             +std::to_string(motion.getAngle())+std::string("\r\n");
-        print(s.c_str());
+        print((char*)s.c_str());
 #endif
         return 0;
     }
