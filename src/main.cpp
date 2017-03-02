@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <Settings.hpp>
+#include <malloc.h>
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
@@ -182,12 +183,24 @@ void serverWorker(void)
         return;
     }
 
+    ssize_t rbytes;
+
+    char rbuffv[12];
+    rbytes = recv(client_socket, rbuffv, sizeof(rbuffv), 0); // similar to read(), but return -1 if socket closed
+    rbuffv[11] = 0;
+
+    if(rbytes < 0 || strcmp(rbuffv, "motordaemon"))
+    {
+        printf("Wrong app connected to client socket\n");
+        close(client_socket);
+        goto listening;
+    }
+
     std::string order = "";
 
     while(true)
     {
-        char rbuff[BUFFER_MAX_SIZE];
-        ssize_t rbytes;
+        char * rbuff = (char *)malloc(sizeof(char)*BUFFER_MAX_SIZE);
 
         rbytes = recv(client_socket, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
 
@@ -211,6 +224,7 @@ void serverWorker(void)
             close(sockfd);
             return;
         }
+        free(rbuff); rbuff = NULL;
     }
 }
 
@@ -251,12 +265,22 @@ void proxyWorker(void)
 
     std::string order;
 
+    ssize_t rbytes;
+
+    rbytes = write(sockfd, "motordaemon", 11);
+
+    if(rbytes < 0)
+    {
+        perror("ERROR socket is unavailable");
+        close(sockfd);
+        goto connect;
+    }
+
     for( ; ; )
     {
-        char rbuff[BUFFER_MAX_SIZE];
-        ssize_t rbytes;
+        char * rbuff = (char *)malloc(sizeof(char)*BUFFER_MAX_SIZE);
 
-        rbytes = recv(sockfd, rbuff, sizeof(rbuff), 0); // similar to read(), but return -1 if socket closed
+        rbytes = recv(sockfd, rbuff, sizeof(char)*BUFFER_MAX_SIZE, 0); // similar to read(), but return -1 if socket closed
 
         if(rbytes < 0)
         {
@@ -277,5 +301,6 @@ void proxyWorker(void)
             close(sockfd);
             return;
         }
+        free(rbuff); rbuff = NULL;
     }
 }
