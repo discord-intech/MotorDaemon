@@ -69,6 +69,7 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
 
     distanceTest = 200;
 
+
     delayToStop = (unsigned int) settings.getInt("DELAY_TO_STOP");
 }
 
@@ -105,13 +106,12 @@ void MotionController::mainWorker(MotionController *&asser)
     {
 
         asser->control();
-
+        asser->updatePosition();
         count++;
 
         if(count % 5 == 0)
         {
             asser->manageStop();
-            asser->updatePosition();
         }
 
         if(count == 50000)
@@ -139,6 +139,8 @@ void MotionController::control()
     static long freq(0);
 
     static int counter(0);
+
+    static double precedentAngle(0);
 
     // Pour le calcul de la vitesse instantan�e :
     static long previousLeftTicks = 0;
@@ -218,7 +220,8 @@ void MotionController::control()
 
 
     *currentDistance = (leftTicks + rightTicks) / 2;
-    currentAngle = ((rightTicks - *currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - *currentDistance)) / 2;
+    *currentAngle = precedentAngle + (rightTicks - leftTicks)/MM_PER_TICK;
+    precedentAngle = *currentAngle;
 
     if(controlled) translationPID.compute();
 
@@ -499,8 +502,12 @@ void MotionController::manageStop()
     }
 }
 
-void MotionController::updatePosition() {
-    //TODO approx circulaire
+void MotionController::updatePosition()
+{
+    static long precedentL(0);
+    *x += -1.0*(*currentDistance - precedentL)*SIN(*currentAngle);
+    *y += (*currentDistance - precedentL)*COS(*currentAngle);
+    precedentL = *currentDistance;
 }
 
 void MotionController::sweep(bool way) // true >0 ; false <0

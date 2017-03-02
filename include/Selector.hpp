@@ -89,7 +89,16 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
 #endif
         return 0;
     }
-
+    else if(!args[0].compare("p"))
+    {
+#ifdef __arm__
+        std::string s = std::to_string(motion.getX())+std::string(";")
+                            +std::to_string(motion.getY())+std::string(";")
+                            +std::to_string(motion.getAngle())+std::string("\r\n");
+        print(s.c_str());
+#endif
+        return 0;
+    }
     else if(!args[0].compare("setksg"))
     {
 

@@ -81,7 +81,9 @@ private:
     long maxAcceleration;
     long maxDecceleration;
 
-    long currentAngle;			// ticks
+    std::shared_ptr<double> x = std::shared_ptr<double>(new double(0)); //mm
+    std::shared_ptr<double> y = std::shared_ptr<double>(new double(0)); //mm
+    std::shared_ptr<double> currentAngle = std::shared_ptr<double>(new double(0)); //rads
 
     //Les ratios de vitesse pour commander un d�placement courbe
     double leftCurveRatio;
@@ -173,6 +175,12 @@ public:
 
     Odometry* getOdometry(void);
     long getCurveRadius(void);
+
+    double getX(void) {return *x;}
+
+    double getY(void) {return *y;}
+
+    double getAngle(void) { return *currentAngle;}
 
     void printTranslationError(void)
     {
