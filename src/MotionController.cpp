@@ -218,7 +218,8 @@ void MotionController::control()
 
 
     *currentDistance = (leftTicks + rightTicks) / 2;
-    *currentAngle = ((double)(rightTicks - leftTicks)/(double)MM_PER_TICK);
+    *currentAngle = TICKS_TO_RAD*((double)(rightTicks - *currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - *currentDistance)) / 2.0;
+
 
     if(controlled) translationPID.compute();
 

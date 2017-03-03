@@ -36,6 +36,7 @@
 #define GO_COUNTER_THRESHOLD 1000
 
 #define MM_PER_TICK 0.4331
+#define TICKS_TO_RAD (MM_PER_TICK/RAYON_COD_GAUCHE)
 
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
