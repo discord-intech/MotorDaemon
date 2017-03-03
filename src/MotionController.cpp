@@ -25,7 +25,7 @@ unsigned long Micros(void)
     return (unsigned long) (1000000 * tv.tv_sec + tv.tv_usec);
 }
 
-MotionController::MotionController(Settings &s) :  rightMotor(), leftMotor(), direction(1100000, (float) LOW_ANGLE, 1550000, HIGH_ANGLE), //FIXME bounds
+MotionController::MotionController(Settings &s) :  rightMotor(), leftMotor(), direction(900000, (float) LOW_ANGLE, 1200000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
 {
