@@ -140,8 +140,6 @@ void MotionController::control()
 
     static int counter(0);
 
-    static double precedentAngle(0);
-
     // Pour le calcul de la vitesse instantan�e :
     static long previousLeftTicks = 0;
     static long previousRightTicks = 0;
@@ -220,8 +218,7 @@ void MotionController::control()
 
 
     *currentDistance = (leftTicks + rightTicks) / 2;
-    *currentAngle = precedentAngle + (rightTicks - leftTicks)/MM_PER_TICK;
-    precedentAngle = *currentAngle;
+    *currentAngle = ((double)(rightTicks - leftTicks)/(double)MM_PER_TICK);
 
     if(controlled) translationPID.compute();
 
