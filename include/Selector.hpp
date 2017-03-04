@@ -180,6 +180,33 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("setkcd"))
+    {
+
+        if(args.size() != 4)
+        {
+            print((char *) "USAGE : setkcd <kp> <ki> <kd>\r\n");
+            return 0;
+        }
+
+        float kp, ki, kd;
+        try
+        {
+            kp = std::stof(args[1]);
+            ki = std::stof(args[2]);
+            kd = std::stof(args[3]);
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+#ifdef __arm__
+        motion.setCurveTunings(kp, ki, kd);
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("sweep"))
     {
         Servo s = Servo(1100000, 0, 1550000, 180);
@@ -364,12 +391,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
             return 0;
         }
 
-        print((char*)"Speed test launched !\r\n");
-
 #ifdef __arm__
         motion.testSpeed(dist);
 #endif
-        print((char*)"Speed test ended !\r\n");
 
         return 0;
     }
@@ -388,6 +412,22 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     {
 #ifdef __arm__
         print((char*) motion.getTunings());
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("m"))
+    {
+#ifdef __arm__
+        print((char*) motion.isMoving());
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("sv"))
+    {
+#ifdef __arm__
+        print((char*) motion.getSpeedValues());
 #endif
         return 0;
     }

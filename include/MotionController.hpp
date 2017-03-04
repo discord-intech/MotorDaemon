@@ -151,14 +151,19 @@ public:
     void orderCurveRadius(long);
 
     void setTranslationTunings(float, float, float);
+    void setCurveTunings(float, float, float);
     void setLeftSpeedTunings(float, float, float);
     void setRightSpeedTunings(float, float, float);
 
     const char* getTunings(void);
 
+    const char* getSpeedValues(void);
+
     void testPosition(void);
 
     void testSpeed(int);
+
+    const char* isMoving(void) { return std::string(std::string(moving ? "1" : "0")+std::string("\r\n")).c_str(); }
 
     bool isPhysicallyStopped(void);
 

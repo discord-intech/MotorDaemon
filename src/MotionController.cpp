@@ -535,16 +535,21 @@ bool MotionController::isPhysicallyStopped() {
 const char * MotionController::getTunings(void)
 {
     return (
-            std::string("\nLEFT SPEED : ")+std::to_string(leftSpeedPID.getKp())+std::string(" ")+std::to_string(leftSpeedPID.getKi())+std::string(" ")+std::to_string(leftSpeedPID.getKd())+std::string("\r\n")+
+            std::string("LEFT SPEED : ")+std::to_string(leftSpeedPID.getKp())+std::string(" ")+std::to_string(leftSpeedPID.getKi())+std::string(" ")+std::to_string(leftSpeedPID.getKd())+std::string("\r\n")+
             std::string("RIGHT SPEED : ")+std::to_string(rightSpeedPID.getKp())+std::string(" ")+std::to_string(rightSpeedPID.getKi())+std::string(" ")+std::to_string(rightSpeedPID.getKd())+std::string("\r\n")+
-            std::string("TRANSLATION : ")+std::to_string(translationPID.getKp())+std::string(" ")+std::to_string(translationPID.getKi())+std::string(" ")+std::to_string(translationPID.getKd())+std::string("\r\n")+
-            std::string("CURVE : ")+std::to_string(curvePID.getKp())+std::string(" ")+std::to_string(curvePID.getKi())+std::string(" ")+std::to_string(curvePID.getKd())+std::string("\r\n\n")
+            std::string("TRANSLATION PID : ")+std::to_string(translationPID.getKp())+std::string(" ")+std::to_string(translationPID.getKi())+std::string(" ")+std::to_string(translationPID.getKd())+std::string("\r\n")+
+            std::string("CURVE PID : ")+std::to_string(curvePID.getKp())+std::string(" ")+std::to_string(curvePID.getKi())+std::string(" ")+std::to_string(curvePID.getKd())+std::string("\r\n")
           ).c_str();
 }
 
 void MotionController::setTranslationTunings(float kp, float ki, float kd)
 {
     translationPID.setTunings(kp, ki, kd);
+}
+
+void MotionController::setCurveTunings(float kp, float ki, float kd)
+{
+    curvePID.setTunings(kp, ki, kd);
 }
 
 void MotionController::setLeftSpeedTunings(float kp, float ki, float kd)
@@ -600,7 +605,15 @@ Odometry* MotionController::getOdometry(void)
     return &odo;
 }
 
-long MotionController::getCurveRadius()
+long MotionController::getCurveRadius(void)
 {
     return *currentRadius;
+}
+
+const char* MotionController::getSpeedValues(void)
+{
+    return (
+            std::to_string(Millis())+std::string(";")+std::to_string(*leftSpeedSetpoint)+std::string(";")+std::to_string(*currentLeftSpeed)+
+            std::string(";")+std::to_string(*rightSpeedSetpoint)+std::string(";")+std::to_string(*currentRightSpeed)+std::string("\r\n")
+    ).c_str();
 }
