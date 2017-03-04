@@ -259,6 +259,31 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("setpos"))
+    {
+        if(args.size() != 3)
+        {
+            print((char *) "USAGE : setpos <x> <y>\r\n");
+            return 0;
+        }
+
+        double x, y;
+        try
+        {
+            x = std::stod(args[1]);
+            y = std::stod(args[2]);
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+#ifdef __arm__
+        motion.setPosition(x,y);
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("gor"))
     {
 

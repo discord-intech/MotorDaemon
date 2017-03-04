@@ -155,6 +155,8 @@ public:
     void setLeftSpeedTunings(float, float, float);
     void setRightSpeedTunings(float, float, float);
 
+    void setPosition(double xn, double yn) { *x = xn; *y = yn; }
+
     const char* getTunings(void);
 
     const char* getSpeedValues(void);
