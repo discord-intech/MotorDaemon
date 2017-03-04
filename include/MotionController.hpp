@@ -190,7 +190,7 @@ public:
 
     long getSpeedL(void) { return *currentLeftSpeed; }
 
-    long getSpeedD(void) { return *currentRightSpeed; }
+    long getSpeedR(void) { return *currentRightSpeed; }
 
     long getCSpeedL(void) { return *leftSpeedSetpoint; }
 
