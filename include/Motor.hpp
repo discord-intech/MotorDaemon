@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include "safe_enum.hpp"
+#include "Settings.hpp"
 //#include <BlackPWM.h>
 
 #define MIN(x,y) (((x)<(y))?(x):(y))
@@ -48,6 +49,8 @@
 
         FILE * dutyFile;
 
+        Settings settings;
+
         bool inversed;
 
         Direction actualDirection;
@@ -62,7 +65,7 @@
         std::string dutyPath;
 
     public:
-        Motor(uint8_t, int, bool);
+        Motor(uint8_t, int, bool, Settings&);
         void initPWM(void);
         void run(int);
     };
@@ -70,12 +73,12 @@
 
     class LeftMotor : public Motor {
     public:
-        LeftMotor();
+        LeftMotor(Settings&);
     };
 
     class RightMotor : public Motor {
     public:
-        RightMotor();
+        RightMotor(Settings&);
     };
 
 

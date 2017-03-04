@@ -8,7 +8,8 @@
 #include "../include/Motor.hpp"
 
 
-Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), inversed(inv), actualDirection(Direction::BACKWARD)
+Motor::Motor(uint8_t pwm, int dir, bool inv, Settings &s) : PWMpin(pwm), directionPin(dir), inversed(inv),
+                                                            settings(s), actualDirection(Direction::BACKWARD)
 {
     system((std::string("echo ")+std::to_string(dir)+std::string(" > /sys/class/gpio/export")).c_str());
 
@@ -17,9 +18,9 @@ Motor::Motor(uint8_t pwm, int dir, bool inv) : PWMpin(pwm), directionPin(dir), i
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
-LeftMotor::LeftMotor() : Motor(0, 49, true) {}
+LeftMotor::LeftMotor(Settings &s) : Motor(0, 49, true, s) {}
 
-RightMotor::RightMotor() : Motor(1, 60, false) {}
+RightMotor::RightMotor(Settings &s) : Motor(1, 60, false, s) {}
 
 void Motor::setDirection(Direction way)
 {
