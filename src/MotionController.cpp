@@ -404,7 +404,7 @@ void MotionController::manageStop()
   //  static uint32_t timeNotEstablished = 0;
   //  static bool isSpeedEstablished = false;
 
-    if (isPhysicallyStopped() && moving) // Pour un blocage classique
+    if (isPhysicallyStopped() && moving && controlled) // Pour un blocage classique
     {
 
         if (time == 0)
@@ -587,9 +587,10 @@ void MotionController::testSpeed(int speed)
 {
     *translationSpeed = speed;
     moving = true;
+    controlled = false;
 
     timespec t, r;
-    t.tv_sec= 2;
+    t.tv_sec= 4;
     t.tv_nsec = 0;
     nanosleep(&t, &r);
 
