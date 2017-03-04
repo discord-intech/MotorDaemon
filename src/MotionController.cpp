@@ -585,16 +585,19 @@ void MotionController::orderCurveRadius(long c)
 
 void MotionController::testSpeed(int speed)
 {
-    *translationSpeed = speed;
-    moving = true;
-    controlled = false;
+    std::thread t([this, speed](){
+        *translationSpeed = speed;
+        moving = true;
+        controlled = false;
 
-    timespec t, r;
-    t.tv_sec= 4;
-    t.tv_nsec = 0;
-    nanosleep(&t, &r);
+        timespec t, r;
+        t.tv_sec= 4;
+        t.tv_nsec = 0;
+        nanosleep(&t, &r);
 
-    stop();
+        stop();
+    });
+    t.detach();
 }
 
 void MotionController::orderAngle(float angle)
