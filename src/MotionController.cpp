@@ -219,12 +219,12 @@ void MotionController::control()
 
 
     *currentDistance = (leftTicks + rightTicks) / 2;
-    *currentAngle = TICKS_TO_RAD*((double)(rightTicks - *currentDistance)*RAYON_COD_GAUCHE/RAYON_COD_DROITE - (leftTicks - *currentDistance)) / 2.0;
+    *currentAngle = (double)fmod(TICKS_TO_RAD*(double)(rightTicks - leftTicks), 6.28);
 
 
     if(controlled) translationPID.compute();
 
-    if(leftCurveRatio != 0 && rightCurveRatio != 0 && *currentLeftSpeed > 20 && *currentRightSpeed > 20
+    if(controlled && leftCurveRatio != 0 && rightCurveRatio != 0 && *currentLeftSpeed > 20 && *currentRightSpeed > 20
        && ABS((double)*currentRightSpeed / (double)*currentLeftSpeed) - (rightCurveRatio / leftCurveRatio) > 0.01)
     {
         curvePID.compute();
