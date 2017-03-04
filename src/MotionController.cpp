@@ -11,6 +11,7 @@ bool MotionController::started;
 long MotionController::startTime;
 long MotionController::execTime;
 
+
 unsigned long Millis(void)
 {
     struct timeval tv;
@@ -615,10 +616,3 @@ long MotionController::getCurveRadius(void)
     return *currentRadius;
 }
 
-const char* MotionController::getSpeedValues(void)
-{
-    return (
-            std::to_string(Millis())+std::string(";")+std::to_string(*leftSpeedSetpoint)+std::string(";")+std::to_string(*currentLeftSpeed)+
-            std::string(";")+std::to_string(*rightSpeedSetpoint)+std::string(";")+std::to_string(*currentRightSpeed)+std::string("\r\n")
-    ).c_str();
-}

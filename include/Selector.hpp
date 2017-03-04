@@ -37,6 +37,13 @@ static bool serverMode = false;
 static bool proxyMode = false;
 
 
+unsigned long Millisec(void)
+{
+    struct timeval tv;
+    if(gettimeofday(&tv, NULL) != 0) return 0;
+    return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
+}
+
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
 {
     std::stringstream ss(s);
@@ -452,7 +459,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     else if(!args[0].compare("sv"))
     {
 #ifdef __arm__
-        print((char*) motion.getSpeedValues());
+        std::string s = std::to_string(Millisec())+std::string(";")+std::to_string(motion.getCSpeedL())+std::string(";")+std::to_string(motion.getSpeedL())+
+            std::string(";")+std::to_string(motion.getCSpeedR())+std::string(";")+std::to_string(motion.getSpeedR())+std::string("\r\n");
+        print((char*)s.c_str());
 #endif
         return 0;
     }

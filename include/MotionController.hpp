@@ -40,6 +40,8 @@
 
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
+
+
 class MotionController
 {
 private:
@@ -159,8 +161,6 @@ public:
 
     const char* getTunings(void);
 
-    const char* getSpeedValues(void);
-
     void testPosition(void);
 
     void testSpeed(int);
@@ -187,6 +187,14 @@ public:
     double getX(void) {return *x;}
 
     double getY(void) {return *y;}
+
+    long getSpeedL(void) { return *currentLeftSpeed; }
+
+    long getSpeedD(void) { return *currentRightSpeed; }
+
+    long getCSpeedL(void) { return *leftSpeedSetpoint; }
+
+    long getCSpeedR(void)  { return *rightSpeedSetpoint; }
 
     double getAngle(void) { return *currentAngle;}
 
