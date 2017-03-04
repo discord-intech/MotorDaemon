@@ -586,6 +586,7 @@ void MotionController::orderCurveRadius(long c)
 void MotionController::testSpeed(int speed)
 {
     *translationSpeed = speed;
+    moving = true;
 
     timespec t, r;
     t.tv_sec= 2;
