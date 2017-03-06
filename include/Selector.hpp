@@ -291,6 +291,30 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         return 0;
     }
 
+    else if(!args[0].compare("setang"))
+    {
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : setang <rad>\r\n");
+            return 0;
+        }
+
+        double o;
+        try
+        {
+            o = std::stod(args[1]);
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+#ifdef __arm__
+        motion.setAngle(o);
+#endif
+        return 0;
+    }
+
     else if(!args[0].compare("gor"))
     {
 

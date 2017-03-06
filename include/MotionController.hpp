@@ -158,6 +158,7 @@ public:
     void setRightSpeedTunings(float, float, float);
 
     void setPosition(double xn, double yn) { *x = xn; *y = yn; }
+    void setAngle(double o) { *currentAngle = o; }
 
     const char* getTunings(void);
 
