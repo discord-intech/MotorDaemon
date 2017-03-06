@@ -111,8 +111,8 @@ void MotionController::mainWorker(MotionController *&asser)
 
         if(count % 5 == 0)
         {
-            asser->updatePosition();
             asser->manageStop();
+            asser->updatePosition();
         }
 
         if(count == 50000)
@@ -503,8 +503,10 @@ void MotionController::manageStop()
 
 void MotionController::updatePosition()
 {
-    *x += -0.5*(*currentLeftSpeed + *currentRightSpeed)*(double)sin(*currentAngle);
-    *y += 0.5*(*currentLeftSpeed + *currentRightSpeed)*(double)cos(*currentAngle);
+    static long precedentL(0);
+    *x += -1.0*(*currentDistance - precedentL)*(double)sin(*currentAngle);
+    *y += (*currentDistance - precedentL)*(double)cos(*currentAngle);
+    precedentL = *currentDistance;
 }
 
 void MotionController::sweep(bool way) // true >0 ; false <0
