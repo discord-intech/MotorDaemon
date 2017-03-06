@@ -32,11 +32,11 @@ float fastSin( float x )
     const float B = 4.0f/3.14f;
     const float C = -4.0f/(3.14f*3.14f);
 
-    float y = B * x + C * x * std::abs(x);
+    float y = B * x + C * x * abs(x);
 
     const float P = 0.225f;
 
-    return P * (y * std::abs(y) - y) + y;
+    return P * (y * abs(y) - y) + y;
 }
 
 MotionController::MotionController(Settings &s) :  rightMotor(s), leftMotor(s), direction(630000, (float) LOW_ANGLE, 1130000, HIGH_ANGLE), //FIXME bounds
