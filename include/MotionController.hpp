@@ -87,6 +87,8 @@ private:
     std::shared_ptr<double> x = std::shared_ptr<double>(new double(0)); //mm
     std::shared_ptr<double> y = std::shared_ptr<double>(new double(0)); //mm
     std::shared_ptr<double> currentAngle = std::shared_ptr<double>(new double(0)); //rads
+    std::shared_ptr<double> originAngle = std::shared_ptr<double>(new double(0)); //rads
+
 
     //Les ratios de vitesse pour commander un d�placement courbe
     double leftCurveRatio;
@@ -158,7 +160,7 @@ public:
     void setRightSpeedTunings(float, float, float);
 
     void setPosition(double xn, double yn) { *x = xn; *y = yn; }
-    void setAngle(double o) { *currentAngle = o; }
+    void setAngle(double o) { *originAngle = o - *currentAngle; }
 
     const char* getTunings(void);
 

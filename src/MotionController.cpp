@@ -107,11 +107,11 @@ void MotionController::mainWorker(MotionController *&asser)
     {
 
         asser->control();
-        asser->updatePosition();
         count++;
 
         if(count % 5 == 0)
         {
+            asser->updatePosition();
             asser->manageStop();
         }
 
@@ -219,7 +219,7 @@ void MotionController::control()
 
 
     *currentDistance = (leftTicks + rightTicks) / 2;
-    *currentAngle = (double)fmod(TICKS_TO_RAD*(double)(rightTicks - leftTicks), 6.28);
+    *currentAngle = *originAngle + TICKS_TO_RAD*(double)(rightTicks - leftTicks);
 
 
     if(controlled) translationPID.compute();
@@ -503,10 +503,8 @@ void MotionController::manageStop()
 
 void MotionController::updatePosition()
 {
-    static long precedentL(0);
-    *x += -1.0*(*currentDistance - precedentL)*SIN(*currentAngle);
-    *y += (*currentDistance - precedentL)*COS(*currentAngle);
-    precedentL = *currentDistance;
+    *x += -0.5*(*currentLeftSpeed + *currentRightSpeed)*(double)sin(*currentAngle);
+    *y += 0.5*(*currentLeftSpeed + *currentRightSpeed)*(double)cos(*currentAngle);
 }
 
 void MotionController::sweep(bool way) // true >0 ; false <0
