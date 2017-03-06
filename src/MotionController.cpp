@@ -26,6 +26,19 @@ unsigned long Micros(void)
     return (unsigned long) (1000000 * tv.tv_sec + tv.tv_usec);
 }
 
+float fastSin( float x )
+{
+    x = fmod(x + 3.14f, 3.14f * 2) - 3.14f; // restrict x so that -M_PI < x < M_PI
+    const float B = 4.0f/3.14f;
+    const float C = -4.0f/(3.14f*3.14f);
+
+    float y = B * x + C * x * std::abs(x);
+
+    const float P = 0.225f;
+
+    return P * (y * std::abs(y) - y) + y;
+}
+
 MotionController::MotionController(Settings &s) :  rightMotor(s), leftMotor(s), direction(630000, (float) LOW_ANGLE, 1130000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
 averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
@@ -504,8 +517,8 @@ void MotionController::manageStop()
 void MotionController::updatePosition()
 {
     static long precedentL(0);
-    *x += -1.0*(*currentDistance - precedentL)*(double)sin(*currentAngle);
-    *y += (*currentDistance - precedentL)*(double)cos(*currentAngle);
+    *x += -1.0*(*currentDistance - precedentL)*(double)fastSin((float)*currentAngle);
+    *y += (*currentDistance - precedentL)*(double)fastSin(1.57f - (float)*currentAngle);
     precedentL = *currentDistance;
 }
 
@@ -574,6 +587,7 @@ void MotionController::orderTranslation(long mmDistance)
     {
         translationPID.resetErrors();
         moving = true;
+        controlled = true;
     }
     *translationSetpoint += (long) ((double)mmDistance / (double)MM_PER_TICK);
     std::cout << "it's me order: " << *translationSetpoint << std::endl;
