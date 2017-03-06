@@ -7,13 +7,16 @@
 
 #include <sys/time.h>
 #include <chrono>
+#include <vector>
 #include <math.h>
+#include <queue>
 #include "Motor.hpp"
 #include "pid.hpp"
 #include "average.hpp"
 #include "Odometry.hpp"
 #include "Servo.hpp"
 #include "Settings.hpp"
+#include "Cinematic.hpp"
 
 #define AVERAGE_SPEED_SIZE	25
 
@@ -89,6 +92,7 @@ private:
     std::shared_ptr<double> currentAngle = std::shared_ptr<double>(new double(0)); //rads
     std::shared_ptr<double> originAngle = std::shared_ptr<double>(new double(0)); //rads
 
+    std::queue<Cinematic> pointsToPass = std::queue<Cinematic>();
 
     //Les ratios de vitesse pour commander un d�placement courbe
     double leftCurveRatio;
@@ -167,6 +171,8 @@ public:
     void testPosition(void);
 
     void testSpeed(int);
+
+    void setTrajectory(std::vector<Cinematic>&, long);
 
     const char* isMoving(void) { return std::string(std::string(moving ? "1" : "0")+std::string("\r\n")).c_str(); }
 

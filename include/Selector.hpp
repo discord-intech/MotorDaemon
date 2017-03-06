@@ -44,13 +44,26 @@ unsigned long Millisec(void)
     return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
 }
 
+std::vector<std::string> split(std::string str, char delimiter)
+{
+    std::vector<std::string> internal;
+    std::stringstream ss(str); // Turn the string into a stream.
+    std::string tok;
+
+    while(std::getline(ss, tok, delimiter)) {
+        internal.push_back(tok);
+    }
+
+    return internal;
+}
+
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
 {
     std::stringstream ss(s);
     ss.str(s);
     std::string item;
 
-    while (getline(ss, item, delim))
+    while (std::getline(ss, item, delim))
     {
         elems.push_back(item);
     }
@@ -251,6 +264,39 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
         }
 #ifdef __arm__
         motion.orderTranslation(dist);
+#endif
+        return 0;
+    }
+
+    else if(!args[0].compare("followtraj"))
+    {
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : followtraj <dist1:curve1;dist2:curve2;...>\r\n");
+            return 0;
+        }
+
+
+        std::vector<Cinematic> points = std::vector<Cinematic>();
+        try
+        {
+            std::vector<std::string> strs = split(std::string(args[1]), ';');
+
+            for(std::string &s : strs)
+            {
+                std::vector<std::string> sub = split(s, ':');
+                Cinematic c(std::stod(sub[0]), std::stod(sub[1]));
+                points.push_back(c);
+            }
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE\r\n");
+            return 0;
+        }
+
+#ifdef __arm__
+        motion.setTrajectory(points, points[points.size()-1].relativeDistance);
 #endif
         return 0;
     }

@@ -154,6 +154,8 @@ void MotionController::control()
 
     static int counter(0);
 
+    static long relativeDistanceOrigin(0);
+
     // Pour le calcul de la vitesse instantan�e :
     static long previousLeftTicks = 0;
     static long previousRightTicks = 0;
@@ -234,6 +236,20 @@ void MotionController::control()
     *currentDistance = (leftTicks + rightTicks) / 2;
     *currentAngle = *originAngle + TICKS_TO_RAD*(double)(rightTicks - leftTicks);
 
+
+    if(!pointsToPass.empty() && moving)
+    {
+        if((*currentDistance - relativeDistanceOrigin) >= pointsToPass.front().relativeDistance)
+        {
+            *curveSetpoint = (long) pointsToPass.front().curvePoint;
+            pointsToPass.pop();
+            curvePID.resetErrors();
+        }
+    }
+    else
+    {
+        relativeDistanceOrigin = *currentDistance;
+    }
 
     if(controlled) translationPID.compute();
 
@@ -629,4 +645,16 @@ long MotionController::getCurveRadius(void)
 {
     return *currentRadius;
 }
+
+void MotionController::setTrajectory(std::vector<Cinematic>& list, long distance)
+{
+    for(Cinematic &i : list)
+    {
+        pointsToPass.push(i);
+    }
+
+    *curveSetpoint = (long)list[0].curvePoint;
+    orderTranslation(distance);
+}
+
 
