@@ -70,7 +70,7 @@ void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
 }
 
 
-int treatOrder(std::string &order, std::function<void(char*)> print)
+int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyMode = false)
 {
     if(!order.compare("exit")) return 1;
 
@@ -83,15 +83,19 @@ int treatOrder(std::string &order, std::function<void(char*)> print)
     {
         system(CAMERA_KILL_CALL);
 
-        if(args.size() != 2)
+        if((args.size() != 2 && !proxyMode) || (args.size() != 1 && proxyMode))
         {
             print((char *) "USAGE : startcamera <IP_client>\r\n");
             return 0;
         }
 
-        std::string s = std::string(CAMERA_SYSTEM_CALL_START)+std::string(args[1])+std::string(CAMERA_SYSTEM_CALL_END);
-
-        std::cout << args[1] << std::endl;
+        std::string s;
+        if(!proxyMode)
+        {
+            s = std::string(CAMERA_SYSTEM_CALL_START)+std::string(args[1])+std::string(CAMERA_SYSTEM_CALL_END);
+        } else {
+            s = std::string(CAMERA_SYSTEM_CALL_START)+settings.get("IP_MOTORDAEMONPROXY")+std::string(CAMERA_SYSTEM_CALL_END);
+        }
 
         system(s.c_str());
     }

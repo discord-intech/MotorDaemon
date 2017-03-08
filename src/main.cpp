@@ -293,7 +293,7 @@ void proxyWorker(void)
 
         order = std::string(rbuff);
 
-        if(treatOrder(order, std::bind(&Writters::writeMessage, sockfd, std::placeholders::_1)))
+        if(treatOrder(order, std::bind(&Writters::writeMessage, sockfd, std::placeholders::_1), true))
         {
 #ifdef __arm__
             motion.stop();
