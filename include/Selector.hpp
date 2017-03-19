@@ -83,7 +83,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         system(CAMERA_KILL_CALL);
 
-        if((args.size() != 2 && !proxyMode) || (args.size() != 1 && proxyMode))
+        if(args.size() != 2 && !proxyMode)
         {
             print((char *) "USAGE : startcamera <IP_client>\r\n");
             return 0;
