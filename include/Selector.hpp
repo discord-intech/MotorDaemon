@@ -90,7 +90,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
 
         std::string s;
-        if(!proxyMode)
+        if(!proxyMode || args.size()==2)
         {
             s = std::string(CAMERA_SYSTEM_CALL_START)+std::string(args[1])+std::string(CAMERA_SYSTEM_CALL_END);
         } else {
