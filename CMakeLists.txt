@@ -3,8 +3,8 @@ project(MotorDaemon)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -lpthread -lm ")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lpthread -lm ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++11 -lpthread -lm ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -lpthread -lm ")
 
 include_directories(include)
 
