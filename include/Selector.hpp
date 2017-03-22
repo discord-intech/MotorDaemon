@@ -99,6 +99,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             s = replaceAll(settings.get("CAMERA_GST_COMMAND"), std::string("%h"), settings.get("IP_MOTORDAEMONPROXY"));
         }
 
+        std::cout << s << std::endl;
+
         system(s.c_str());
     }
 
