@@ -5,13 +5,6 @@
 #ifndef MOTORDAEMON_SELECTOR_HPP
 #define MOTORDAEMON_SELECTOR_HPP
 
-/*
-#define CAMERA_SYSTEM_CALL_START "nice -n 15 gst-launch-1.0 v4l2src device=/dev/video0 do-timestamp=true ! videoconvert ! videoscale ! video/x-raw,width=320,height=240 ! videorate ! video/x-raw,framerate=15/1 ! jpegenc quality=15 ! rtpjpegpay ! udpsink host="
-#define CAMERA_SYSTEM_CALL_END " port=56988 &"
-#define CAMERA_KILL_CALL "killall gst-launch-1.0"
-#define INTERFACE "wlan0"
-*/
-
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 #include <sstream>
@@ -101,10 +94,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         std::string s;
         if(!proxyMode || args.size()==2)
         {
-           // s = std::string(CAMERA_SYSTEM_CALL_START)+std::string(args[1])+std::string(CAMERA_SYSTEM_CALL_END);
             s = replaceAll(settings.get("CAMERA_GST_COMMAND"), std::string("%h"), std::string(args[1]));
         } else {
-           // s = std::string(CAMERA_SYSTEM_CALL_START)+settings.get("IP_MOTORDAEMONPROXY")+std::string(CAMERA_SYSTEM_CALL_END);
             s = replaceAll(settings.get("CAMERA_GST_COMMAND"), std::string("%h"), settings.get("IP_MOTORDAEMONPROXY"));
         }
 
