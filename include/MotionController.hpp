@@ -197,6 +197,8 @@ public:
 
     double getY(void) {return *y;}
 
+    long getSpeed(void) {return maxSpeedTranslation;}
+
     long getSpeedL(void) { return *currentLeftSpeed; }
 
     long getSpeedR(void) { return *currentRightSpeed; }
