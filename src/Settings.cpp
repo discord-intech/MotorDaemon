@@ -106,7 +106,7 @@ void Settings::parse(void)
             if(c == ' ') continue;
         }
 
-        if(c == '=')
+        if(c == '=' && mode == 0)
         {
             mode = 1;
             continue;
