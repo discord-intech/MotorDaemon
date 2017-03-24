@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <net/if.h>
 #include <arpa/inet.h>
+#include <sys/sysinfo.h>
 
 #ifdef __arm__
 Settings settings("/etc/MotorDaemon.conf");
@@ -63,6 +64,38 @@ void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
     }
 }
 
+double cpuUsage(void)
+{
+    long double a[4], b[4], loadavg;
+    FILE *fp;
+    char dump[50];
+
+    fp = fopen("/proc/stat","r");
+    fscanf(fp,"%*s %Lf %Lf %Lf %Lf",&a[0],&a[1],&a[2],&a[3]);
+    fclose(fp);
+    usleep(100000);
+
+    fp = fopen("/proc/stat","r");
+    fscanf(fp,"%*s %Lf %Lf %Lf %Lf",&b[0],&b[1],&b[2],&b[3]);
+    fclose(fp);
+
+    loadavg = ((b[0]+b[1]+b[2]) - (a[0]+a[1]+a[2])) / ((b[0]+b[1]+b[2]+b[3]) - (a[0]+a[1]+a[2]+a[3]));
+
+    return loadavg;
+}
+
+double cpuTemp(void)
+{
+    FILE *fp;
+    int t;
+
+    fp = fopen(settings.get("CPU_TEMP_FILE").c_str(),"r");
+    fscanf(fp, "%*s %d",t);
+
+    return (double)t/1000.0;
+
+}
+
 std::string replaceAll(std::string str, const std::string& from, const std::string& to) {
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
@@ -107,7 +140,27 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         system(settings.get("CAMERA_GST_KILL").c_str());
     }
 
-    if(!args[0].compare("stop"))
+    else if(!args[0].compare("status"))
+    {
+#ifdef __arm__
+
+        struct sysinfo sys;
+        sysinfo(&sys);
+        float cpuU = cpuUsage();
+        float cpuT = cpuTemp();
+        long speed = motion.getSpeed();
+
+        std::string s = std::to_string(cpuU)+std::string(";")+
+                std::to_string(cpuT)+std::string(";")+std::to_string(sys.freeram)
+                        +std::string(";")+std::to_string(sys.totalram)+std::string(";")+
+                        std::to_string(speed)+std::string("\r\n");
+
+        print(s.c_str());
+#endif
+
+    }
+
+    else if(!args[0].compare("stop"))
     {
 #ifdef __arm__
         //print("Ordering to stop\r\n");
