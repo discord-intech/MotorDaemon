@@ -155,7 +155,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
                         +std::string(";")+std::to_string(sys.totalram)+std::string(";")+
                         std::to_string(speed)+std::string("\r\n");
 
-        print(s.c_str());
+        print((char *)s.c_str());
 #endif
 
     }
