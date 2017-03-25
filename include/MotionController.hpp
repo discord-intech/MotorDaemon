@@ -182,7 +182,7 @@ public:
 
     void go(void) { *translationSpeed = maxSpeedTranslation; GOcounter = 1; }
 
-    void goR(void) { *translationSpeed = -1 * maxSpeedTranslation/1,5; GOcounter = 1; }
+    void goR(void) { *translationSpeed = -1 * maxSpeedTranslation/1.5; GOcounter = 1; }
 
     void setControlled(bool b) { controlled = b; }
 

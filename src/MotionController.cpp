@@ -389,11 +389,17 @@ void MotionController::stop()
     *translationSpeed = 0;
     *leftSpeedSetpoint = 0;
     *rightSpeedSetpoint = 0;
+    *deltaRadius = 0;
     *leftPWM = 0;
     *rightPWM = 0;
 
     leftMotor.run(0);
     rightMotor.run(0);
+
+    translationPID.resetErrors();
+    leftSpeedPID.resetErrors();
+    rightSpeedPID.resetErrors();
+    curvePID.resetErrors();
 
     timespec t, r;
     t.tv_sec=0;
@@ -405,6 +411,7 @@ void MotionController::stop()
     *translationSpeed = 0;
     *leftSpeedSetpoint = 0;
     *rightSpeedSetpoint = 0;
+    *deltaRadius = 0;
     *leftPWM = 0;
     *rightPWM = 0;
 
