@@ -59,17 +59,17 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
     leftSpeedPID.setEpsilon(20);
     rightSpeedPID.setEpsilon(20);
 
-    maxSpeed = settings.getInt("MAX_MOTOR_SPEED"); // Vitesse maximum, des moteurs
-    maxSpeedTranslation = settings.getInt("MAX_TRANSLATION_SPEED"); // Consigne max envoy�e au PID
-    maxAcceleration = settings.getInt("MAX_ACCEL");
-    maxDecceleration = settings.getInt("MAX_DECEL");
+    maxSpeed = settings.getLong("MAX_MOTOR_SPEED"); // Vitesse maximum, des moteurs
+    maxSpeedTranslation = settings.getLong("MAX_TRANSLATION_SPEED"); // Consigne max envoy�e au PID
+    maxAcceleration = settings.getLong("MAX_ACCEL");
+    maxDecceleration = settings.getLong("MAX_DECCEL");
     leftCurveRatio = 1.0;
     rightCurveRatio = 1.0;
 
     // maxjerk = 1; // Valeur de jerk maxi(secousse d'acc�l�ration)
 
-    toleranceTranslation = settings.getInt("TRANSLATION_TOLERANCY");
-    toleranceSpeed = settings.getInt("SPEED_TOLERANCY");
+    toleranceTranslation = settings.getLong("TRANSLATION_TOLERANCY");
+    toleranceSpeed = settings.getLong("SPEED_TOLERANCY");
     toleranceSpeedEstablished = 50; // Doit �tre la plus petite possible, sans bloquer les trajectoires courbes 50
     delayToEstablish = 1000;
 
@@ -150,9 +150,9 @@ void MotionController::control()
 {
     static long time = Millis();
 
-    static long freq(0);
+//    static long freq(0);
 
-    static int counter(0);
+ //   static int counter(0);
 
     static long relativeDistanceOrigin(0);
 
@@ -313,7 +313,7 @@ void MotionController::control()
     {
         *leftSpeedSetpoint = (long) (previousLeftSpeedSetpoint + maxAcceleration * leftCurveRatio);
     }
-    else if(*leftSpeedSetpoint - previousLeftSpeedSetpoint < -maxAcceleration)
+    else if(*leftSpeedSetpoint - previousLeftSpeedSetpoint < -maxDecceleration)
     {
         *leftSpeedSetpoint = (long) (previousLeftSpeedSetpoint - maxDecceleration * leftCurveRatio);
     }
@@ -323,7 +323,7 @@ void MotionController::control()
     {
         *rightSpeedSetpoint = (long) (previousRightSpeedSetpoint + maxAcceleration * rightCurveRatio);
     }
-    else if(*rightSpeedSetpoint - previousRightSpeedSetpoint < -maxAcceleration)
+    else if(*rightSpeedSetpoint - previousRightSpeedSetpoint < -maxDecceleration)
     {
         *rightSpeedSetpoint = (long) (previousRightSpeedSetpoint - maxDecceleration * rightCurveRatio);
     }
@@ -350,15 +350,15 @@ void MotionController::control()
     {
         //freq = counter / (t - time);
         time = t;
-        counter = 0;
+        //counter = 0;
        // std::cout << "it's me : " << (long)translationPID.getPTR() << " : " <<(long)&currentDistance << " : " << currentDistance << " : " << translationSetpoint << " : " <<translationPID.getError() << std::endl;
-        std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << " : " << *rightPWM << ";" << *rightSpeedSetpoint
+        std::cout << "it's me : " << *leftPWM << ";" << *leftSpeedSetpoint << ";" << averageLeftSpeed.value() << " : " << *rightPWM << ";" << *rightSpeedSetpoint << ";" << averageLeftSpeed.value()
                   << " : " << *currentDistance << ";" << *translationSetpoint << " : " << leftCurveRatio << ";" << rightCurveRatio
                   << " : " << *curveSetpoint << ";" << *deltaRadius << " : "
                   << ((*curveSetpoint + *deltaRadius)>0 ? 1.0 : -1.0) * ((ABS(*curveSetpoint + *deltaRadius) >= MAX_RADIUS) ? direction_table[MAX_RADIUS-1] : direction_table[ABS(*curveSetpoint + *deltaRadius)])
                   << std::endl;
     }
-    else counter++;
+   // else counter++;
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
