@@ -220,6 +220,15 @@ void MotionController::control()
         printf("wut right\n");
     }
 
+    if(*currentLeftSpeed < 0 && *leftSpeedSetpoint > 0)
+    {
+        printf("wat left\n");
+    }
+    if(*currentRightSpeed < 0 && *rightSpeedSetpoint > 0)
+    {
+        printf("wat right\n");
+    }
+
     startTime = actualTime;
 
     previousLeftTicks = leftTicks;
