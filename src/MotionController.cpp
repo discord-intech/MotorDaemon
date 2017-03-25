@@ -208,26 +208,13 @@ void MotionController::control()
 
     long actualTime = Micros();
 
+    if(actualTime == 0)
+    {
+        perror("Could not read time!\n");
+    }
+
     *currentLeftSpeed = (long) ((leftTicks - previousLeftTicks) / ((actualTime-startTime) / 1000000.)); // (nb-de-tick-passés)*(freq_asserv) (ticks/sec)
     *currentRightSpeed = (long) ((rightTicks - previousRightTicks) / ((actualTime-startTime) / 1000000.));
-
-    if(*currentLeftSpeed > 0 && *leftSpeedSetpoint < 0)
-    {
-        printf("wut left\n");
-    }
-    if(*currentRightSpeed > 0 && *rightSpeedSetpoint < 0)
-    {
-        printf("wut right\n");
-    }
-
-    if(*currentLeftSpeed < 0 && *leftSpeedSetpoint > 0)
-    {
-        printf("wat left\n");
-    }
-    if(*currentRightSpeed < 0 && *rightSpeedSetpoint > 0)
-    {
-        printf("wat right\n");
-    }
 
     startTime = actualTime;
 
