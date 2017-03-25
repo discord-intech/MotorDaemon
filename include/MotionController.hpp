@@ -79,8 +79,6 @@ private:
     std::shared_ptr<long> currentRadius = std::shared_ptr<long>(new long(INT32_MAX));
     std::shared_ptr<long> deltaRadius = std::shared_ptr<long>(new long(0));
 
-    static std::shared_ptr<bool> stahp = std::shared_ptr<bool>(new bool(false));
-
     //	Limitation de vitesses
     long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
     long maxSpeedTranslation;	// definit la consigne max de vitesse de translation envoi�e au PID (trap�ze)
@@ -143,6 +141,9 @@ private:
 
 
 public:
+
+    std::shared_ptr<bool> stahp = std::shared_ptr<bool>(new bool(false));
+
     void control(void);
 
     MotionController(Settings&);

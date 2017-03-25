@@ -119,7 +119,7 @@ void MotionController::mainWorker(MotionController *&asser)
     while(started)
     {
 
-        if(*stahp)
+        if(*(asser->stahp))
         {
             timespec t, r;
             t.tv_sec=0;
