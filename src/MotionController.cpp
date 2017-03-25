@@ -119,6 +119,15 @@ void MotionController::mainWorker(MotionController *&asser)
     while(started)
     {
 
+        if(*stahp)
+        {
+            timespec t, r;
+            t.tv_sec=0;
+            t.tv_nsec = (1000000000 / FREQ_ASSERV);
+            nanosleep(&t, &r);
+            continue;
+        }
+
         asser->control();
         count++;
 
@@ -386,30 +395,18 @@ void MotionController::stop()
 
     std::cout << "DEBUG : STOP" << std::endl;
 
-    leftMotor.run(0);
-    rightMotor.run(0);
-
-    *currentDistance = (odo.getRightValue()+odo.getLeftValue())/2;
-    *translationSetpoint = *currentDistance;
-    *translationSpeed = 0;
-    *leftSpeedSetpoint = 0;
-    *rightSpeedSetpoint = 0;
-    *deltaRadius = 0;
-    *leftPWM = 0;
-    *rightPWM = 0;
+    *stahp = true;
 
     leftMotor.run(0);
     rightMotor.run(0);
-
-    translationPID.resetErrors();
-    leftSpeedPID.resetErrors();
-    rightSpeedPID.resetErrors();
-    curvePID.resetErrors();
 
     timespec t, r;
     t.tv_sec=0;
     t.tv_nsec = 1000000;
     nanosleep(&t, &r);
+
+    leftMotor.run(0);
+    rightMotor.run(0);
 
     *currentDistance = (odo.getRightValue()+odo.getLeftValue())/2;
     *translationSetpoint = *currentDistance;
@@ -430,6 +427,8 @@ void MotionController::stop()
 
     moving = false;
     controlled = true;
+
+    *stahp = false;
 }
 
 void MotionController::setSpeedTranslation(int speed)
