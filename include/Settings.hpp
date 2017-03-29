@@ -28,6 +28,8 @@ public:
 
     int getInt(const std::string&);
 
+    long getLong(const std::string&);
+
     float getFloat(const std::string&);
 };
 

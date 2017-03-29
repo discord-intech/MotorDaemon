@@ -177,6 +177,25 @@ int Settings::getInt(const std::string &name)
     }
 }
 
+long Settings::getLong(const std::string &name)
+{
+    std::string r = get(name);
+
+    if(name == NO_SETTINGS_FAIL) throw FailedToParse();
+
+    try {
+        return std::stol(r);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        throw FailedToParse();
+    }
+    catch(const std::out_of_range& ia)
+    {
+        throw FailedToParse();
+    }
+}
+
 float Settings::getFloat(const std::string &name)
 {
     std::string r = get(name);

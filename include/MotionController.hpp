@@ -141,6 +141,9 @@ private:
 
 
 public:
+
+    std::shared_ptr<bool> stahp = std::shared_ptr<bool>(new bool(false));
+
     void control(void);
 
     MotionController(Settings&);
@@ -182,7 +185,7 @@ public:
 
     void go(void) { *translationSpeed = maxSpeedTranslation; GOcounter = 1; }
 
-    void goR(void) { *translationSpeed = -1 * maxSpeedTranslation/1,5; GOcounter = 1; }
+    void goR(void) { *translationSpeed = (long)(-1.0 * maxSpeedTranslation * 0.60); GOcounter = 1; }
 
     void setControlled(bool b) { controlled = b; }
 
