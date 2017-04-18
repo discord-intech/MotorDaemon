@@ -146,14 +146,22 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         struct sysinfo sys;
         sysinfo(&sys);
+        std::cout << "sysinfo" << std::endl;
         float cpuU = cpuUsage();
+        std::cout << "cpuusage" << std::endl;
         float cpuT = cpuTemp();
+        std::cout << "cputemp" << std::endl;
+
         long speed = motion.getSpeed();
+        std::cout << "speed" << std::endl;
 
         std::string s = std::to_string(cpuU)+std::string(";")+
                 std::to_string(cpuT)+std::string(";")+std::to_string(sys.freeram)
                         +std::string(";")+std::to_string(sys.totalram)+std::string(";")+
                         std::to_string(speed)+std::string("\r\n");
+
+        std::cout << "stringify" << std::endl;
+
 
         print((char *)s.c_str());
 #endif
