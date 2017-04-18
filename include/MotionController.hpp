@@ -80,8 +80,8 @@ private:
     std::shared_ptr<long> deltaRadius = std::shared_ptr<long>(new long(0));
 
     //	Limitation de vitesses
-    long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
-    long maxSpeedTranslation;	// definit la consigne max de vitesse de translation envoi�e au PID (trap�ze)
+    volatile long maxSpeed; 				// definit la vitesse maximal des moteurs du robot
+    volatile long maxSpeedTranslation;	// definit la consigne max de vitesse de translation envoi�e au PID (trap�ze)
 
     //	Limitation d'acc�l�ration
     long maxAcceleration;
