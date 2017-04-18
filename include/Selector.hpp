@@ -156,7 +156,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         long speed = motion.getSpeed();
 
-        std::string s = std::to_string(cpuU)+std::string(";")+
+        std::string s = std::string("MDSTATUS")+std::to_string(cpuU)+std::string(";")+
                 std::to_string(cpuT)+std::string(";")+std::to_string(sys.freeram)
                         +std::string(";")+std::to_string(sys.totalram)+std::string(";")+
                         std::to_string(speed)+std::string("\r\n");
