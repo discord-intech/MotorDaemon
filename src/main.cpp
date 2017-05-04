@@ -17,7 +17,7 @@
 #define BUFFER_MAX_SIZE 65536
 #define SERVER_MODE_CMD "-s"
 #define PROXY_MODE_CMD "-p"
-#define DAEMON_NAME "motordaemon"
+#define DAEMON_NAME "hermes-pilot"
 
 void serverWorker(void);
 void localWorker(void);
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
         serverMode = true;
         t = std::thread(serverWorker);
-        syslog(LOG_INFO, "MotorDaemon launched in server mode");
+        syslog(LOG_INFO, "hermes-pilot launched in server mode");
         t.join(); //Do not shut down the main thread
     }
     else if(argc == 3 && !strcmp(argv[1], PROXY_MODE_CMD))
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         proxyMode = true;
         proxyAdress = argv[2];
         t = std::thread(proxyWorker);
-        syslog(LOG_INFO, "MotorDaemon launched in proxy mode");
+        syslog(LOG_INFO, "hermes-pilot launched in proxy mode");
         t.join(); //Do not shut down the main thread
     }
     else if(argc == 2 && !strcmp(argv[1], PROXY_MODE_CMD))
@@ -98,13 +98,13 @@ int main(int argc, char *argv[])
         proxyMode = true;
         proxyAdress = (char *)settings.get("IP_MOTORDAEMONPROXY").c_str();
         t = std::thread(proxyWorker);
-        syslog(LOG_INFO, "MotorDaemon launched in proxy mode");
+        syslog(LOG_INFO, "hermes-pilot launched in proxy mode");
         t.join(); //Do not shut down the main thread
     }
     else
     {
         t = std::thread(localWorker);
-        std::cout << "MotorDaemon launched in bash mode" << std::endl;
+        std::cout << "hermes-pilot launched in bash mode" << std::endl;
 #ifdef __arm__
         std::cout << "ARM CPU detected, using PWMs" << std::endl;
 #endif
@@ -121,7 +121,7 @@ void localWorker(void)
 
     while(true)
     {
-        std::cout << std::endl << "MotorDaemon Console : ";
+        std::cout << std::endl << "hermes-pilot Console : ";
         std::cin.getline(orderC, sizeof(orderC));
         order = std::string(orderC);
         if(order.length() == 0) continue;
@@ -261,7 +261,7 @@ void proxyWorker(void)
 {
     connect:connecting (htons(PROXY_SOCKET_PORT), proxyAdress) ;
 
-    printf("MotorDaemonProxy detected on %s:%d\nMotorDaemon is ready\n", proxyAdress, PROXY_SOCKET_PORT);
+    printf("hermes-manager detected on %s:%d\nhermes-pilot is ready\n", proxyAdress, PROXY_SOCKET_PORT);
 
     std::string order;
 
