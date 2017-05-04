@@ -14,7 +14,7 @@
 
 #define SOCKET_PORT 56987
 #define PROXY_SOCKET_PORT 56990
-#define BUFFER_MAX_SIZE 1024
+#define BUFFER_MAX_SIZE 65536
 #define SERVER_MODE_CMD "-s"
 #define PROXY_MODE_CMD "-p"
 #define DAEMON_NAME "motordaemon"
