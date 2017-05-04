@@ -145,6 +145,22 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         system(settings.get("CAMERA_GST_KILL").c_str());
     }
 
+    else if(!args[0].compare("newmap"))
+    {
+        std::string json = "";
+
+        for (long i=1; i<args.size() ; i++)
+        {
+            json.append(args[i]);
+        }
+
+        std::ofstream outfile (settings.get("MAP_FILE"),std::ofstream::binary);
+
+        outfile.write(json.c_str(), json.length());
+        outfile.flush();
+        outfile.close();
+    }
+
     else if(!args[0].compare("status"))
     {
 #ifdef __arm__
