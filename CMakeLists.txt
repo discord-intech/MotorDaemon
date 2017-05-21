@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.4)
-project(MotorDaemon)
+project(MotorDaemon_Hermes)
 
 set(CMAKE_BUILD_TYPE Debug)
 
