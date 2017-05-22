@@ -191,7 +191,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("stop"))
     {
 #ifdef __arm__
-        print("ack\r\n");
+        //print("ack\r\n");
         motion.stop();
 #endif
         return 0;
