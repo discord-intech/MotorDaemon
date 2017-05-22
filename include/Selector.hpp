@@ -380,6 +380,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
                 if(!sub[0].compare("way"))
                 {
                     way = sub[1].compare("forward") == 0;
+                    continue;
                 }
 
                 Cinematic c(std::stod(sub[0]), std::stod(sub[1]), way);
