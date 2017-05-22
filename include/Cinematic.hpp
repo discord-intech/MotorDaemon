@@ -8,10 +8,11 @@
 class Cinematic {
 public:
 
-    Cinematic(double rel, double cur) : relativeDistance(rel), curvePoint(cur){}
+    Cinematic(double rel, double cur, bool way) : relativeDistance(rel), curvePoint(cur), way(way){}
 
     double relativeDistance;
     double curvePoint;
+    bool way;
 };
 
 #endif //MOTORDAEMON_CINEMATIC_HPP

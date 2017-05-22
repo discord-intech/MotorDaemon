@@ -355,24 +355,34 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         return 0;
     }
 
-    else if(!args[0].compare("followtraj"))
+    else if(!args[0].compare("followpath"))
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : followtraj <dist1:curve1;dist2:curve2;...>\r\n");
+            print((char *) "USAGE : followpath <dist1:curve1;dist2:curve2;...>\r\n");
             return 0;
         }
 
 
         std::vector<Cinematic> points = std::vector<Cinematic>();
+        bool way;
         try
         {
             std::vector<std::string> strs = split(std::string(args[1]), ';');
 
+            std::vector<std::string> su = split(strs[0], ':');
+            way = su[1].compare("forward") == 0;
+
             for(std::string &s : strs)
             {
                 std::vector<std::string> sub = split(s, ':');
-                Cinematic c(std::stod(sub[0]), std::stod(sub[1]));
+
+                if(!sub[0].compare("way"))
+                {
+                    way = sub[1].compare("forward") == 0;
+                }
+
+                Cinematic c(std::stod(sub[0]), std::stod(sub[1]), way);
                 points.push_back(c);
             }
         }

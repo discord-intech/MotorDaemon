@@ -253,7 +253,15 @@ void MotionController::control()
 
     if(!pointsToPass.empty() && moving)
     {
-        if((*currentDistance - relativeDistanceOrigin) >= pointsToPass.front().relativeDistance)
+        if(lastWay != pointsToPass.front().way)
+        {
+            lastWay = pointsToPass.front().way;
+            long dist = (long)((double)(*currentDistance - *translationSetpoint)*(double)MM_PER_TICK*(lastWay ? 1.0 : -1.0));
+            stop();
+            orderTranslation(dist);
+        }
+
+        if((*currentDistance - relativeDistanceOrigin)*MM_PER_TICK >= pointsToPass.front().relativeDistance)
         {
             *curveSetpoint = (long) pointsToPass.front().curvePoint;
             pointsToPass.pop();
@@ -665,7 +673,8 @@ void MotionController::setTrajectory(std::vector<Cinematic>& list, long distance
     }
 
     *curveSetpoint = (long)list[0].curvePoint;
-    orderTranslation(distance);
+    lastWay = list[0].way;
+    orderTranslation((lastWay ? 1 : -1)*distance);
 }
 
 

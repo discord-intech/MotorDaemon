@@ -124,6 +124,8 @@ private:
 
     volatile bool sweeping = false;
 
+    volatile bool lastWay = true;
+
     volatile int GOcounter = 0;
 
     volatile long sweepRadius = 10000;
