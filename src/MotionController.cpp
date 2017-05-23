@@ -442,6 +442,7 @@ void MotionController::stop()
 void MotionController::setSpeedTranslation(int speed)
 {
     maxSpeedTranslation = ABS(speed);
+    maxSpeed = (long)(1.3*ABS(speed));
 }
 
 void MotionController::manageStop()
