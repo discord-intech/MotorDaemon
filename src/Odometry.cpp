@@ -105,10 +105,11 @@ void Odometry::mainWorker(uint8_t chanAL, uint8_t chanBL, uint8_t chanAR, uint8_
         }
 
         //usleep(100);
-        timespec t, r;
+       /* timespec t, r;
         t.tv_sec=0;
         t.tv_nsec = 50000;
         nanosleep(&t, &r);
+        */
     }
 }
 
