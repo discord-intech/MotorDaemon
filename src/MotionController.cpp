@@ -261,7 +261,7 @@ void MotionController::control()
             orderTranslation(dist);
         }
 
-        if((*currentDistance - relativeDistanceOrigin)*MM_PER_TICK >= pointsToPass.front().relativeDistance)
+        if(ABS(*currentDistance - relativeDistanceOrigin)*MM_PER_TICK >= pointsToPass.front().relativeDistance)
         {
             *curveSetpoint = (long) pointsToPass.front().curvePoint;
             pointsToPass.pop();
