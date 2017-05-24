@@ -250,7 +250,7 @@ void MotionController::control()
 
 
     *currentDistance = (leftTicks + rightTicks) / 2;
-    *currentAngle = *originAngle + TICKS_TO_RAD*(double)(rightTicks - leftTicks);
+    *currentAngle = fmod((*originAngle + TICKS_TO_RAD*(double)(rightTicks - leftTicks)) + 3.14f, 3.14f * 2) - 3.14f;
 
 
     if(!pointsToPass.empty() && moving)
