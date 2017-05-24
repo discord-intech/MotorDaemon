@@ -59,6 +59,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
     leftSpeedPID.setEpsilon(20);
     rightSpeedPID.setEpsilon(20);
 
+    servoMotor = settings.getInt("USE_SERVOMOTOR") == 1;
+
     maxSpeed = settings.getLong("MAX_MOTOR_SPEED"); // Vitesse maximum, des moteurs
     maxSpeedTranslation = settings.getLong("MAX_TRANSLATION_SPEED"); // Consigne max envoy�e au PID
     maxAcceleration = settings.getLong("MAX_ACCEL");
@@ -384,11 +386,11 @@ void MotionController::control()
 
     //std::cout << "PWM time : " << Millis() - time << std::endl;
 
-    if(ABS(*curveSetpoint + *deltaRadius) >= MAX_RADIUS)
+    if(servoMotor && ABS(*curveSetpoint + *deltaRadius) >= MAX_RADIUS)
     {
         direction.setAngle(((*curveSetpoint + *deltaRadius) > 0 ? 1.0 : -1.0)*direction_table[MAX_RADIUS-1]);
     }
-    else
+    else if(servoMotor)
     {
         direction.setAngle(((*curveSetpoint + *deltaRadius) > 0 ? 1.0 : -1.0)*direction_table[ABS(*curveSetpoint + *deltaRadius)]);
     }

@@ -126,6 +126,8 @@ private:
 
     volatile bool lastWay = true;
 
+    volatile bool servoMotor = true;
+
     volatile int GOcounter = 0;
 
     volatile long sweepRadius = 10000;
