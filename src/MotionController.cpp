@@ -555,8 +555,8 @@ void MotionController::manageStop()
 void MotionController::updatePosition()
 {
     static long precedentL(0);
-    *x += -1.0*(*currentDistance - precedentL)*(double)fastSin((float)*currentAngle);
-    *y += (*currentDistance - precedentL)*(double)fastSin(1.57f - (float)*currentAngle);
+    *x += -1.0*(*currentDistance - precedentL)*(double)fastSin((float)*currentAngle)*MM_PER_TICK;
+    *y += (*currentDistance - precedentL)*(double)fastSin(1.57f - (float)*currentAngle)*MM_PER_TICK;
     precedentL = *currentDistance;
 }
 
