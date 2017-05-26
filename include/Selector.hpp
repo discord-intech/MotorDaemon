@@ -125,7 +125,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         if(args.size() != 2 && !proxyMode)
         {
-            print((char *) "USAGE : startcamera <IP_client>\r\n");
+            print((char *) "USAGE : startcamera <IP_client>");
             return 0;
         }
 
@@ -179,7 +179,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
                         +std::string(";")+std::to_string(sys.totalram)+std::string(";")+
                         std::to_string(speed)+std::string(";")+std::to_string(motion.getX())
                         +std::string(";")+std::to_string(motion.getY())+std::string(";")+
-                        std::to_string(motion.getAngle())+std::string("\r\n");
+                        std::to_string(motion.getAngle())+std::string("");
 
 
 
@@ -191,7 +191,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("stop"))
     {
 #ifdef __arm__
-        //print("ack\r\n");
+        //print("ack");
         motion.stop();
 #endif
         return 0;
@@ -201,7 +201,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 #ifdef __arm__
         std::string s = std::to_string(motion.getX())+std::string(";")
                             +std::to_string(motion.getY())+std::string(";")
-                            +std::to_string(motion.getAngle())+std::string("\r\n");
+                            +std::to_string(motion.getAngle())+std::string("");
         print((char*)s.c_str());
 #endif
         return 0;
@@ -211,7 +211,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         if(args.size() != 4)
         {
-            print((char *) "USAGE : setksg <kp> <ki> <kd>\r\n");
+            print((char *) "USAGE : setksg <kp> <ki> <kd>");
             return 0;
         }
 
@@ -224,7 +224,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char *) "BAD VALUE\r\n");
+            print((char *) "BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -238,7 +238,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         if(args.size() != 4)
         {
-            print((char *) "USAGE : setksd <kp> <ki> <kd>\r\n");
+            print((char *) "USAGE : setksd <kp> <ki> <kd>");
             return 0;
         }
 
@@ -251,7 +251,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char *) "BAD VALUE\r\n");
+            print((char *) "BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -265,7 +265,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         if(args.size() != 4)
         {
-            print((char *) "USAGE : setktd <kp> <ki> <kd>\r\n");
+            print((char *) "USAGE : setktd <kp> <ki> <kd>");
             return 0;
         }
 
@@ -278,7 +278,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -292,7 +292,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         if(args.size() != 4)
         {
-            print((char *) "USAGE : setkcd <kp> <ki> <kd>\r\n");
+            print((char *) "USAGE : setkcd <kp> <ki> <kd>");
             return 0;
         }
 
@@ -305,7 +305,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -322,7 +322,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         for(int i= 0; i < 180 ; i+=5)
         {
-            print((char*)("angle :" + std::to_string(i) + "\r\n").c_str());
+            print((char*)("angle :" + std::to_string(i) + "").c_str());
 
             s.setAngle(i);
             usleep(1000*1000);
@@ -335,7 +335,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : d <dist>\r\n");
+            print((char *) "USAGE : d <dist>");
             return 0;
         }
 
@@ -346,7 +346,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -359,7 +359,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : followpath <dist1:curve1;dist2:curve2;...>\r\n");
+            print((char *) "USAGE : followpath <dist1:curve1;dist2:curve2;...>");
             return 0;
         }
 
@@ -389,7 +389,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 
@@ -414,7 +414,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 3)
         {
-            print((char *) "USAGE : setpos <x> <y>\r\n");
+            print((char *) "USAGE : setpos <x> <y>");
             return 0;
         }
 
@@ -426,7 +426,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -439,7 +439,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : setang <rad>\r\n");
+            print((char *) "USAGE : setang <rad>");
             return 0;
         }
 
@@ -450,7 +450,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -503,7 +503,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : cr <rad>\r\n");
+            print((char *) "USAGE : cr <rad>");
             return 0;
         }
 
@@ -514,7 +514,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -527,7 +527,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : seta <angle in radians>\r\n");
+            print((char *) "USAGE : seta <angle in radians>");
             return 0;
         }
 
@@ -538,7 +538,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -551,7 +551,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
         if(args.size() != 2)
         {
-            print((char *) "USAGE : sets <speed in ticks/s>\r\n");
+            print((char *) "USAGE : sets <speed in ticks/s>");
             return 0;
         }
 
@@ -562,7 +562,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 #ifdef __arm__
@@ -576,7 +576,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
         if(args.size() != 2)
         {
-            print((char *) "USAGE : ts <speed>\r\n");
+            print((char *) "USAGE : ts <speed>");
             return 0;
         }
 
@@ -587,7 +587,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
         catch (std::exception const &e)
         {
-            print((char*)"BAD VALUE\r\n");
+            print((char*)"BAD VALUE");
             return 0;
         }
 
@@ -602,8 +602,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 #ifdef __arm__
         print((char*)(
-                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\r\n")+
-                std::to_string(motion.getCurveRadius())+std::string("\r\n\n")).c_str());
+                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("")+
+                std::to_string(motion.getCurveRadius())+std::string("\n")).c_str());
 #endif
         return 0;
     }
@@ -628,7 +628,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 #ifdef __arm__
         std::string s = std::to_string(Millisec())+std::string(";")+std::to_string(motion.getCSpeedL())+std::string(";")+std::to_string(motion.getSpeedL())+
-            std::string(";")+std::to_string(motion.getCSpeedR())+std::string(";")+std::to_string(motion.getSpeedR())+std::string("\r\n");
+            std::string(";")+std::to_string(motion.getCSpeedR())+std::string(";")+std::to_string(motion.getSpeedR())+std::string("");
         print((char*)s.c_str());
 #endif
         return 0;
@@ -636,7 +636,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
     else
     {
-        print((char *) "No such command\r\n");
+        print((char *) "No such command");
     }
 
     return 0;
