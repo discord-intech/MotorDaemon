@@ -31,8 +31,8 @@
 
 #define DIST_MOTOR_DIRECTION 150
 
-#define LOW_ANGLE -0.58
-#define HIGH_ANGLE 0.58  //TODO Bounds
+#define LOW_ANGLE -0.79
+#define HIGH_ANGLE 0.79 //TODO Bounds
 
 #define DELTA_FREQ_REFRESH 500
 
