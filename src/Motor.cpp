@@ -22,9 +22,9 @@ Motor::Motor(uint8_t pwm, int dir1, int dir2, bool inv, Settings &s) : PWMpin(pw
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
 }
 
-LeftMotor::LeftMotor(Settings &s) : Motor(0, s.getInt("DIRECTION_PIN1_L"), s.getInt("DIRECTION_PIN2_L"),  true, s) {}
+LeftMotor::LeftMotor(Settings &s) : Motor(0, s.getInt("DIRECTION_PIN1_L"), s.getInt("DIRECTION_PIN2_L"),  false, s) {}
 
-RightMotor::RightMotor(Settings &s) : Motor(1, s.getInt("DIRECTION_PIN1_R"), s.getInt("DIRECTION_PIN2_R"), false, s) {}
+RightMotor::RightMotor(Settings &s) : Motor(1, s.getInt("DIRECTION_PIN1_R"), s.getInt("DIRECTION_PIN2_R"), true, s) {}
 
 void Motor::setDirection(Direction way)
 {
