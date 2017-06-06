@@ -167,7 +167,7 @@ void MotionController::loadPos()
 
     std::string pos;
     outPos >> pos;
-    std::vector<std::string> comps = split(pos, ';');
+    std::vector<std::string> comps = splitl(pos, ';');
 
     this->setPosition(std::stod(comps[0]), std::stod(comps[1]));
     this->setAngle(std::stod(comps[2]));
