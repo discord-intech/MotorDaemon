@@ -9,6 +9,7 @@
 #include <chrono>
 #include <vector>
 #include <math.h>
+#include <sstream>
 #include <queue>
 #include "Motor.hpp"
 #include "pid.hpp"
