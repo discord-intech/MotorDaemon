@@ -2,7 +2,6 @@
 // Created by discord on 26/09/16.
 //
 
-#pragma once
 #ifndef MOTORDAEMON_MOTIONCONTROLLER_HPP
 #define MOTORDAEMON_MOTIONCONTROLLER_HPP
 
