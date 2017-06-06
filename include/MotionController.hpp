@@ -17,7 +17,6 @@
 #include "Servo.hpp"
 #include "Settings.hpp"
 #include "Cinematic.hpp"
-#include "Selector.hpp"
 
 #define AVERAGE_SPEED_SIZE	25
 
@@ -44,7 +43,18 @@
 
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
+std::vector<std::string> split(std::string str, char delimiter)
+{
+    std::vector<std::string> internal;
+    std::stringstream ss(str); // Turn the string into a stream.
+    std::string tok;
 
+    while(std::getline(ss, tok, delimiter)) {
+        internal.push_back(tok);
+    }
+
+    return internal;
+}
 
 class MotionController
 {

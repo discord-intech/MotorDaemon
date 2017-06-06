@@ -39,19 +39,6 @@ unsigned long Millisec(void)
     return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
 }
 
-std::vector<std::string> split(std::string str, char delimiter)
-{
-    std::vector<std::string> internal;
-    std::stringstream ss(str); // Turn the string into a stream.
-    std::string tok;
-
-    while(std::getline(ss, tok, delimiter)) {
-        internal.push_back(tok);
-    }
-
-    return internal;
-}
-
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
 {
     std::stringstream ss(s);
