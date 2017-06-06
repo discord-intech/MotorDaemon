@@ -2,6 +2,7 @@
 // Created by discord on 26/09/16.
 //
 
+#pragma once
 #ifndef MOTORDAEMON_MOTIONCONTROLLER_HPP
 #define MOTORDAEMON_MOTIONCONTROLLER_HPP
 
@@ -17,6 +18,7 @@
 #include "Servo.hpp"
 #include "Settings.hpp"
 #include "Cinematic.hpp"
+#include "Selector.hpp"
 
 #define AVERAGE_SPEED_SIZE	25
 
@@ -136,6 +138,8 @@ private:
 
     unsigned int delayToStop;  //En ms
 
+    std::fstream outPos;
+
     float direction_table[MAX_RADIUS];
 
     void compute_direction_table(void);
@@ -215,6 +219,8 @@ public:
     long getCSpeedR(void)  { return *rightSpeedSetpoint; }
 
     double getAngle(void) { return *currentAngle;}
+
+    void loadPos();
 
     void printTranslationError(void)
     {
