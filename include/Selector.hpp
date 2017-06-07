@@ -601,7 +601,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 #ifdef __arm__
         print((char*)(
-                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("")+
+                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\n")+
                 std::to_string(motion.getCurveRadius())+std::string("\n")).c_str());
 #endif
         return 0;
