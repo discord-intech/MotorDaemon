@@ -20,6 +20,8 @@ Motor::Motor(uint8_t pwm, int dir1, int dir2, bool inv, Settings &s) : PWMpin(pw
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(dir2)+std::string("/direction")).c_str());
 
     PWMduty = std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle");
+
+    invertedPWM = s.getInt("INVERTED_PWM")==1;
 }
 
 LeftMotor::LeftMotor(Settings &s) : Motor(0, s.getInt("DIRECTION_PIN1_L"), s.getInt("DIRECTION_PIN2_L"),  false, s) {}
@@ -147,11 +149,11 @@ void Motor::run(int duty) //duty € [-255;255]
 
     if(ABS(duty) > 255*MINIMAL_PWM_PERC)
     {
-        fputs(itoa_lookup_table[ABS(duty)].c_str(), this->dutyFile);
+        fputs(itoa_lookup_table[invertedPWM ? (255-ABS(duty)) : ABS(duty)].c_str(), this->dutyFile);
     }
     else
     {
-        fputs(itoa_lookup_table[0].c_str(), this->dutyFile);
+        fputs(itoa_lookup_table[invertedPWM ? 255 : 0].c_str(), this->dutyFile);
     }
 
     fflush(this->dutyFile);
