@@ -41,7 +41,8 @@ float fastSin( float x )
 
 MotionController::MotionController(Settings &s) :  rightMotor(s), leftMotor(s), direction(1650000, (float) LOW_ANGLE, 2050000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
-averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
+averageLeftSpeed(), averageRightSpeed(), odo((uint8_t)s.getInt("ODOMETRY_PIN1_L"),(uint8_t)s.getInt("ODOMETRY_PIN2_L"),
+(uint8_t)s.getInt("ODOMETRY_PIN1_R"),(uint8_t)s.getInt("ODOMETRY_PIN2_R")), settings(s)
 {
     execTime = 0;
     startTime = 0;
