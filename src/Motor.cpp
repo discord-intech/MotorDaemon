@@ -107,7 +107,8 @@ void Motor::create_itoa_lookup_table(void)
 
     for(int i=0 ; i<256 ; i++)
     {
-        this->itoa_lookup_table[i] = std::to_string((long)(((double)i / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD));
+        this->itoa_lookup_table[i] = std::to_string((long)((invertedPWM ? PWM_TIME_PERIOD : 0) -
+                ((double)i / 255.) * MAXIMUM_PWM_PERC * PWM_TIME_PERIOD * (invertedPWM ? 1.0 : -1.0)));
     }
 }
 
@@ -149,11 +150,11 @@ void Motor::run(int duty) //duty € [-255;255]
 
     if(ABS(duty) > 255*MINIMAL_PWM_PERC)
     {
-        fputs(itoa_lookup_table[invertedPWM ? (255-ABS(duty)) : ABS(duty)].c_str(), this->dutyFile);
+        fputs(itoa_lookup_table[ABS(duty)].c_str(), this->dutyFile);
     }
     else
     {
-        fputs(itoa_lookup_table[invertedPWM ? 255 : 0].c_str(), this->dutyFile);
+        fputs(itoa_lookup_table[0].c_str(), this->dutyFile);
     }
 
     fflush(this->dutyFile);
