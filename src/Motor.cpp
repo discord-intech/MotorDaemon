@@ -24,9 +24,9 @@ Motor::Motor(uint8_t pwm, int dir1, int dir2, bool inv, Settings &s) : PWMpin(pw
     invertedPWM = s.getInt("INVERTED_PWM")==1;
 }
 
-LeftMotor::LeftMotor(Settings &s) : Motor(0, s.getInt("DIRECTION_PIN1_L"), s.getInt("DIRECTION_PIN2_L"),  false, s) {}
+LeftMotor::LeftMotor(Settings &s) : Motor(1, s.getInt("DIRECTION_PIN1_L"), s.getInt("DIRECTION_PIN2_L"),  false, s) {}
 
-RightMotor::RightMotor(Settings &s) : Motor(1, s.getInt("DIRECTION_PIN1_R"), s.getInt("DIRECTION_PIN2_R"), true, s) {}
+RightMotor::RightMotor(Settings &s) : Motor(0, s.getInt("DIRECTION_PIN1_R"), s.getInt("DIRECTION_PIN2_R"), true, s) {}
 
 void Motor::setDirection(Direction way)
 {
@@ -67,7 +67,17 @@ void Motor::initPWM()
 
     system((std::string("echo ")+std::to_string(PWMpin)+std::string(" > /sys/class/pwm/pwmchip3/export")).c_str());
     system((std::string("echo ")+std::to_string((int)PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/period")).c_str());
-    system((std::string("echo 0 > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/duty_cycle")).c_str());
+
+    if(invertedPWM)
+    {
+        system((std::string("echo ")+std::to_string((int)PWM_TIME_PERIOD)+std::string(" > /sys/class/pwm/pwmchip3/pwm") + std::to_string(PWMpin) +
+                std::string("/duty_cycle")).c_str());
+    }
+    else
+    {
+        system((std::string("echo 0 > /sys/class/pwm/pwmchip3/pwm") + std::to_string(PWMpin) +
+                std::string("/duty_cycle")).c_str());
+    }
     system((std::string("echo 1 > /sys/class/pwm/pwmchip3/pwm")+std::to_string(PWMpin)+std::string("/enable")).c_str());
 
 
