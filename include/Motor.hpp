@@ -44,6 +44,7 @@
         uint8_t PWMpin;
 
         int directionPin;
+        int directionPin2;
 
         std::string PWMduty;
 
@@ -52,6 +53,8 @@
         Settings settings;
 
         bool inversed;
+
+        bool invertedPWM;
 
         Direction actualDirection;
         int actualDuty;
@@ -65,7 +68,7 @@
         std::string dutyPath;
 
     public:
-        Motor(uint8_t, int, bool, Settings&);
+        Motor(uint8_t, int, int, bool, Settings&);
         void initPWM(void);
         void run(int);
     };

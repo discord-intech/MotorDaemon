@@ -1,7 +1,7 @@
 //
 // Created by discord on 26/09/16.
 //
-
+#pragma once
 #ifndef MOTORDAEMON_MOTIONCONTROLLER_HPP
 #define MOTORDAEMON_MOTIONCONTROLLER_HPP
 
@@ -9,6 +9,7 @@
 #include <chrono>
 #include <vector>
 #include <math.h>
+#include <sstream>
 #include <queue>
 #include "Motor.hpp"
 #include "pid.hpp"
@@ -31,8 +32,8 @@
 
 #define DIST_MOTOR_DIRECTION 150
 
-#define LOW_ANGLE -0.58
-#define HIGH_ANGLE 0.58  //TODO Bounds
+#define LOW_ANGLE -0.79
+#define HIGH_ANGLE 0.79 //TODO Bounds
 
 #define DELTA_FREQ_REFRESH 500
 
@@ -42,7 +43,6 @@
 #define TICKS_TO_RAD 0.00189
 
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
-
 
 
 class MotionController
@@ -136,12 +136,26 @@ private:
 
     unsigned int delayToStop;  //En ms
 
+    std::fstream outPos;
+
     float direction_table[MAX_RADIUS];
 
     void compute_direction_table(void);
 
     static void mainWorker(MotionController*&);
 
+    std::vector<std::string> splitl(std::string str, char delimiter)
+    {
+        std::vector<std::string> internal;
+        std::stringstream ss(str); // Turn the string into a stream.
+        std::string tok;
+
+        while(std::getline(ss, tok, delimiter)) {
+            internal.push_back(tok);
+        }
+
+        return internal;
+    }
 
 
 public:
@@ -215,6 +229,8 @@ public:
     long getCSpeedR(void)  { return *rightSpeedSetpoint; }
 
     double getAngle(void) { return *currentAngle;}
+
+    void loadPos();
 
     void printTranslationError(void)
     {

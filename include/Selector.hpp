@@ -31,14 +31,6 @@ std::vector<std::string> args = std::vector<std::string>();
 static bool serverMode = false;
 static bool proxyMode = false;
 
-
-unsigned long Millisec(void)
-{
-    struct timeval tv;
-    if(gettimeofday(&tv, NULL) != 0) return 0;
-    return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
-}
-
 std::vector<std::string> split(std::string str, char delimiter)
 {
     std::vector<std::string> internal;
@@ -50,6 +42,13 @@ std::vector<std::string> split(std::string str, char delimiter)
     }
 
     return internal;
+}
+
+unsigned long Millisec(void)
+{
+    struct timeval tv;
+    if(gettimeofday(&tv, NULL) != 0) return 0;
+    return (tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul);
 }
 
 void getArgs(const std::string &s, char delim, std::vector<std::string> &elems)
@@ -602,7 +601,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 #ifdef __arm__
         print((char*)(
-                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("")+
+                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\n")+
                 std::to_string(motion.getCurveRadius())+std::string("\n")).c_str());
 #endif
         return 0;

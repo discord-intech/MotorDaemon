@@ -17,6 +17,7 @@
 #define BUFFER_MAX_SIZE 65536
 #define SERVER_MODE_CMD "-s"
 #define PROXY_MODE_CMD "-p"
+#define RELOAD_POS_CMD "-r"
 #define DAEMON_NAME "hermes-pilot"
 
 void serverWorker(void);
@@ -67,6 +68,12 @@ int main(int argc, char *argv[])
         std::cerr << std::endl << "Can't catch SIGINT" << std::endl;
     }
 
+    if(argc >= 3 && !strcmp(argv[2], RELOAD_POS_CMD))
+    {
+#ifdef __arm__
+        motion.loadPos();
+#endif
+    }
 
 #ifdef __arm__
     motion.init();
@@ -81,7 +88,7 @@ int main(int argc, char *argv[])
         syslog(LOG_INFO, "hermes-pilot launched in server mode");
         t.join(); //Do not shut down the main thread
     }
-    else if(argc == 3 && !strcmp(argv[1], PROXY_MODE_CMD))
+    else if(argc >= 3 && !strcmp(argv[1], PROXY_MODE_CMD))
     {
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
@@ -91,7 +98,7 @@ int main(int argc, char *argv[])
         syslog(LOG_INFO, "hermes-pilot launched in proxy mode");
         t.join(); //Do not shut down the main thread
     }
-    else if(argc == 2 && !strcmp(argv[1], PROXY_MODE_CMD))
+    else if(argc >= 2 && !strcmp(argv[1], PROXY_MODE_CMD))
     {
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);

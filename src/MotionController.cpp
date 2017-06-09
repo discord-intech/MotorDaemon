@@ -39,9 +39,10 @@ float fastSin( float x )
     return P * (y * abs(y) - y) + y;
 }
 
-MotionController::MotionController(Settings &s) :  rightMotor(s), leftMotor(s), direction(550000, (float) LOW_ANGLE, 1040000, HIGH_ANGLE), //FIXME bounds
+MotionController::MotionController(Settings &s) :  rightMotor(s), leftMotor(s), direction(1650000, (float) LOW_ANGLE, 2050000, HIGH_ANGLE), //FIXME bounds
 rightSpeedPID(), leftSpeedPID(), translationPID(), curvePID(),
-averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
+averageLeftSpeed(), averageRightSpeed(), odo((uint8_t)s.getInt("ODOMETRY_PIN1_L"),(uint8_t)s.getInt("ODOMETRY_PIN2_L"),
+(uint8_t)s.getInt("ODOMETRY_PIN1_R"),(uint8_t)s.getInt("ODOMETRY_PIN2_R")), settings(s)
 {
     execTime = 0;
     startTime = 0;
@@ -85,8 +86,8 @@ averageLeftSpeed(), averageRightSpeed(), odo(67,68,44,26), settings(s)
 
     distanceTest = 200;
 
-
     delayToStop = (unsigned int) settings.getInt("DELAY_TO_STOP");
+
 }
 
 void MotionController::init()
@@ -136,6 +137,10 @@ void MotionController::mainWorker(MotionController *&asser)
         if(count % 5 == 0)
         {
             asser->manageStop();
+        }
+
+        if(count % 10 == 0)
+        {
             asser->updatePosition();
         }
 
@@ -155,6 +160,20 @@ void MotionController::mainWorker(MotionController *&asser)
         t.tv_nsec = (1000000000 / FREQ_ASSERV) - (execTime*1000);
         nanosleep(&t, &r);
     }
+}
+
+void MotionController::loadPos()
+{
+    outPos.open("/var/cache/MDPOS", std::ios::in);
+
+    std::string pos;
+    outPos >> pos;
+    std::vector<std::string> comps = splitl(pos, ';');
+
+    this->setPosition(std::stod(comps[0]), std::stod(comps[1]));
+    this->setAngle(std::stod(comps[2]));
+
+    outPos.close();
 }
 
 void MotionController::control()
@@ -558,6 +577,12 @@ void MotionController::updatePosition()
     *x += (*currentDistance - precedentL)*(double)sin(1.57f - (float)*currentAngle)*MM_PER_TICK;
     *y += (*currentDistance - precedentL)*(double)sin((float)*currentAngle)*MM_PER_TICK;
     precedentL = *currentDistance;
+
+    outPos.open("/var/cache/MDPOS", std::ios::out | std::ios::trunc);
+
+    outPos << std::to_string(*x)+std::string(";")+std::to_string(*y)+std::string(";")+std::to_string(*currentAngle)+std::string("\n");
+    outPos.flush();
+    outPos.close();
 }
 
 void MotionController::sweep(bool way) // true >0 ; false <0
