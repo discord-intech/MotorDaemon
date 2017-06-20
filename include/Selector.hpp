@@ -473,7 +473,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 #ifdef __arm__
-        motion.sweep(false);
+        motion.sweep(true);
 #endif
         std::cout << "sweepR received" << std::endl;
         return 0;
@@ -483,7 +483,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 #ifdef __arm__
-        motion.sweep(true);
+        motion.sweep(false);
 #endif
         std::cout << "sweepL received" << std::endl;
         return 0;
