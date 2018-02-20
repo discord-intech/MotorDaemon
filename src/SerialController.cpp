@@ -93,7 +93,7 @@ struct cpu_com_status SerialController::getStatus()
 
 void SerialController::order(std::string order)
 {
-    Write((order+"\n").c_str(), static_cast<unsigned int>(order.length() + 1));
+    Write((order+"\r").c_str(), static_cast<unsigned int>(order.length() + 1));
 }
 
 Result * SerialController::waitForResult()
