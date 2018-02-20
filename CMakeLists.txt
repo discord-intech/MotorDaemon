@@ -9,5 +9,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -lpthread -lm ")
 include_directories(include)
 
 file(GLOB SOURCES "src/*.cpp")
+file(GLOB INC "include/*.*")
 
-add_executable(MotorDaemon ${SOURCES})
+add_executable(MotorDaemon ${SOURCES} ${INC})

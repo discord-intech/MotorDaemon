@@ -18,6 +18,7 @@
 #define SERVER_MODE_CMD "-s"
 #define PROXY_MODE_CMD "-p"
 #define RELOAD_POS_CMD "-r"
+#define COPRO_MODE_CMD "-c"
 #define DAEMON_NAME "hermes-pilot"
 
 void serverWorker(void);
@@ -68,16 +69,30 @@ int main(int argc, char *argv[])
         std::cerr << std::endl << "Can't catch SIGINT" << std::endl;
     }
 
-    if(argc >= 3 && !strcmp(argv[2], RELOAD_POS_CMD))
+    if(argc >= 4 && !strcmp(argv[3], COPRO_MODE_CMD))
+    {
+        coprocessorMode = true;
+    }
+
+    if(coprocessorMode)
+    {
+        motion = SerialController((char*)settings.get("SERIAL_PORT").c_str());
+    }
+    else
     {
 #ifdef __arm__
-        motion.loadPos();
+        motion = MotionController(settings);
+#else
+        motion = ControllerInterface();
 #endif
     }
 
-#ifdef __arm__
+    if(argc >= 3 && !strcmp(argv[2], RELOAD_POS_CMD))
+    {
+        motion.loadPos();
+    }
+
     motion.init();
-#endif
 
     if(argc >= 2 && !strcmp(argv[1], SERVER_MODE_CMD))
     {

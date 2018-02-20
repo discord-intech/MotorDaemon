@@ -7,6 +7,7 @@
 
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
+#include "SerialController.hpp"
 #include <sstream>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -16,15 +17,17 @@
 #include <arpa/inet.h>
 #include <sys/sysinfo.h>
 
+bool coprocessorMode = false;
+
 #ifdef __arm__
 Settings settings("/etc/MotorDaemon.conf");
 #else
 Settings settings("MotorDaemon.conf");
 #endif
 
-#ifdef __arm__
-MotionController motion(settings);
-#endif
+ControllerInterface motion;
+
+
 
 std::vector<std::string> args = std::vector<std::string>();
 
@@ -162,7 +165,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
     else if(!args[0].compare("status"))
     {
-#ifdef __arm__
+
 
         struct sysinfo sys;
         sysinfo(&sys);
@@ -183,26 +186,26 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
 
         print((char *)s.c_str());
-#endif
+
 
     }
 
     else if(!args[0].compare("stop"))
     {
-#ifdef __arm__
+
         //print("ack");
         motion.stop();
-#endif
+
         return 0;
     }
     else if(!args[0].compare("p"))
     {
-#ifdef __arm__
+
         std::string s = std::to_string(motion.getX())+std::string(";")
                             +std::to_string(motion.getY())+std::string(";")
                             +std::to_string(motion.getAngle())+std::string("");
         print((char*)s.c_str());
-#endif
+
         return 0;
     }
     else if(!args[0].compare("setksg"))
@@ -226,9 +229,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char *) "BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setLeftSpeedTunings(kp, ki, kd);
-#endif
+
         return 0;
     }
 
@@ -253,9 +256,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char *) "BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setRightSpeedTunings(kp, ki, kd);
-#endif
+
         return 0;
     }
 
@@ -280,9 +283,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setTranslationTunings(kp, ki, kd);
-#endif
+
         return 0;
     }
 
@@ -307,9 +310,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setCurveTunings(kp, ki, kd);
-#endif
+
         return 0;
     }
 
@@ -348,9 +351,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.orderTranslation(dist);
-#endif
+
         return 0;
     }
 
@@ -392,19 +395,19 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-#ifdef __arm__
+
         motion.setTrajectory(points, points[points.size()-1].relativeDistance);
-#endif
+
         return 0;
     }
 
     else if(!args[0].compare("go"))
     {
 
-#ifdef __arm__
+
         motion.setControlled(false);
         motion.go();
-#endif
+
         std::cout << "go received" << std::endl;
         return 0;
     }
@@ -428,9 +431,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setPosition(x,y);
-#endif
+
         return 0;
     }
 
@@ -452,19 +455,19 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setAngle(o);
-#endif
+
         return 0;
     }
 
     else if(!args[0].compare("gor"))
     {
 
-#ifdef __arm__
+
         motion.setControlled(false);
         motion.goR();
-#endif
+
         std::cout << "gor received" << std::endl;
         return 0;
     }
@@ -472,9 +475,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("sweepR"))
     {
 
-#ifdef __arm__
+
         motion.sweep(true);
-#endif
+
         std::cout << "sweepR received" << std::endl;
         return 0;
     }
@@ -482,9 +485,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("sweepL"))
     {
 
-#ifdef __arm__
+
         motion.sweep(false);
-#endif
+
         std::cout << "sweepL received" << std::endl;
         return 0;
     }
@@ -492,9 +495,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("sweepstop"))
     {
 
-#ifdef __arm__
+
         motion.stopSweep();
-#endif
+
         return 0;
     }
 
@@ -516,9 +519,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.orderCurveRadius(dist);
-#endif
+
         return 0;
     }
 
@@ -540,9 +543,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.orderAngle(angle);
-#endif
+
         return 0;
     }
 
@@ -564,9 +567,9 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             print((char*)"BAD VALUE");
             return 0;
         }
-#ifdef __arm__
+
         motion.setSpeedTranslation(s);
-#endif
+
         return 0;
     }
 
@@ -590,46 +593,52 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-#ifdef __arm__
+
         motion.testSpeed(dist);
-#endif
+
 
         return 0;
     }
 
     else if(!args[0].compare("c"))
     {
-#ifdef __arm__
+
         print((char*)(
-                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\n")+
+//                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\n")+
                 std::to_string(motion.getCurveRadius())+std::string("\n")).c_str());
-#endif
+
         return 0;
     }
 
     else if(!args[0].compare("k"))
     {
-#ifdef __arm__
+
         print((char*) motion.getTunings());
-#endif
+
         return 0;
     }
 
     else if(!args[0].compare("m"))
     {
-#ifdef __arm__
+
         print((char*) motion.isMoving());
-#endif
+
         return 0;
     }
 
     else if(!args[0].compare("sv"))
     {
-#ifdef __arm__
+
         std::string s = std::to_string(Millisec())+std::string(";")+std::to_string(motion.getCSpeedL())+std::string(";")+std::to_string(motion.getSpeedL())+
             std::string(";")+std::to_string(motion.getCSpeedR())+std::string(";")+std::to_string(motion.getSpeedR())+std::string("");
         print((char*)s.c_str());
-#endif
+
+        return 0;
+    }
+
+    else if(!args[0].compare("isOn"))
+    {
+        print((char*)motion.controlledStatus());
         return 0;
     }
 

@@ -705,4 +705,8 @@ void MotionController::setTrajectory(std::vector<Cinematic>& list, long distance
     orderTranslation((lastWay ? 1 : -1)*distance);
 }
 
+const char *MotionController::controlledStatus() {
+    return stahp ? "No" : "Yes";
+}
+
 

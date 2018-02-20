@@ -18,6 +18,7 @@
 #include "Servo.hpp"
 #include "Settings.hpp"
 #include "Cinematic.hpp"
+#include "ControllerInterface.hpp"
 
 #define AVERAGE_SPEED_SIZE	25
 
@@ -45,7 +46,7 @@
 //#define MILLIS() std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()
 
 
-class MotionController
+class MotionController : public ControllerInterface
 {
 private:
 
@@ -231,6 +232,8 @@ public:
     double getAngle(void) { return *currentAngle;}
 
     void loadPos();
+
+    const char *controlledStatus() override;
 
     void printTranslationError(void)
     {
