@@ -41,6 +41,15 @@ void signalHandler(int sign)
     }
 }
 
+bool presentInArgs(char* args[], int argc, const char* val)
+{
+    for(int i=0 ; i<argc ; i++)
+    {
+        if(!strcmp(args[i], val)) return true;
+    }
+    return false;
+}
+
 class Writters
 {
 public:
@@ -69,7 +78,7 @@ int main(int argc, char *argv[])
         std::cerr << std::endl << "Can't catch SIGINT" << std::endl;
     }
 
-    if(argc >= 4 && !strcmp(argv[3], COPRO_MODE_CMD))
+    if(presentInArgs(argv, argc, COPRO_MODE_CMD))
     {
         coprocessorMode = true;
     }
@@ -87,14 +96,14 @@ int main(int argc, char *argv[])
 #endif
     }
 
-    if(argc >= 3 && !strcmp(argv[2], RELOAD_POS_CMD))
+    if(presentInArgs(argv, argc, RELOAD_POS_CMD))
     {
         motion.loadPos();
     }
 
     motion.init();
 
-    if(argc >= 2 && !strcmp(argv[1], SERVER_MODE_CMD))
+    if(presentInArgs(argv, argc, SERVER_MODE_CMD))
     {
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
@@ -103,17 +112,7 @@ int main(int argc, char *argv[])
         syslog(LOG_INFO, "hermes-pilot launched in server mode");
         t.join(); //Do not shut down the main thread
     }
-    else if(argc >= 3 && !strcmp(argv[1], PROXY_MODE_CMD))
-    {
-        setlogmask(LOG_UPTO(LOG_NOTICE));
-        openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
-        proxyMode = true;
-        proxyAdress = argv[2];
-        t = std::thread(proxyWorker);
-        syslog(LOG_INFO, "hermes-pilot launched in proxy mode");
-        t.join(); //Do not shut down the main thread
-    }
-    else if(argc >= 2 && !strcmp(argv[1], PROXY_MODE_CMD))
+    else if(presentInArgs(argv, argc, PROXY_MODE_CMD))
     {
         setlogmask(LOG_UPTO(LOG_NOTICE));
         openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
