@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
     if(presentInArgs(argv, argc, COPRO_MODE_CMD))
     {
         coprocessorMode = true;
+        std::cout << "coprocessor mode" << std::endl;
     }
 
     if(coprocessorMode)
