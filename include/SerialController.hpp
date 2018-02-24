@@ -12,9 +12,12 @@
 #include <errno.h>
 #include <cstdlib>
 #include <sstream>
+#include <fstream>
 #include <functional>
 #include <thread>
+#include <unistd.h>
 #include <queue>
+#include <iostream>
 #include "cpu_com_structs.h"
 #include "ControllerInterface.hpp"
 

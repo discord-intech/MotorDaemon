@@ -3,10 +3,10 @@
 //
 
 
-#include <fstream>
-#include <iostream>
-#include <zconf.h>
+
 #include "../include/SerialController.hpp"
+
+
 
 bool SerialController::on = true;
 int SerialController::fileDesc;
@@ -279,6 +279,8 @@ double SerialController::getAngle(void) {
 void SerialController::loadPos() {
     std::fstream outPos;
     outPos.open("/var/cache/MDPOS", std::ios::in);
+
+    outPos.get();
 
     std::string pos;
     outPos >> pos;
