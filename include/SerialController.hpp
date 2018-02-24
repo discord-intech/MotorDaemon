@@ -8,10 +8,9 @@
 #include <cstring>
 #include <termios.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <errno.h>
+#include <cstdio>
+#include <cerrno>
 #include <cstdlib>
-#include <zconf.h>
 #include <sstream>
 #include <functional>
 #include <thread>

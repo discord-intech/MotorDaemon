@@ -43,12 +43,20 @@ void SerialController::init()
 
 int SerialController::Read(char *b, int size)
 {
-    return read(fileDesc, b, size);
+    for(int i=0 ; i<size ; i++)
+    {
+        b[i] = fgetc(reinterpret_cast<FILE *>(fileDesc));
+    }
+    return size;
 }
 
 int SerialController::Write(const char *b, unsigned int size)
 {
-    return write(fileDesc, b, size);
+    for(int i=0 ; i<size ; i++)
+    {
+        fputc(b[i], reinterpret_cast<FILE *>(fileDesc));
+    }
+    return size;
 }
 
 void SerialController::mainWorker()
