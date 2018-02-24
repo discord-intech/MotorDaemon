@@ -4,6 +4,7 @@
 
 
 #include <fstream>
+#include <iostream>
 #include "../include/SerialController.hpp"
 
 bool SerialController::on = true;
@@ -77,6 +78,7 @@ void SerialController::readWorker()
             delete currentStatus;
             currentStatus = static_cast<struct cpu_com_status*>(malloc(sizeof(struct cpu_com_status)));
             Read(reinterpret_cast<char *>(currentStatus), sizeof(struct cpu_com_status));
+            std::cout << "RECEIVED STATUS" << std::endl;
         }
         else if(code == RESULT_CODE)
         {
@@ -84,6 +86,7 @@ void SerialController::readWorker()
                                                         )));
             Read(reinterpret_cast<char *>(res), sizeof(Result));
             resultQueue.push(res);
+            std::cout << "RECEIVED RESULT" << std::endl;
         }
         else continue;
     }
