@@ -17,7 +17,7 @@
 #include <arpa/inet.h>
 #include <sys/sysinfo.h>
 
-bool coprocessorMode = false;
+volatile bool coprocessorMode = false;
 
 #ifdef __arm__
 Settings settings("/etc/MotorDaemon.conf");
