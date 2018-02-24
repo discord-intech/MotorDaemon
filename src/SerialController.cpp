@@ -60,13 +60,15 @@ void SerialController::mainWorker()
 
 void SerialController::readWorker()
 {
+    on = true;
     while(on)
     {
         char code = 0;
 
-        std::cout << "WAITING" << std::endl;
-
-        Read(&code, 1);
+        if(!Read(&code, 1))
+        {
+            continue;
+        }
 
         std::cout << "GOT CODE : " << code << std::endl;
 

@@ -233,7 +233,7 @@ public:
 
     void loadPos();
 
-    const char *controlledStatus() override;
+    const char *controlledStatus() ;
 
     void printTranslationError(void)
     {

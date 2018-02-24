@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <Settings.hpp>
 #include <malloc.h>
+#include <ControllerInterfaceEmpty.hpp>
 #include "../include/Selector.hpp"
 
 #define SOCKET_PORT 56987
@@ -86,23 +87,23 @@ int main(int argc, char *argv[])
 
     if(coprocessorMode)
     {
-        motion = SerialController((char*)settings.get("SERIAL_PORT").c_str());
+        motion = new SerialController((char*)settings.get("SERIAL_PORT").c_str());
     }
     else
     {
 #ifdef __arm__
-        motion = MotionController(settings);
+        motion = new MotionController(settings);
 #else
-        motion = ControllerInterface();
+        motion = new ControllerInterfaceEmpty();
 #endif
     }
 
     if(presentInArgs(argv, argc, RELOAD_POS_CMD))
     {
-        motion.loadPos();
+        motion->loadPos();
     }
 
-    motion.init();
+    motion->init();
 
     if(presentInArgs(argv, argc, SERVER_MODE_CMD))
     {
@@ -152,7 +153,7 @@ void localWorker(void)
         if(treatOrder(order, &Writters::printMessage))
         {
 #ifdef __arm__
-            motion.stop();
+            motion->stop();
 #endif
             return;
         }
@@ -240,7 +241,7 @@ void serverWorker(void)
         if(treatOrder(order, std::bind(&Writters::writeMessage, client_socket, std::placeholders::_1)))
         {
 #ifdef __arm__
-            motion.stop();
+            motion->stop();
 #endif
             close(client_socket);
             close(sockfd);
@@ -318,7 +319,7 @@ void proxyWorker(void)
         if(treatOrder(order, std::bind(&Writters::writeMessage, sockfd, std::placeholders::_1), true))
         {
 #ifdef __arm__
-            motion.stop();
+            motion->stop();
 #endif
             close(sockfd);
             return;

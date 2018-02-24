@@ -50,75 +50,75 @@ public:
     struct cpu_com_status getStatus();
     void order(std::string order);
 
-    void stop(void) override;
+    void stop(void) ;
 
-    void orderTranslation(long i) override;
+    void orderTranslation(long i) ;
 
-    void orderAngle(float d) override;
+    void orderAngle(float d) ;
 
-    void setSpeedTranslation(int i) override;
+    void setSpeedTranslation(int i) ;
 
-    void orderCurveRadius(long i) override;
+    void orderCurveRadius(long i) ;
 
-    void setTranslationTunings(float d, float d1, float d2) override;
+    void setTranslationTunings(float d, float d1, float d2) ;
 
-    void setCurveTunings(float d, float d1, float d2) override;
+    void setCurveTunings(float d, float d1, float d2) ;
 
-    void setLeftSpeedTunings(float d, float d1, float d2) override;
+    void setLeftSpeedTunings(float d, float d1, float d2) ;
 
-    void setRightSpeedTunings(float d, float d1, float d2) override;
+    void setRightSpeedTunings(float d, float d1, float d2) ;
 
-    void setPosition(double xn, double yn) override;
+    void setPosition(double xn, double yn) ;
 
-    void setAngle(double o) override;
+    void setAngle(double o) ;
 
-    const char *getTunings(void) override;
+    const char *getTunings(void) ;
 
-    void testPosition(void) override;
+    void testPosition(void) ;
 
-    void testSpeed(int i) override;
+    void testSpeed(int i) ;
 
-    void setTrajectory(std::vector<Cinematic> &vector, long i) override;
+    void setTrajectory(std::vector<Cinematic> &vector, long i) ;
 
-    const char *isMoving(void) override;
+    const char *isMoving(void) ;
 
-    bool isPhysicallyStopped(void) override;
+    bool isPhysicallyStopped(void) ;
 
-    long getTranslationSetPoint(void) override;
+    long getTranslationSetPoint(void) ;
 
-    void go(void) override;
+    void go(void) ;
 
-    void goR(void) override;
+    void goR(void) ;
 
-    void setControlled(bool b) override;
+    void setControlled(bool b) ;
 
-    void sweep(bool way) override;
+    void sweep(bool way) ;
 
-    void stopSweep(void) override;
+    void stopSweep(void) ;
 
-    long getCurveRadius(void) override;
+    long getCurveRadius(void) ;
 
-    double getX(void) override;
+    double getX(void) ;
 
-    double getY(void) override;
+    double getY(void) ;
 
-    long getSpeed(void) override;
+    long getSpeed(void) ;
 
-    long getSpeedL(void) override;
+    long getSpeedL(void) ;
 
-    long getSpeedR(void) override;
+    long getSpeedR(void) ;
 
-    long getCSpeedL(void) override;
+    long getCSpeedL(void) ;
 
-    long getCSpeedR(void) override;
+    long getCSpeedR(void) ;
 
-    double getAngle(void) override;
+    double getAngle(void) ;
 
-    void loadPos() override;
+    void loadPos() ;
 
-    void printTranslationError(void) override;
+    void printTranslationError(void) ;
 
-    const char *controlledStatus() override;
+    const char *controlledStatus() ;
 
     std::vector<std::string> splitl(std::string str, char delimiter)
     {

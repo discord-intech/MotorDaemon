@@ -13,72 +13,72 @@ public:
 
     ControllerInterface() = default;
 
-    virtual void init(void) {};
+    virtual void init(void) = 0;
 
-    virtual void stop(void) {};
+    virtual void stop(void) = 0;
 
-    virtual void orderTranslation(long) {};
-    virtual void orderAngle(float) {};
+    virtual void orderTranslation(long) = 0;
+    virtual void orderAngle(float) = 0;
 
-    virtual void setSpeedTranslation(int) {};
+    virtual void setSpeedTranslation(int) = 0;
 
-    virtual  void orderCurveRadius(long) {};
+    virtual  void orderCurveRadius(long) = 0;
 
-    virtual  void setTranslationTunings(float, float, float) {};
-    virtual  void setCurveTunings(float, float, float) {};
-    virtual void setLeftSpeedTunings(float, float, float) {};
-    virtual void setRightSpeedTunings(float, float, float) {};
+    virtual  void setTranslationTunings(float, float, float) = 0;
+    virtual  void setCurveTunings(float, float, float) = 0;
+    virtual void setLeftSpeedTunings(float, float, float) = 0;
+    virtual void setRightSpeedTunings(float, float, float) = 0;
 
-    virtual void setPosition(double xn, double yn) {};
-    virtual void setAngle(double o) {};
+    virtual void setPosition(double xn, double yn) = 0;
+    virtual void setAngle(double o) = 0;
 
-    virtual const char* getTunings(void) {return "";};
+    virtual const char* getTunings(void) = 0;
 
-    virtual  void testPosition(void) {};
+    virtual  void testPosition(void) = 0;
 
-    virtual void testSpeed(int) {};
+    virtual void testSpeed(int) = 0;
 
-    virtual void setTrajectory(std::vector<Cinematic>&, long) {};
+    virtual void setTrajectory(std::vector<Cinematic>&, long) = 0;
 
-    virtual const char* isMoving(void) {return "";};
+    virtual const char* isMoving(void) = 0;
 
-    virtual bool isPhysicallyStopped(void) {return 0;};
+    virtual bool isPhysicallyStopped(void) = 0;
 
-    virtual long getTranslationSetPoint(void) {return 0;};
+    virtual long getTranslationSetPoint(void) = 0;
 
-    virtual void go(void) {};
+    virtual void go(void) = 0;
 
-    virtual void goR(void) {};
+    virtual void goR(void) = 0;
 
-    virtual void setControlled(bool b) {};
+    virtual void setControlled(bool b) = 0;
 
-    virtual const char* controlledStatus() { return "";};
+    virtual const char* controlledStatus() = 0;
 
-    virtual void sweep(bool way) {};
+    virtual void sweep(bool way) = 0;
 
-    virtual void stopSweep(void) {};
+    virtual void stopSweep(void) = 0;
 
-    virtual long getCurveRadius(void) { return 0;};
+    virtual long getCurveRadius(void) = 0;
 
-    virtual double getX(void) {return 0;};
+    virtual double getX(void) = 0;
 
-    virtual double getY(void) {return 0;};
+    virtual double getY(void) = 0;
 
-    virtual long getSpeed(void) {return 0;};
+    virtual long getSpeed(void) = 0;
 
-    virtual long getSpeedL(void) {return 0;};
+    virtual long getSpeedL(void) = 0;
 
-    virtual long getSpeedR(void) {return 0;};
+    virtual long getSpeedR(void) = 0;
 
-    virtual long getCSpeedL(void) {return 0;};
+    virtual long getCSpeedL(void) = 0;
 
-    virtual long getCSpeedR(void) {return 0;};
+    virtual long getCSpeedR(void) = 0;
 
-    virtual double getAngle(void) {return 0;};
+    virtual double getAngle(void) = 0;
 
-    virtual void loadPos() {};
+    virtual void loadPos() = 0;
 
-    virtual void printTranslationError(void) {};
+    virtual void printTranslationError(void) = 0;
 };
 
 #endif //MOTORDAEMON_HERMES_CONTROLLERINTERFACE_HPP

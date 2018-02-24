@@ -25,7 +25,7 @@ Settings settings("/etc/MotorDaemon.conf");
 Settings settings("MotorDaemon.conf");
 #endif
 
-ControllerInterface motion;
+ControllerInterface* motion;
 
 
 
@@ -172,16 +172,16 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         float cpuU = cpuUsage();
         float cpuT = cpuTemp();
 
-        long speed = motion.getSpeed();
+        long speed = motion->getSpeed();
 
 
 
         std::string s = std::string("MDSTATUS")+std::to_string(cpuU)+std::string(";")+
                 std::to_string(cpuT)+std::string(";")+std::to_string(sys.freeram)
                         +std::string(";")+std::to_string(sys.totalram)+std::string(";")+
-                        std::to_string(speed)+std::string(";")+std::to_string(motion.getX())
-                        +std::string(";")+std::to_string(motion.getY())+std::string(";")+
-                        std::to_string(motion.getAngle())+std::string("");
+                        std::to_string(speed)+std::string(";")+std::to_string(motion->getX())
+                        +std::string(";")+std::to_string(motion->getY())+std::string(";")+
+                        std::to_string(motion->getAngle())+std::string("");
 
 
 
@@ -194,16 +194,16 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
         //print("ack");
-        motion.stop();
+        motion->stop();
 
         return 0;
     }
     else if(!args[0].compare("p"))
     {
 
-        std::string s = std::to_string(motion.getX())+std::string(";")
-                            +std::to_string(motion.getY())+std::string(";")
-                            +std::to_string(motion.getAngle())+std::string("");
+        std::string s = std::to_string(motion->getX())+std::string(";")
+                            +std::to_string(motion->getY())+std::string(";")
+                            +std::to_string(motion->getAngle())+std::string("");
         print((char*)s.c_str());
 
         return 0;
@@ -230,7 +230,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setLeftSpeedTunings(kp, ki, kd);
+        motion->setLeftSpeedTunings(kp, ki, kd);
 
         return 0;
     }
@@ -257,7 +257,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setRightSpeedTunings(kp, ki, kd);
+        motion->setRightSpeedTunings(kp, ki, kd);
 
         return 0;
     }
@@ -284,7 +284,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setTranslationTunings(kp, ki, kd);
+        motion->setTranslationTunings(kp, ki, kd);
 
         return 0;
     }
@@ -311,7 +311,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setCurveTunings(kp, ki, kd);
+        motion->setCurveTunings(kp, ki, kd);
 
         return 0;
     }
@@ -352,7 +352,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.orderTranslation(dist);
+        motion->orderTranslation(dist);
 
         return 0;
     }
@@ -396,7 +396,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
 
 
-        motion.setTrajectory(points, points[points.size()-1].relativeDistance);
+        motion->setTrajectory(points, points[points.size()-1].relativeDistance);
 
         return 0;
     }
@@ -405,8 +405,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 
-        motion.setControlled(false);
-        motion.go();
+        motion->setControlled(false);
+        motion->go();
 
         std::cout << "go received" << std::endl;
         return 0;
@@ -432,7 +432,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setPosition(x,y);
+        motion->setPosition(x,y);
 
         return 0;
     }
@@ -456,7 +456,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setAngle(o);
+        motion->setAngle(o);
 
         return 0;
     }
@@ -465,8 +465,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 
-        motion.setControlled(false);
-        motion.goR();
+        motion->setControlled(false);
+        motion->goR();
 
         std::cout << "gor received" << std::endl;
         return 0;
@@ -476,7 +476,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 
-        motion.sweep(true);
+        motion->sweep(true);
 
         std::cout << "sweepR received" << std::endl;
         return 0;
@@ -486,7 +486,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 
-        motion.sweep(false);
+        motion->sweep(false);
 
         std::cout << "sweepL received" << std::endl;
         return 0;
@@ -496,7 +496,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
 
-        motion.stopSweep();
+        motion->stopSweep();
 
         return 0;
     }
@@ -520,7 +520,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.orderCurveRadius(dist);
+        motion->orderCurveRadius(dist);
 
         return 0;
     }
@@ -544,7 +544,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.orderAngle(angle);
+        motion->orderAngle(angle);
 
         return 0;
     }
@@ -568,7 +568,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion.setSpeedTranslation(s);
+        motion->setSpeedTranslation(s);
 
         return 0;
     }
@@ -594,7 +594,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
 
 
-        motion.testSpeed(dist);
+        motion->testSpeed(dist);
 
 
         return 0;
@@ -604,8 +604,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     {
 
         print((char*)(
-//                std::to_string(motion.getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion.getOdometry()->getRightValue())+std::string("\n")+
-                std::to_string(motion.getCurveRadius())+std::string("\n")).c_str());
+//                std::to_string(motion->getOdometry()->getLeftValue())+std::string(" ; ")+std::to_string(motion->getOdometry()->getRightValue())+std::string("\n")+
+                std::to_string(motion->getCurveRadius())+std::string("\n")).c_str());
 
         return 0;
     }
@@ -613,7 +613,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("k"))
     {
 
-        print((char*) motion.getTunings());
+        print((char*) motion->getTunings());
 
         return 0;
     }
@@ -621,7 +621,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("m"))
     {
 
-        print((char*) motion.isMoving());
+        print((char*) motion->isMoving());
 
         return 0;
     }
@@ -629,8 +629,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
     else if(!args[0].compare("sv"))
     {
 
-        std::string s = std::to_string(Millisec())+std::string(";")+std::to_string(motion.getCSpeedL())+std::string(";")+std::to_string(motion.getSpeedL())+
-            std::string(";")+std::to_string(motion.getCSpeedR())+std::string(";")+std::to_string(motion.getSpeedR())+std::string("");
+        std::string s = std::to_string(Millisec())+std::string(";")+std::to_string(motion->getCSpeedL())+std::string(";")+std::to_string(motion->getSpeedL())+
+            std::string(";")+std::to_string(motion->getCSpeedR())+std::string(";")+std::to_string(motion->getSpeedR())+std::string("");
         print((char*)s.c_str());
 
         return 0;
@@ -638,7 +638,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
     else if(!args[0].compare("isOn"))
     {
-        print((char*)motion.controlledStatus());
+        print((char*)motion->controlledStatus());
         return 0;
     }
 
