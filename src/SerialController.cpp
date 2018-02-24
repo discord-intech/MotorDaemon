@@ -64,7 +64,11 @@ void SerialController::readWorker()
     {
         char code = 0;
 
+        std::cout << "WAITING" << std::endl;
+
         Read(&code, 1);
+
+        std::cout << "GOT CODE : " << code << std::endl;
 
         if(code == STATUS_CODE)
         {
