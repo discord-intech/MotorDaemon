@@ -5,11 +5,11 @@
 #ifndef MOTORDAEMON_HERMES_SERIALCONTROLLER_HPP
 #define MOTORDAEMON_HERMES_SERIALCONTROLLER_HPP
 
-#include <cstring>
 #include <termios.h>
 #include <fcntl.h>
-#include <cstdio>
-#include <cerrno>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 #include <cstdlib>
 #include <sstream>
 #include <functional>

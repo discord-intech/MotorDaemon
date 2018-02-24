@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <zconf.h>
 #include "../include/SerialController.hpp"
 
 bool SerialController::on = true;
@@ -44,20 +45,12 @@ void SerialController::init()
 
 int SerialController::Read(char *b, int size)
 {
-    for(int i=0 ; i<size ; i++)
-    {
-        b[i] = fgetc(reinterpret_cast<FILE *>(fileDesc));
-    }
-    return size;
+    return read(fileDesc, b, size);
 }
 
 int SerialController::Write(const char *b, unsigned int size)
 {
-    for(int i=0 ; i<size ; i++)
-    {
-        fputc(b[i], reinterpret_cast<FILE *>(fileDesc));
-    }
-    return size;
+    return write(fileDesc, b, size);
 }
 
 void SerialController::mainWorker()
