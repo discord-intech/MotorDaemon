@@ -48,6 +48,23 @@ int SerialController::Read(char *b, int size)
     return read(fileDesc, b, size);
 }
 
+int SerialController::Read_until(char *b, int maxSize, char finalChar)
+{
+    for(int i=0 ; i<maxSize ; i++)
+    {
+        char c;
+        read(fileDesc, &c, 1);
+
+        if (c == finalChar)
+        {
+            b[i] = '\0';
+            return i;
+        }
+
+        b[i] = c;
+    }
+}
+
 int SerialController::Write(const char *b, unsigned int size)
 {
     return write(fileDesc, b, size);
@@ -61,6 +78,7 @@ void SerialController::mainWorker()
 void SerialController::readWorker()
 {
     on = true;
+    char buffer[1024];
     while(on)
     {
         char code = 0;
@@ -74,13 +92,33 @@ void SerialController::readWorker()
         {
             delete currentStatus;
             currentStatus = static_cast<struct cpu_com_status*>(malloc(sizeof(struct cpu_com_status)));
-            Read(reinterpret_cast<char *>(currentStatus), sizeof(struct cpu_com_status));
+            Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
+            nlohmann::json js = nlohmann::json::parse(buffer);
+
+            currentStatus->x = js["x"].get<double>();
+            currentStatus->y = js["y"].get<double>();
+            currentStatus->angle = js["angle"].get<double>();
+            currentStatus->stop = js["stop"].get<bool>();
+            currentStatus->curveRadius = js["curveRadius"].get<double>();
+            currentStatus->speedL = js["speedL"].get<double>();
+            currentStatus->speedR = js["speedR"].get<double>();
+            currentStatus->pwmL = js["pwmL"].get<int>();
+            currentStatus->pwmR = js["pwmR"].get<int>();
+            currentStatus->stopPhy = js["stopPhy"].get<bool>();
+            currentStatus->stopSoft = js["stopSoft"].get<bool>();
+
         }
         else if(code == RESULT_CODE)
         {
             Result * res = static_cast<Result *>(malloc(sizeof(Result
                                                         )));
-            Read(reinterpret_cast<char *>(res), sizeof(Result));
+            Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
+
+            nlohmann::json js = nlohmann::json::parse(buffer);
+
+            res->resultCode = js["code"].get<int>();
+            memcpy(res->content, js["content"].get<std::string>().c_str(), js["content"].get<std::string>().length());
+
             resultQueue.push(res);
         }
         else continue;

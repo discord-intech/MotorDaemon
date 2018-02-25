@@ -15,10 +15,12 @@
 #include <fstream>
 #include <functional>
 #include <thread>
+#include <string>
 #include <unistd.h>
 #include <queue>
 #include <iostream>
 #include "cpu_com_structs.h"
+#include "json.hpp"
 #include "ControllerInterface.hpp"
 
 typedef struct cpu_com_result Result;
@@ -37,6 +39,8 @@ private:
     static std::queue<Result*> resultQueue;
 
     static int Read(char*, int);
+
+    static int Read_until(char*, int, char);
 
     static void mainWorker(void);
     static void readWorker(void);
