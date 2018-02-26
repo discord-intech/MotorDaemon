@@ -104,8 +104,8 @@ void SerialController::readWorker()
             currentStatus->speedR = js["speedR"].get<double>();
             currentStatus->pwmL = js["pwmL"].get<int>();
             currentStatus->pwmR = js["pwmR"].get<int>();
-            currentStatus->stopPhy = js["stopPhy"].get<bool>();
-            currentStatus->stopSoft = js["stopSoft"].get<bool>();
+            currentStatus->stopPhy = js["stopPhy"].get<int>() != 0;
+            currentStatus->stopSoft = js["stopSoft"].get<int>() != 0;
 
             std::cout << "GOT STATUS" << std::endl;
         }
