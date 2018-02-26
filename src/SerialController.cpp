@@ -123,6 +123,10 @@ void SerialController::readWorker()
             {
                 std::cout << "ERROR CODE " << res->resultCode << " : " << res->content << std::endl;
             }
+            else
+            {
+                std::cout << res->content << std::endl;
+            }
 
             resultQueue.push(res);
         }
