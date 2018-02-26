@@ -146,6 +146,7 @@ struct cpu_com_status SerialController::getStatus()
 
 void SerialController::order(std::string order)
 {
+    std::cout << "SENDING " << order << std::endl;
     Write((order+"\r").c_str(), static_cast<unsigned int>(order.length() + 1));
 }
 
