@@ -95,9 +95,9 @@ void SerialController::readWorker()
             Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
             nlohmann::json js = nlohmann::json::parse(buffer);
 
-            currentStatus->x = js["x"].get<int>() / 10000.;
-            currentStatus->y = js["y"].get<int>() / 10000.;
-            currentStatus->angle = js["angle"].get<int>() / 10000.;
+            currentStatus->x = js["x"].get<double>();
+            currentStatus->y = js["y"].get<double>();
+            currentStatus->angle = js["angle"].get<double>();
             currentStatus->stop = js["stop"].get<bool>();
             currentStatus->curveRadius = js["curveRadius"].get<double>();
             currentStatus->speedL = js["speedL"].get<double>();
