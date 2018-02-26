@@ -107,7 +107,6 @@ void SerialController::readWorker()
             currentStatus->stopPhy = js["stopPhy"].get<int>() != 0;
             currentStatus->stopSoft = js["stopSoft"].get<int>() != 0;
 
-            std::cout << "GOT STATUS" << std::endl;
         }
         else if(code == RESULT_CODE)
         {
