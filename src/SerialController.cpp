@@ -6,6 +6,7 @@
 
 #include "../include/SerialController.hpp"
 
+#define PIN_ASSERV_SOFT 34
 
 
 bool SerialController::on = true;
@@ -36,10 +37,10 @@ void SerialController::init()
     reader.detach();
     resultQueue = std::queue<Result *>();
 
-    system((std::string("echo ")+std::to_string(57)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo ")+std::to_string(PIN_ASSERV_SOFT)+std::string(" > /sys/class/gpio/export")).c_str());
 
-    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(57)+std::string("/direction")).c_str());
-    system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(57)+std::string("/value")).c_str());
+    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/direction")).c_str());
+    system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
 
 }
 
