@@ -107,6 +107,7 @@ void SerialController::readWorker()
             currentStatus->pwmR = js["pwmR"].get<int>();
             currentStatus->stopPhy = js["stopPhy"].get<bool>();
             currentStatus->stopSoft = js["stopSoft"].get<bool>();
+            currentStatus->ampOverload = js["ampOverload"].get<bool>();
 
         }
         else if(code == RESULT_CODE)
@@ -276,9 +277,9 @@ void SerialController::goR(void) {
 
 void SerialController::setControlled(bool b) {
     if(b)
-        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(57)+std::string("/value")).c_str());
+        system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
     else
-        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(57)+std::string("/value")).c_str());
+        system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
 }
 
 void SerialController::sweep(bool way) {

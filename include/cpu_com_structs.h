@@ -23,7 +23,7 @@ struct cpu_com_status
     long curveRadius;
     double speedL, speedR;
     char pwmL, pwmR;
-    bool stopPhy, stopSoft;
+    bool stopPhy, stopSoft, ampOverload;
 };
 
 #endif //MOTORDAEMON_CPU_COM_STRUCTS_H
