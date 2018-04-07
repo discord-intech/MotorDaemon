@@ -15,6 +15,8 @@ public:
 
     virtual void init(void) = 0;
 
+    virtual void destructor(void) = 0;
+
     virtual void stop(void) = 0;
 
     virtual void orderTranslation(long) = 0;

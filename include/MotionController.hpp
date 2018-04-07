@@ -168,6 +168,8 @@ public:
     MotionController(Settings&);
     void init(void);
 
+    void destructor(void) {stop();}
+
     void stop(void);
 
     void updatePosition(void);

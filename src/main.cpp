@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
         std::cout << "ARM CPU detected, using PWMs" << std::endl;
 #endif
         t.join(); //Do not shut down the main thread
+        motion->destructor();
     }
 
     return 0;

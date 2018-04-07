@@ -49,6 +49,7 @@ public:
     static bool on;
     SerialController(char*);
     void init();
+    void destructor(void);
     int Write(const char*, unsigned int);
     Result* waitForResult();
     struct cpu_com_status getStatus();

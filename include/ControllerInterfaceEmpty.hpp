@@ -16,6 +16,8 @@ public:
 
     virtual void init(void) {};
 
+    virtual void destructor(void) {};
+
     virtual void stop(void) {};
 
     virtual void orderTranslation(long) {};

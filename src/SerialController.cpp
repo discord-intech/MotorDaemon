@@ -44,6 +44,12 @@ void SerialController::init()
 
 }
 
+void SerialController::destructor()
+{
+    stop();
+    system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
+}
+
 int SerialController::Read(char *b, int size)
 {
     return read(fileDesc, b, size);
