@@ -354,6 +354,12 @@ void SerialController::printTranslationError(void) {
     //Not yet implemented in protocol
 }
 
+void SerialController::setNeonRGB(int R, int G, int B)
+{
+    order("neon "+std::to_string(R)+" "+std::to_string(G)+" "+std::to_string(B));
+    waitForResult();
+};
+
 const char *SerialController::controlledStatus() {
     if(currentStatus->stopPhy)
     {

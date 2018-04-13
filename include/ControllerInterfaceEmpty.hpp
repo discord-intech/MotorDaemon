@@ -82,6 +82,8 @@ public:
     virtual void loadPos() {};
 
     virtual void printTranslationError(void) {};
+
+    virtual void setNeonRGB(int R, int G, int B) {};
 };
 
 #endif //MOTORDAEMON_HERMES_CONTROLLERINTERFACE_HPP

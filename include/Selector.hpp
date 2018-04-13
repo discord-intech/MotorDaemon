@@ -437,6 +437,32 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         return 0;
     }
 
+    else if(!args[0].compare("neon"))
+    {
+        if(args.size() != 4)
+        {
+            print((char *) "USAGE : neon <R> <G> <B>");
+            return 0;
+        }
+
+        int R, G, B;
+        try
+        {
+            R = MAX(0, MIN(255, std::stoi(args[1])));
+            G = MAX(0, MIN(255, std::stoi(args[2])));
+            B = MAX(0, MIN(255, std::stoi(args[3])));
+        }
+        catch (std::exception const &e)
+        {
+            print((char*)"BAD VALUE");
+            return 0;
+        }
+
+        motion->setNeonRGB(R,G,B);
+
+        return 0;
+    }
+
     else if(!args[0].compare("setang"))
     {
         if(args.size() != 2)

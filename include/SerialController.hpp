@@ -194,6 +194,9 @@ public:
         if (tcsetattr (fd, TCSANOW, &tty) != 0)
             printf ("error %d setting term attributes", errno);
     }
+
+    void setNeonRGB(int R, int G, int B);
+
 };
 
 

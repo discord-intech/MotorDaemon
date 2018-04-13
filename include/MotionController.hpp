@@ -243,6 +243,8 @@ public:
                   << translationPID.getError() << " ; " << *leftSpeedSetpoint << std::endl;
     }
 
+    virtual void setNeonRGB(int R, int G, int B) {};
+
 };
 
 
