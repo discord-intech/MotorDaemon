@@ -8,6 +8,7 @@
 #include "../include/Odometry.hpp"
 #include "../include/MotionController.hpp"
 #include "SerialController.hpp"
+#include "PWMPlayer.h"
 #include <sstream>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -457,6 +458,19 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
 
         motion->setNeonSpeed(static_cast<unsigned char>(speed));
+
+        return 0;
+    }
+
+    else if(!args[0].compare("playmusic"))
+    {
+        if(args.size() != 2)
+        {
+            print((char *) "USAGE : playmusic <filepath>");
+            return 0;
+        }
+
+        std::thread t(&PWMPlayer::play, PWMPlayer(args[1].c_str(), motion));
 
         return 0;
     }
