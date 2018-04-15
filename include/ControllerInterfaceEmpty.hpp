@@ -83,7 +83,7 @@ public:
 
     virtual void printTranslationError(void) {};
 
-    virtual void setNeonRGB(int R, int G, int B) {};
+    virtual void setNeonSpeed(unsigned char s) {};
 };
 
 #endif //MOTORDAEMON_HERMES_CONTROLLERINTERFACE_HPP

@@ -195,7 +195,7 @@ public:
             printf ("error %d setting term attributes", errno);
     }
 
-    void setNeonRGB(int R, int G, int B);
+    void setNeonSpeed(unsigned char s);
 
 };
 

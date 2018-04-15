@@ -439,18 +439,16 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
 
     else if(!args[0].compare("neon"))
     {
-        if(args.size() != 4)
+        if(args.size() != 2)
         {
-            print((char *) "USAGE : neon <R> <G> <B>");
+            print((char *) "USAGE : neon <speed>");
             return 0;
         }
 
-        int R, G, B;
+        int speed;
         try
         {
-            R = MAX(0, MIN(255, std::stoi(args[1])));
-            G = MAX(0, MIN(255, std::stoi(args[2])));
-            B = MAX(0, MIN(255, std::stoi(args[3])));
+            speed = MAX(0, MIN(255, std::stoi(args[1])));
         }
         catch (std::exception const &e)
         {
@@ -458,7 +456,7 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        motion->setNeonRGB(R,G,B);
+        motion->setNeonSpeed(static_cast<unsigned char>(speed));
 
         return 0;
     }
