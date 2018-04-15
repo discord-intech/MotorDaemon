@@ -356,7 +356,7 @@ void SerialController::printTranslationError(void) {
 
 void SerialController::setNeonSpeed(unsigned char s)
 {
-    order("neon "+std::to_string(s));
+    order("neon "+std::to_string((int)s));
     waitForResult();
 };
 
