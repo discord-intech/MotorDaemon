@@ -18,23 +18,24 @@
 fprintf(stderr, "%s:%i: failure at: %s\n", __FILE__, __LINE__, #x); \
 _exit(1); } }
 
+
 class PWMPlayer {
 
 private:
 
-    const char *file_path;
-    ControllerInterface *motion;
-    PaStream *stream;
-    FILE *wavfile;
-    int numChannels;
-    int sampleRate;
-    PaSampleFormat sampleFormat;
-    int bytesPerSample, bitsPerSample;
+    static const char *file_path;
+    static ControllerInterface *motion;
+    static PaStream *stream;
+    static FILE *wavfile;
+    static int numChannels;
+    static int sampleRate;
+    static PaSampleFormat sampleFormat;
+    static int bytesPerSample, bitsPerSample;
 
     static const int speed_per_dB = 2;
     static const int speed_max = 20;
 
-    int paStreamCallback(
+    static int paStreamCallback(
             const void *input, void *output,
             unsigned long frameCount,
             const PaStreamCallbackTimeInfo *timeInfo,
@@ -53,7 +54,7 @@ private:
         return paContinue;
     }
 
-    void on_sample(size_t count, uint8_t *buffer) {
+    static void on_sample(size_t count, uint8_t *buffer) {
         float K = 0;
         float sum = 0;
         float volume = 0;
@@ -97,8 +98,7 @@ private:
                 sampleRate,
                 paFramesPerBufferUnspecified, // framesPerBuffer
                 0, // flags
-                reinterpret_cast<int (*)(const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *,
-                                         PaStreamCallbackFlags, void *)>(&PWMPlayer::paStreamCallback),
+                paStreamCallback,
                 NULL //void *userData
         );
 
@@ -170,8 +170,11 @@ private:
 
 public:
 
-    PWMPlayer(const char* file_path, ControllerInterface *motion) : file_path(file_path), motion(motion)
-    {}
+    PWMPlayer(const char* file_path, ControllerInterface *motion)
+    {
+        PWMPlayer::file_path = file_path;
+        PWMPlayer::motion = motion;
+    }
 
     int play() {
         wavfile = fopen(file_path, "r");
@@ -211,5 +214,14 @@ public:
         motion->setNeonSpeed((unsigned char) 1);
     }
 };
+
+const char *PWMPlayer::file_path;
+ControllerInterface *PWMPlayer::motion;
+PaStream *PWMPlayer::stream;
+FILE *PWMPlayer::wavfile;
+int PWMPlayer::numChannels;
+int PWMPlayer::sampleRate;
+PaSampleFormat PWMPlayer::sampleFormat;
+int PWMPlayer::bytesPerSample, PWMPlayer::bitsPerSample;
 
 #endif //MOTORDAEMON_HERMES_PWMPLAYER_H

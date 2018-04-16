@@ -27,6 +27,7 @@ Settings settings("MotorDaemon.conf");
 #endif
 
 ControllerInterface* motion;
+std::thread playerThread;
 
 
 
@@ -470,7 +471,8 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
-        std::thread t(&PWMPlayer::play, PWMPlayer(args[1].c_str(), motion));
+        playerThread = std::thread(&PWMPlayer::play, PWMPlayer(args[1].c_str(), motion));
+        playerThread.detach();
 
         return 0;
     }
