@@ -127,14 +127,14 @@ void SerialController::readWorker()
             res->resultCode = js["code"].get<int>();
             memcpy(res->content, js["content"].get<std::string>().c_str(), js["content"].get<std::string>().length());
 
-            if(res->resultCode)
-            {
-                std::cout << "ERROR CODE " << res->resultCode << " : " << res->content << std::endl;
-            }
-            else
-            {
-                std::cout << res->content << std::endl;
-            }
+//            if(res->resultCode)
+//            {
+//                std::cout << "ERROR CODE " << res->resultCode << " : " << res->content << std::endl;
+//            }
+//            else
+//            {
+//                std::cout << res->content << std::endl;
+//            }
 
             resultQueue.push(res);
         }
@@ -154,7 +154,7 @@ struct cpu_com_status SerialController::getStatus()
 
 void SerialController::order(std::string order)
 {
-    std::cout << "SENDING " << order << std::endl;
+    //std::cout << "SENDING " << order << std::endl;
     Write((order+"\r").c_str(), static_cast<unsigned int>(order.length() + 1));
 }
 
