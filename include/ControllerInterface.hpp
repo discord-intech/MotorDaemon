@@ -11,6 +11,8 @@ class ControllerInterface
 {
 public:
 
+    bool playerThreadStarted = false;
+
     ControllerInterface() = default;
 
     virtual void init(void) = 0;

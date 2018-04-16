@@ -471,8 +471,22 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
             return 0;
         }
 
+        motion->playerThreadStarted = true;
         playerThread = std::thread(&PWMPlayer::play, PWMPlayer(args[1].c_str(), motion));
         playerThread.detach();
+
+        return 0;
+    }
+
+    else if(!args[0].compare("stopmusic"))
+    {
+        if(args.size() != 1)
+        {
+            print((char *) "USAGE : stopmusic");
+            return 0;
+        }
+
+        motion->playerThreadStarted = false;
 
         return 0;
     }

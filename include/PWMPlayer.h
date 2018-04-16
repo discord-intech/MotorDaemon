@@ -77,6 +77,9 @@ private:
         int v = fmin(volume, speed_max);
         //printf("%6.2f %d %s\r", origVolume, v, stars + (speed_max - v));
         motion->setNeonSpeed((unsigned char) v);
+
+        if(!motion->playerThreadStarted)
+            std::terminate();
     }
 
     bool portAudioOpen() {

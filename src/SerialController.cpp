@@ -62,6 +62,11 @@ int SerialController::Read_until(char *b, int maxSize, char finalChar)
         char c;
         read(fileDesc, &c, 1);
 
+        if(c == 17) {
+            i--;
+            continue;
+        }
+
         if (c == finalChar)
         {
             b[i] = '\0';
@@ -121,6 +126,7 @@ void SerialController::readWorker()
             Result * res = static_cast<Result *>(malloc(sizeof(Result
                                                         )));
             Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
+
 
             nlohmann::json js = nlohmann::json::parse(buffer);
 
