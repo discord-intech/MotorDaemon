@@ -33,7 +33,7 @@ private:
     static int bytesPerSample, bitsPerSample;
 
     static const int speed_per_dB = 2;
-    static const int speed_max = 20;
+    static const int speed_max = 10;
 
     static int paStreamCallback(
             const void *input, void *output,
