@@ -11,7 +11,7 @@ class ControllerInterface
 {
 public:
 
-    bool playerThreadStarted = false;
+    volatile bool playerThreadStarted = false;
 
     ControllerInterface() = default;
 
