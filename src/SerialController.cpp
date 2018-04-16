@@ -62,7 +62,11 @@ int SerialController::Read_until(char *b, int maxSize, char finalChar)
         char c;
         read(fileDesc, &c, 1);
 
-        if(c == 17) {
+        if(c == RESULT_CODE_1
+           || c == RESULT_CODE_2
+           || c == STATUS_CODE_1
+           || c == STATUS_CODE_2)
+        {
             i--;
             continue;
         }
@@ -91,17 +95,32 @@ void SerialController::readWorker()
 {
     on = true;
     char buffer[1024];
+    bool backCode = false;
+    char code = 0;
     while(on)
     {
-        char code = 0;
-
-        if(!Read(&code, 1))
+        if(backCode)
+        {
+            backCode = false;
+        }
+        else if(!Read(&code, 1))
         {
             continue;
         }
 
-        if(code == STATUS_CODE)
+        if(code == STATUS_CODE_1)
         {
+            if(!Read(&code, 1))
+            {
+                continue;
+            }
+
+            if(code != STATUS_CODE_2)
+            {
+                backCode = true;
+                continue;
+            }
+
             delete currentStatus;
             currentStatus = static_cast<struct cpu_com_status*>(malloc(sizeof(struct cpu_com_status)));
             Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
@@ -121,8 +140,19 @@ void SerialController::readWorker()
             currentStatus->ampOverload = js["ampOverload"].get<bool>();
 
         }
-        else if(code == RESULT_CODE)
+        else if(code == RESULT_CODE_1)
         {
+            if(!Read(&code, 1))
+            {
+                continue;
+            }
+
+            if(code != RESULT_CODE_2)
+            {
+                backCode = true;
+                continue;
+            }
+
             Result * res = static_cast<Result *>(malloc(sizeof(Result
                                                         )));
             Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);

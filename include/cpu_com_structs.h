@@ -6,8 +6,10 @@
 #define MOTORDAEMON_CPU_COM_STRUCTS_H
 
 #define CPU_RESULT_BUFFER_SIZE 1000
-#define STATUS_CODE 17
-#define RESULT_CODE 18
+#define STATUS_CODE_1 17
+#define STATUS_CODE_2 18
+#define RESULT_CODE_1 19
+#define RESULT_CODE_2 20
 
 struct cpu_com_result
 {
