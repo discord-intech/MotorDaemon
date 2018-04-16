@@ -73,7 +73,7 @@ int SerialController::Read_until(char *b, int maxSize, char finalChar)
 
         if (c == finalChar)
         {
-            b[i] = '\0';
+            for(int j = i ; j < maxSize ; j++) b[j] = '\0';
             return i;
         }
 
@@ -191,7 +191,9 @@ struct cpu_com_status SerialController::getStatus()
 void SerialController::order(std::string order)
 {
     //std::cout << "SENDING " << order << std::endl;
-    Write((order+"\r").c_str(), static_cast<unsigned int>(order.length() + 1));
+    unsigned int size = static_cast<unsigned int>(order.length() + 1);
+    order.append("\r");
+    Write(order.c_str(), size);
 }
 
 Result * SerialController::waitForResult()
