@@ -120,6 +120,7 @@ void SerialController::mainWorker()
         fdKey = open( (std::string("/sys/class/gpio/gpio")+std::to_string(KEY_INPUT)+std::string("/value")).c_str(), O_RDONLY );
         read(fdKey, &valueKey, 1);
         close(fdKey);
+        std::cout << valueKey << std::endl;
         if(!started && !strcmp(&valueKey,"1"))
         {
             system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
