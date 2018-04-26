@@ -113,15 +113,14 @@ void SerialController::mainWorker()
     char valueKey;
     read(fdKey, &valueKey, 1);
     close(fdKey);
-    bool started = valueKey == '1';
+    bool started = atoi(&valueKey) == 1;
 
     while(true)
     {
         fdKey = open( (std::string("/sys/class/gpio/gpio")+std::to_string(KEY_INPUT)+std::string("/value")).c_str(), O_RDONLY );
         read(fdKey, &valueKey, 1);
         close(fdKey);
-        std::cout << valueKey << std::endl;
-        if(!started && !strcmp(&valueKey,"1"))
+        if(!started && atoi(&valueKey) == 1)
         {
             system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
             PWMPlayer player = PWMPlayer("startmotor.wav", nullptr);
@@ -130,7 +129,7 @@ void SerialController::mainWorker()
             std::cout << "IGNITION !" << std::endl;
         }
 
-        if(started && !strcmp(&valueKey,"0"))
+        if(started && atoi(&valueKey) == 0)
         {
             system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
             PWMPlayer player = PWMPlayer("stopmotor.wav", nullptr);
