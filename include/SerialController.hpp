@@ -57,15 +57,16 @@ private:
     static int paStreamCallback(
             const void *input, void *output,
             unsigned long frameCount,
-            const PaStreamCallbackTimeInfo *timeInfo,
+            const PaStreamCallbackTimeInfo* timeInfo,
             PaStreamCallbackFlags statusFlags,
-            void *userData) {
+            void *userData )
+    {
         size_t numRead = fread(output, bytesPerSample * numChannels, frameCount, wavfile);
         on_sample(numRead, static_cast<uint8_t *>(output));
-        output = (uint8_t *) output + numRead * numChannels * bytesPerSample;
+        output = (uint8_t*)output + numRead * numChannels * bytesPerSample;
         frameCount -= numRead;
 
-        if (frameCount > 0) {
+        if(frameCount > 0) {
             memset(output, 0, frameCount * numChannels * bytesPerSample);
             return paComplete;
         }
@@ -109,7 +110,7 @@ private:
 
         outputParameters.channelCount = numChannels;
         outputParameters.sampleFormat = sampleFormat;
-        outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultHighOutputLatency;
+        outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultHighOutputLatency;
 
         PaError ret = Pa_OpenStream(
                 &stream,
@@ -118,13 +119,13 @@ private:
                 sampleRate,
                 paFramesPerBufferUnspecified, // framesPerBuffer
                 0, // flags
-                paStreamCallback,
+                &paStreamCallback,
                 NULL //void *userData
         );
 
-        if (ret != paNoError) {
+        if(ret != paNoError) {
             fprintf(stderr, "Pa_OpenStream failed: (err %i) %s\n", ret, Pa_GetErrorText(ret));
-            if (stream)
+            if(stream)
                 Pa_CloseStream(stream);
             return false;
         }
@@ -222,6 +223,7 @@ public:
 
         printf("start playing...\n");
         CHECK(portAudioOpen());
+        printf("start playing2...\n");
 
         // wait until stream has finished playing
         while (Pa_IsStreamActive(stream) > 0)

@@ -471,8 +471,11 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         }
 
         motion->playerThreadStarted = true;
-        playerThread = std::thread(&PWMPlayer::play, PWMPlayer(args[1].c_str(), motion));
-        playerThread.detach();
+//        playerThread = std::thread(&PWMPlayer::play, PWMPlayer(args[1].c_str(), motion));
+//        playerThread.join();
+        PWMPlayer player = PWMPlayer(args[1].c_str(), nullptr);
+
+        player.play();
 
         return 0;
     }
