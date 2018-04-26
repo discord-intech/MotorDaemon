@@ -126,6 +126,7 @@ void SerialController::mainWorker()
             PWMPlayer player = PWMPlayer("startmotor.wav", nullptr);
             player.play();
             started = true;
+            std::cout << "IGNITION !" << std::endl;
         }
 
         if(started && !strcmp(&valueKey,"0"))
@@ -134,6 +135,7 @@ void SerialController::mainWorker()
             PWMPlayer player = PWMPlayer("stopmotor.wav", nullptr);
             player.play();
             started = false;
+            std::cout << "DEJA VU !" << std::endl;
         }
 
         timespec t, r;
