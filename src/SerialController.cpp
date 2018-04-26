@@ -8,6 +8,19 @@
 
 #define PIN_ASSERV_SOFT 34
 
+#define KEY_INPUT 55
+#define KEY_OUTPUT 57
+
+
+const char *PWMPlayer::file_path;
+ControllerInterface *PWMPlayer::motion;
+PaStream *PWMPlayer::stream;
+FILE *PWMPlayer::wavfile;
+int PWMPlayer::numChannels;
+int PWMPlayer::sampleRate;
+PaSampleFormat PWMPlayer::sampleFormat;
+int PWMPlayer::bytesPerSample, PWMPlayer::bitsPerSample;
+
 
 bool SerialController::on = true;
 int SerialController::fileDesc;
@@ -41,6 +54,13 @@ void SerialController::init()
 
     system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/direction")).c_str());
     system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
+
+    system((std::string("echo ")+std::to_string(KEY_OUTPUT)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo out > /sys/class/gpio/gpio")+std::to_string(KEY_OUTPUT)+std::string("/direction")).c_str());
+    system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(KEY_OUTPUT)+std::string("/value")).c_str());
+
+    system((std::string("echo ")+std::to_string(KEY_INPUT)+std::string(" > /sys/class/gpio/export")).c_str());
+    system((std::string("echo in > /sys/class/gpio/gpio")+std::to_string(KEY_INPUT)+std::string("/direction")).c_str());
 
 }
 
@@ -88,6 +108,39 @@ int SerialController::Write(const char *b, unsigned int size)
 
 void SerialController::mainWorker()
 {
+    int fdKey = open( (std::string("/sys/class/gpio/gpio")+std::to_string(KEY_INPUT)+std::string("/value")).c_str(), O_RDONLY );
+
+    char valueKey;
+    read(fdKey, &valueKey, 1);
+    close(fdKey);
+    bool started = valueKey == '1';
+
+    while(true)
+    {
+        fdKey = open( (std::string("/sys/class/gpio/gpio")+std::to_string(KEY_INPUT)+std::string("/value")).c_str(), O_RDONLY );
+        read(fdKey, &valueKey, 1);
+        close(fdKey);
+        if(!started && !strcmp(&valueKey,"1"))
+        {
+            system((std::string("echo 1 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
+            PWMPlayer player = PWMPlayer("startmotor.wav", nullptr);
+            player.play();
+            started = true;
+        }
+
+        if(started && !strcmp(&valueKey,"0"))
+        {
+            system((std::string("echo 0 > /sys/class/gpio/gpio")+std::to_string(PIN_ASSERV_SOFT)+std::string("/value")).c_str());
+            PWMPlayer player = PWMPlayer("stopmotor.wav", nullptr);
+            player.play();
+            started = false;
+        }
+
+        timespec t, r;
+        t.tv_sec= 0;
+        t.tv_nsec = 300000000;
+        nanosleep(&t, &r);
+    }
 
 }
 
