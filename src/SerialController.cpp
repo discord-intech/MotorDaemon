@@ -8,7 +8,7 @@
 
 #define PIN_ASSERV_SOFT 34
 
-#define KEY_INPUT 55
+#define KEY_INPUT 205
 #define KEY_OUTPUT 57
 
 
