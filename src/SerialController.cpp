@@ -213,7 +213,15 @@ void SerialController::readWorker()
             Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
 
 
-            nlohmann::json js = nlohmann::json::parse(buffer);
+            nlohmann::json js;
+            try
+            {
+                js = nlohmann::json::parse(buffer);
+            }
+            catch(nlohmann::detail::parse_error error)
+            {
+                continue;
+            }
 
             res->resultCode = js["code"].get<int>();
             memcpy(res->content, js["content"].get<std::string>().c_str(), js["content"].get<std::string>().length());
