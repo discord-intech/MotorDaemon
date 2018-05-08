@@ -187,6 +187,7 @@ void SerialController::readWorker()
             }
             catch(nlohmann::detail::parse_error &error)
             {
+                std::cout << "BAD STATUS" << buffer << std::endl;
                 continue;
             }
 
@@ -229,6 +230,7 @@ void SerialController::readWorker()
             }
             catch(nlohmann::detail::parse_error &error)
             {
+                std::cout << "BAD RESULT" << buffer << std::endl;
                 continue;
             }
 
