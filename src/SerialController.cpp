@@ -179,7 +179,16 @@ void SerialController::readWorker()
             delete currentStatus;
             currentStatus = static_cast<struct cpu_com_status*>(malloc(sizeof(struct cpu_com_status)));
             Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
-            nlohmann::json js = nlohmann::json::parse(buffer);
+
+            nlohmann::json js;
+            try
+            {
+                js = nlohmann::json::parse(buffer);
+            }
+            catch(nlohmann::detail::parse_error error)
+            {
+                continue;
+            }
 
             currentStatus->x = js["x"].get<double>();
             currentStatus->y = js["y"].get<double>();
