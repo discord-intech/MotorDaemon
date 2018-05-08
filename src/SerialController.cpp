@@ -93,7 +93,7 @@ int SerialController::Read_until(char *b, int maxSize, char finalChar)
 
         if (c == finalChar)
         {
-            for(int j = i ; j < maxSize ; j++) b[j] = '\0';
+            for(int j = i ; j < maxSize ; j++) b[j] = 0;
             return i;
         }
 
@@ -149,7 +149,7 @@ void SerialController::mainWorker()
 void SerialController::readWorker()
 {
     on = true;
-    char buffer[1024];
+    char buffer[256];
     bool backCode = false;
     char code = 0;
     while(on)
@@ -178,14 +178,14 @@ void SerialController::readWorker()
 
             delete currentStatus;
             currentStatus = static_cast<struct cpu_com_status*>(malloc(sizeof(struct cpu_com_status)));
-            Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
+            Read_until(reinterpret_cast<char *>(&buffer), 256, 13);
 
             nlohmann::json js;
             try
             {
                 js = nlohmann::json::parse(buffer);
             }
-            catch(nlohmann::detail::parse_error error)
+            catch(nlohmann::detail::parse_error &error)
             {
                 continue;
             }
@@ -219,7 +219,7 @@ void SerialController::readWorker()
 
             Result * res = static_cast<Result *>(malloc(sizeof(Result
                                                         )));
-            Read_until(reinterpret_cast<char *>(&buffer), 1024, 13);
+            Read_until(reinterpret_cast<char *>(&buffer), 256, 13);
 
 
             nlohmann::json js;
@@ -227,7 +227,7 @@ void SerialController::readWorker()
             {
                 js = nlohmann::json::parse(buffer);
             }
-            catch(nlohmann::detail::parse_error error)
+            catch(nlohmann::detail::parse_error &error)
             {
                 continue;
             }
