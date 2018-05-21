@@ -255,6 +255,8 @@ private:
     std::thread main;
     std::thread reader;
 
+    static volatile bool write_mutex;
+
     static std::queue<Result*> resultQueue;
 
     static int Read(char*, int);
@@ -269,10 +271,10 @@ public:
     SerialController(char*);
     void init();
     void destructor(void);
-    int Write(const char*, unsigned int);
+    static int Write(const char*, unsigned int);
     Result* waitForResult();
     struct cpu_com_status getStatus();
-    void order(std::string order);
+    static void order(std::string order);
 
     void stop(void) ;
 

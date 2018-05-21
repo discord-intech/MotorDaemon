@@ -24,6 +24,7 @@ int PWMPlayer::bytesPerSample, PWMPlayer::bitsPerSample;
 
 bool SerialController::on = true;
 int SerialController::fileDesc;
+volatile bool SerialController::write_mutex;
 struct cpu_com_status* SerialController::currentStatus;
 std::queue<Result *> SerialController::resultQueue;
 
@@ -44,6 +45,7 @@ void SerialController::init()
 {
     currentStatus = static_cast<cpu_com_status *>(malloc(sizeof(struct cpu_com_status)));
     currentStatus->stop = true;
+    SerialController::write_mutex = false;
     main = std::thread(&SerialController::mainWorker);
     main.detach();
     reader = std::thread(&SerialController::readWorker);
@@ -103,7 +105,13 @@ int SerialController::Read_until(char *b, int maxSize, char finalChar)
 
 int SerialController::Write(const char *b, unsigned int size)
 {
-    return write(fileDesc, b, size);
+
+    while(SerialController::write_mutex);
+
+    SerialController::write_mutex = true;
+    int res =  write(fileDesc, b, size);
+    SerialController::write_mutex = false;
+    return res;
 }
 
 void SerialController::mainWorker()
@@ -245,6 +253,8 @@ void SerialController::readWorker()
 //            {
 //                std::cout << res->content << std::endl;
 //            }
+
+            order(std::string("ack ")+std::to_string(js["id"].get<unsigned int>()));
 
             resultQueue.push(res);
         }
