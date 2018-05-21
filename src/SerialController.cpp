@@ -254,7 +254,8 @@ void SerialController::readWorker()
 //                std::cout << res->content << std::endl;
 //            }
 
-            order(std::string("ack ")+std::to_string(js["id"].get<unsigned int>()));
+            for(int i=0 ; i<5 ; i++)
+                order(std::string("ack ")+std::to_string(js["id"].get<unsigned int>()));
 
             resultQueue.push(res);
         }
