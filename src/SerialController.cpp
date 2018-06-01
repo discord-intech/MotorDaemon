@@ -24,6 +24,7 @@ int PWMPlayer::bytesPerSample, PWMPlayer::bitsPerSample;
 
 bool SerialController::on = true;
 int SerialController::fileDesc;
+volatile unsigned int SerialController::expectedAnswers;
 volatile bool SerialController::write_mutex;
 struct cpu_com_status* SerialController::currentStatus;
 std::queue<Result *> SerialController::resultQueue;
@@ -51,6 +52,7 @@ void SerialController::init()
     reader = std::thread(&SerialController::readWorker);
     reader.detach();
     resultQueue = std::queue<Result *>();
+    expectedAnswers = 0;
 
     system((std::string("echo ")+std::to_string(PIN_ASSERV_SOFT)+std::string(" > /sys/class/gpio/export")).c_str());
 
@@ -259,7 +261,11 @@ void SerialController::readWorker()
 //            for(int i=0 ; i<3 ; i++)
             order(std::string("ack ")+std::to_string(js["id"].get<unsigned int>()));
 
-            resultQueue.push(res);
+            if(expectedAnswers > 0)
+            {
+                expectedAnswers--;
+                resultQueue.push(res);
+            }
         }
         else continue;
     }
@@ -309,7 +315,14 @@ void SerialController::stop(void)
 
 void SerialController::orderTranslation(long i) {
     order("d "+std::to_string(i));
-    waitForResult();
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("d "+std::to_string(i));
+        expectedAnswers++;
+        res = waitForResult();
+    }
 }
 
 void SerialController::orderAngle(float d) {
@@ -318,47 +331,101 @@ void SerialController::orderAngle(float d) {
 
 void SerialController::setSpeedTranslation(int i) {
     order("setspeed "+std::to_string(i));
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setspeed "+std::to_string(i));
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::orderCurveRadius(long i) {
     order("cr "+std::to_string(i));
-    waitForResult();
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("cr "+std::to_string(i));
+        expectedAnswers++;
+        res = waitForResult();
+    }
+
 }
 
 void SerialController::setTranslationTunings(float d, float d1, float d2) {
     order("setConsts -1 -1 -1 -1 -1 -1 "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
           +" -1 -1 -1");
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setConsts -1 -1 -1 -1 -1 -1 "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
+              +" -1 -1 -1");
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::setCurveTunings(float d, float d1, float d2) {
     order("setConsts -1 -1 -1 -1 -1 -1 -1 -1 -1 "
           +floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2));
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setConsts -1 -1 -1 -1 -1 -1 -1 -1 -1 "
+              +floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2));
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::setLeftSpeedTunings(float d, float d1, float d2) {
     order("setConsts "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
           +" -1 -1 -1 -1 -1 -1 -1 -1 -1");
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setConsts "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
+              +" -1 -1 -1 -1 -1 -1 -1 -1 -1");
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::setRightSpeedTunings(float d, float d1, float d2) {
     order("setConsts -1 -1 -1 "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
           +" -1 -1 -1 -1 -1 -1");
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setConsts -1 -1 -1 "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
+              +" -1 -1 -1 -1 -1 -1");
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::setPosition(double xn, double yn) {
     order("setpos " + floatToString(static_cast<float>(xn)) + " " + floatToString(static_cast<float>(yn)));
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setpos " + floatToString(static_cast<float>(xn)) + " " + floatToString(static_cast<float>(yn)));
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::setAngle(double o) {
     order("setangle "+floatToString(static_cast<float>(o)));
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("setangle "+floatToString(static_cast<float>(o)));
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 const char *SerialController::getTunings(void) {
     return "Not yet implemented in protocol";
@@ -366,13 +433,25 @@ const char *SerialController::getTunings(void) {
 
 void SerialController::testPosition(void) {
     order("testpos "+std::to_string(100));
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("testpos "+std::to_string(100));
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::testSpeed(int i) {
     order("testspeed "+std::to_string(i));
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("testspeed "+std::to_string(i));
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 void SerialController::setTrajectory(std::vector<Cinematic> &vector, long i) {
     std::string points = "";
@@ -382,8 +461,14 @@ void SerialController::setTrajectory(std::vector<Cinematic> &vector, long i) {
     }
 
     order("traj "+std::to_string(i)+":"+std::to_string(vector.size())+points);
-    waitForResult();
-}
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("traj "+std::to_string(i)+":"+std::to_string(vector.size())+points);
+        expectedAnswers++;
+        res = waitForResult();
+    }}
 
 const char *SerialController::isMoving(void) {
     return !currentStatus->stop ? "Yes" : "No";
@@ -482,8 +567,14 @@ void SerialController::printTranslationError(void) {
 void SerialController::setNeonSpeed(unsigned char s)
 {
     order("neon "+std::to_string((unsigned int)s));
-    waitForResult();
-};
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("neon "+std::to_string((unsigned int)s));
+        expectedAnswers++;
+        res = waitForResult();
+    }};
 
 const char *SerialController::controlledStatus() {
     if(currentStatus->stopPhy)

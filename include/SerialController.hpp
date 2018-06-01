@@ -255,6 +255,8 @@ private:
     std::thread main;
     std::thread reader;
 
+    static volatile unsigned int expectedAnswers;
+
     static volatile bool write_mutex;
 
     static std::queue<Result*> resultQueue;
