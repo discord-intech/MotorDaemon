@@ -111,6 +111,7 @@ int SerialController::Write(const char *b, unsigned int size)
     SerialController::write_mutex = true;
     int res =  write(fileDesc, b, size);
     SerialController::write_mutex = false;
+    std::cout << "wrote " << size << " chars" << std::endl;
     return res;
 }
 
