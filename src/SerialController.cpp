@@ -245,6 +245,8 @@ void SerialController::readWorker()
             res->resultCode = js["code"].get<int>();
             memcpy(res->content, js["content"].get<std::string>().c_str(), js["content"].get<std::string>().length());
 
+            std::cout << "result content : " << js["content"] << std::endl;
+
 //            if(res->resultCode)
 //            {
 //                std::cout << "ERROR CODE " << res->resultCode << " : " << res->content << std::endl;
