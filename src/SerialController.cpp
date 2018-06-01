@@ -327,36 +327,36 @@ void SerialController::orderCurveRadius(long i) {
 }
 
 void SerialController::setTranslationTunings(float d, float d1, float d2) {
-    order("setConsts -1 -1 -1 -1 -1 -1 "+std::to_string(d)+" "+std::to_string(d1)+" "+std::to_string(d2)
+    order("setConsts -1 -1 -1 -1 -1 -1 "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
           +" -1 -1 -1");
     waitForResult();
 }
 
 void SerialController::setCurveTunings(float d, float d1, float d2) {
     order("setConsts -1 -1 -1 -1 -1 -1 -1 -1 -1 "
-          +std::to_string(d)+" "+std::to_string(d1)+" "+std::to_string(d2));
+          +floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2));
     waitForResult();
 }
 
 void SerialController::setLeftSpeedTunings(float d, float d1, float d2) {
-    order("setConsts "+std::to_string(d)+" "+std::to_string(d1)+" "+std::to_string(d2)
+    order("setConsts "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
           +" -1 -1 -1 -1 -1 -1 -1 -1 -1");
     waitForResult();
 }
 
 void SerialController::setRightSpeedTunings(float d, float d1, float d2) {
-    order("setConsts -1 -1 -1 "+std::to_string(d)+" "+std::to_string(d1)+" "+std::to_string(d2)
+    order("setConsts -1 -1 -1 "+floatToString(d)+" "+floatToString(d1)+" "+floatToString(d2)
           +" -1 -1 -1 -1 -1 -1");
     waitForResult();
 }
 
 void SerialController::setPosition(double xn, double yn) {
-    order("setpos "+std::to_string(xn)+" "+std::to_string(yn));
+    order("setpos " + floatToString(static_cast<float>(xn)) + " " + floatToString(static_cast<float>(yn)));
     waitForResult();
 }
 
 void SerialController::setAngle(double o) {
-    order("setangle "+std::to_string(o));
+    order("setangle "+floatToString(static_cast<float>(o)));
     waitForResult();
 }
 

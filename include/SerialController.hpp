@@ -416,6 +416,13 @@ public:
             printf ("error %d setting term attributes", errno);
     }
 
+    std::string floatToString(float f)
+    {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << f;
+        return ss.str();
+    }
+
     void setNeonSpeed(unsigned char s);
 
 };
