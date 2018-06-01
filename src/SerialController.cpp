@@ -30,7 +30,7 @@ std::queue<Result *> SerialController::resultQueue;
 
 SerialController::SerialController(char* port)
 {
-    this->fileDesc = open (port, O_RDWR | O_NOCTTY | O_SYNC);
+    this->fileDesc = open (port, O_RDWR | O_SYNC);
     if (this->fileDesc < 0)
     {
         printf("error %d opening %s: %s", errno, port, strerror (errno));
