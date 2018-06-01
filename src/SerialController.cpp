@@ -226,6 +226,8 @@ void SerialController::readWorker()
                 continue;
             }
 
+            std::cout << "received result" << std::endl;
+
             Result * res = static_cast<Result *>(malloc(sizeof(Result
                                                         )));
             Read_until(reinterpret_cast<char *>(&buffer), 256, 13);
