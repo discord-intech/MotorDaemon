@@ -111,7 +111,6 @@ int SerialController::Write(const char *b, unsigned int size)
     SerialController::write_mutex = true;
     int res =  write(fileDesc, b, size);
     SerialController::write_mutex = false;
-    std::cout << "wrote " << size << " chars" << std::endl;
     return res;
 }
 
@@ -227,8 +226,6 @@ void SerialController::readWorker()
                 continue;
             }
 
-            std::cout << "received result" << std::endl;
-
             Result * res = static_cast<Result *>(malloc(sizeof(Result
                                                         )));
             Read_until(reinterpret_cast<char *>(&buffer), 256, 13);
@@ -257,7 +254,7 @@ void SerialController::readWorker()
 //                std::cout << res->content << std::endl;
 //            }
 
-            for(int i=0 ; i<5 ; i++)
+            for(int i=0 ; i<3 ; i++)
                 order(std::string("ack ")+std::to_string(js["id"].get<unsigned int>()));
 
             resultQueue.push(res);
@@ -305,7 +302,7 @@ Result * SerialController::waitForResult()
 void SerialController::stop(void)
 {
     order("stop");
-    waitForResult();
+    //waitForResult();
 }
 
 void SerialController::orderTranslation(long i) {
