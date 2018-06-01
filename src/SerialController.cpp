@@ -37,7 +37,7 @@ SerialController::SerialController(char* port)
         return;
     }
 
-    set_interface_attribs (this->fileDesc, B19200, 0);		// set speed to 115,200 bps, 8n1 (no parity)
+    set_interface_attribs (this->fileDesc, B115200, 0);		// set speed to 115,200 bps, 8n1 (no parity)
     set_blocking (this->fileDesc, 1);
 }
 
