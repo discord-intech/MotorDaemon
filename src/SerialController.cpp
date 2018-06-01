@@ -30,49 +30,15 @@ std::queue<Result *> SerialController::resultQueue;
 
 SerialController::SerialController(char* port)
 {
-    this->fileDesc = open (port, O_RDWR);
+    this->fileDesc = open (port, O_RDWR | O_NOCTTY | O_SYNC);
     if (this->fileDesc < 0)
     {
         printf("error %d opening %s: %s", errno, port, strerror (errno));
         return;
     }
-    struct termios toptions;
 
-
-    if (tcgetattr(this->fileDesc, &toptions) < 0) {
-        perror("serialport_init: Couldn't get term attributes");
-    }
-
-    speed_t brate = B115200;
-
-    cfsetispeed(&toptions, brate);
-    cfsetospeed(&toptions, brate);
-
-    // 8N1
-    toptions.c_cflag &= ~PARENB;
-    toptions.c_cflag &= ~CSTOPB;
-    toptions.c_cflag &= ~CSIZE;
-    toptions.c_cflag |= CS8;
-    // no flow control
-    toptions.c_cflag &= ~CRTSCTS;
-
-    //toptions.c_cflag &= ~HUPCL; // disable hang-up-on-close to avoid reset
-
-    toptions.c_cflag |= CREAD | CLOCAL;  // turn on READ & ignore ctrl lines
-    toptions.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off s/w flow ctrl
-
-    toptions.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
-    toptions.c_oflag &= ~OPOST; // make raw
-
-    // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
-    toptions.c_cc[VMIN]  = 0;
-    toptions.c_cc[VTIME] = 0;
-    //toptions.c_cc[VTIME] = 20;
-
-    tcsetattr(this->fileDesc, TCSANOW, &toptions);
-    if( tcsetattr(this->fileDesc, TCSAFLUSH, &toptions) < 0) {
-        perror("init_serialport: Couldn't set term attributes");
-    }
+    set_interface_attribs (this->fileDesc, B57600, 0);		// set speed to 115,200 bps, 8n1 (no parity)
+    set_blocking (this->fileDesc, 1);
 }
 
 void SerialController::init()
