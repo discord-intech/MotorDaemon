@@ -96,8 +96,8 @@ private:
         volume /= speed_per_dB;
         int v = fmin(volume, speed_max);
         //printf("%6.2f %d %s\r", origVolume, v, stars + (speed_max - v));
-        if(motion)
-            motion->setNeonSpeed((unsigned char) v);
+        //if(motion)
+        //    motion->setNeonSpeed((unsigned char) v);
     }
 
     bool portAudioOpen() {
