@@ -235,6 +235,8 @@ public:
 
     void loadPos();
 
+    void printConsts(void) {};
+
     const char *controlledStatus() ;
 
     void printTranslationError(void)

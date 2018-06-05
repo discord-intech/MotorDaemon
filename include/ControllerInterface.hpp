@@ -82,6 +82,8 @@ public:
 
     virtual void loadPos() = 0;
 
+    virtual void printConsts(void) = 0;
+
     virtual void printTranslationError(void) = 0;
 
     virtual void setNeonSpeed(unsigned char s) = 0;

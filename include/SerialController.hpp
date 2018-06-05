@@ -342,7 +342,9 @@ public:
 
     double getAngle(void) ;
 
-    void loadPos() ;
+    void loadPos(void);
+
+    void printConsts(void);
 
     void printTranslationError(void) ;
 

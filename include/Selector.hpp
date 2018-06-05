@@ -236,6 +236,12 @@ int treatOrder(std::string &order, std::function<void(char*)> print, bool proxyM
         return 0;
     }
 
+    else if(!args[0].compare("printConsts"))
+    {
+        motion->printConsts();
+        return 0;
+    }
+
     else if(!args[0].compare("setksd"))
     {
 

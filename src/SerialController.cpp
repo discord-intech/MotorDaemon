@@ -414,7 +414,23 @@ void SerialController::setPosition(double xn, double yn) {
         order("setpos " + floatToString(static_cast<float>(xn)) + " " + floatToString(static_cast<float>(yn)));
         expectedAnswers++;
         res = waitForResult();
-    }}
+    }
+}
+
+void SerialController::printConsts()
+{
+    order("getConsts");
+    expectedAnswers++;
+    Result* res = waitForResult();
+    while(strstr(res->content, "BAD") != NULL)
+    {
+        order("getConsts");
+        expectedAnswers++;
+        res = waitForResult();
+    }
+
+    std::cout << std::endl << res->content << std::endl;
+}
 
 void SerialController::setAngle(double o) {
     order("setangle "+floatToString(static_cast<float>(o)));
